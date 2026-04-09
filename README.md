@@ -24,7 +24,7 @@
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/fullstack-starter.git && cd fullstack-starter
+git clone https://github.com/guyboireau/fullstack-starter.git && cd fullstack-starter
 
 # 2. Install all dependencies
 npm install
