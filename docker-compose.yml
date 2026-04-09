@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # ─────────────────────────────────────
+  # PostgreSQL Database
+  # ─────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: fullstack-db
+    restart: unless-stopped
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-fullstack_starter}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────
+  # NestJS API
+  # ─────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: fullstack-api
+    restart: unless-stopped
+    ports:
+      - '${API_PORT:-3000}:3000'
+    env_file:
+      - .env
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ─────────────────────────────────────
+  # React Frontend (Vite)
+  # ─────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: fullstack-web
+    restart: unless-stopped
+    ports:
+      - '5173:5173'
+    env_file:
+      - .env
+    volumes:
+      - ./apps/web/src:/app/apps/web/src
+
+volumes:
+  postgres_data:
