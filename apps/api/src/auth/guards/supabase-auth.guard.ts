@@ -42,7 +42,8 @@ export class SupabaseAuthGuard implements CanActivate {
     const authHeader = request.headers.authorization;
     if (!authHeader) return null;
 
-    const [type, token] = authHeader.split(' ');
-    return type === 'Bearer' ? token : null;
+    const [type, ...rest] = authHeader.split(' ');
+    const token = rest.join(' ');
+    return type === 'Bearer' && token ? token : null;
   }
 }
