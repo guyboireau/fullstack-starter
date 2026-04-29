@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, FormEvent } from 'react';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 
 type ItemStatus = 'todo' | 'in_progress' | 'done';
@@ -49,18 +48,8 @@ export function Dashboard() {
       if (!response.ok) throw new Error('Failed to fetch items');
       const data = await response.json();
       setItems(data);
-    } catch {
-      // Fallback: direct Supabase query if API is not running
-      const { data, error: sbError } = await supabase
-        .from('items')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (sbError) {
-        setError(sbError.message);
-      } else {
-        setItems(data || []);
-      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch items');
     } finally {
       setLoading(false);
     }
@@ -114,23 +103,8 @@ export function Dashboard() {
 
       closeModal();
       fetchItems();
-    } catch {
-      // Fallback: direct Supabase
-      if (editingId) {
-        const { error: sbError } = await supabase
-          .from('items')
-          .update(form)
-          .eq('id', editingId);
-        if (sbError) setError(sbError.message);
-      } else {
-        const { error: sbError } = await supabase
-          .from('items')
-          .insert({ ...form, user_id: session?.user?.id });
-        if (sbError) setError(sbError.message);
-      }
-
-      closeModal();
-      fetchItems();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save item');
     } finally {
       setSaving(false);
     }
@@ -149,15 +123,8 @@ export function Dashboard() {
 
       if (!response.ok) throw new Error('Failed to delete');
       fetchItems();
-    } catch {
-      // Fallback: direct Supabase
-      const { error: sbError } = await supabase
-        .from('items')
-        .delete()
-        .eq('id', id);
-
-      if (sbError) setError(sbError.message);
-      else fetchItems();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete');
     }
   };
 
