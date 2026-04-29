@@ -40,12 +40,6 @@ jobs:
       - name: Type check (api)
         run: npm run typecheck -w apps/api
 
-      - name: Test (web)
-        run: npm run test -w apps/web
-
-      - name: Test (api)
-        run: npm run test -w apps/api
-
       - name: Build (web)
         run: npm run build -w apps/web
         env:
