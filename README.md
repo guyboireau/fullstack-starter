@@ -40,6 +40,23 @@ npm run dev
 
 ---
 
+## 📜 Monorepo Scripts
+
+All commands run from the repository root using npm workspaces:
+
+| Script | What it does |
+|--------|--------------|
+| `npm run dev` | Concurrently starts web (`vite`) and api (`nest start --watch`) |
+| `npm run dev:web` | Starts the React frontend only |
+| `npm run dev:api` | Starts the NestJS API only |
+| `npm run build` | Production build for both web and api |
+| `npm run lint` | ESLint for both web and api |
+| `npm run typecheck` | `tsc --noEmit` for both apps |
+
+App-level commands (e.g. `npm run test -w apps/web`) are also available.
+
+---
+
 ## 🏗️ Architecture
 
 ```
@@ -58,6 +75,29 @@ fullstack-starter/
 
 ---
 
+## 🔐 Authentication Flow
+
+1. **Sign-up / Sign-in** → React calls `supabase.auth.signUp()` / `signInWithPassword()`
+2. **Profile auto-creation** → A PostgreSQL trigger (`on_auth_user_created`) automatically inserts a row into `public.profiles` when a new user is created in `auth.users`
+3. **JWT stored in memory** → The Supabase client manages the session; the access token is sent with every API request in the `Authorization: Bearer <token>` header
+4. **API validation** → `SupabaseAuthGuard` validates the JWT against Supabase Auth and attaches the user to the request
+5. **RLS enforcement** → The API creates a user-scoped Supabase client (`getClientForUser`) so every database query respects Row Level Security policies automatically
+
+### Profiles Trigger
+
+```sql
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_user();
+```
+
+### RLS Policies
+
+Both `profiles` and `items` tables have RLS enabled. Users can only `SELECT`, `INSERT`, `UPDATE`, and `DELETE` rows where `auth.uid() = id` (profiles) or `auth.uid() = user_id` (items).
+
+---
+
 ## ✨ Features
 
 | Feature | Details |
@@ -70,8 +110,42 @@ fullstack-starter/
 | 📊 **Dashboard** | Stats overview + item management |
 | ✅ **Validation** | DTOs with `class-validator` on the API |
 | 🐳 **Docker Compose** | One-command local dev environment |
-| 🔄 **CI/CD** | GitHub Actions: lint + typecheck on every PR |
+| 🔄 **CI/CD** | GitHub Actions: lint + typecheck + test + build on every PR |
 | 📦 **Monorepo** | npm workspaces — single `npm install` |
+| 🧪 **Testing** | Vitest + @testing-library/react (web) + @nestjs/testing (api) |
+
+---
+
+## 🧪 Testing
+
+Both apps use **Vitest**:
+
+```bash
+# Run all tests
+npm run test -w apps/web
+npm run test -w apps/api
+
+# Watch mode
+npm run test:watch -w apps/web
+npm run test:watch -w apps/api
+
+# With coverage
+npm run test -w apps/web -- --coverage
+npm run test -w apps/api -- --coverage
+```
+
+### Web tests
+- **Services** — `src/services/auth.test.ts` & `items.test.ts` (mocked Supabase & fetch)
+- **Components** — `src/components/ProtectedRoute.test.tsx` (auth redirection)
+
+### API tests
+- **Items** — `src/items/items.controller.spec.ts` & `items.service.spec.ts`
+- **Auth** — `src/auth/auth.controller.spec.ts` & `src/auth/guards/supabase-auth.guard.spec.ts`
+- **Users** — `src/users/users.controller.spec.ts`
+
+### CI Gap
+
+> **Note:** The CI pipeline now runs tests on every PR, but coverage thresholds are not yet enforced. This is intentional while the test suite stabilizes.
 
 ---
 
@@ -112,6 +186,34 @@ All endpoints under auth require a `Bearer` token in the `Authorization` header.
 | `PATCH` | `/items/:id` | ✅ | Update item |
 | `DELETE` | `/items/:id` | ✅ | Delete item |
 
+### Examples
+
+```bash
+# Get current user profile
+curl -H "Authorization: Bearer <TOKEN>" \
+  http://localhost:3000/auth/profile
+
+# List items
+curl -H "Authorization: Bearer <TOKEN>" \
+  http://localhost:3000/items
+
+# Create an item
+curl -X POST -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d '{"title":"New task","status":"todo"}' \
+  http://localhost:3000/items
+
+# Update an item
+curl -X PATCH -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d '{"status":"done"}' \
+  http://localhost:3000/items/<ITEM_ID>
+
+# Delete an item
+curl -X DELETE -H "Authorization: Bearer <TOKEN>" \
+  http://localhost:3000/items/<ITEM_ID>
+```
+
 ---
 
 ## ☁️ Deploy
@@ -144,10 +246,39 @@ All endpoints under auth require a `Bearer` token in the `Authorization` header.
 
 ---
 
-## 🐳 Docker (optional)
+## 🔧 Environment Variables
+
+Copy `.env.example` to `.env` and fill in the values:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_SUPABASE_URL` | ✅ | Supabase project URL (frontend) |
+| `VITE_SUPABASE_ANON_KEY` | ✅ | Supabase anon/public key (frontend) |
+| `SUPABASE_URL` | ✅ | Supabase project URL (backend) |
+| `SUPABASE_ANON_KEY` | ✅ | Supabase anon/public key (backend) |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Supabase service role key (backend — admin operations) |
+| `API_PORT` | | API server port (default: `3000`) |
+| `CORS_ORIGIN` | | Allowed frontend origin (default: `http://localhost:5173`) |
+| `POSTGRES_USER` | | Local DB user for Docker Compose |
+| `POSTGRES_PASSWORD` | | Local DB password for Docker Compose |
+| `POSTGRES_DB` | | Local DB name for Docker Compose |
+| `POSTGRES_PORT` | | Local DB port for Docker Compose |
+| `DATABASE_URL` | | Full Postgres connection string for local dev |
+
+---
+
+## 🐳 Docker
+
+The included `docker-compose.yml` spins up three services:
+
+| Service | Image | Port | Description |
+|---------|-------|------|-------------|
+| `db` | `postgres:15-alpine` | `5432` | Local PostgreSQL database |
+| `api` | NestJS Dockerfile | `3000` | Backend API |
+| `web` | Vite Dockerfile | `5173` | React frontend |
 
 ```bash
-# Start all services (PostgreSQL + API + Web)
+# Start all services
 docker compose up -d
 
 # View logs
@@ -155,6 +286,19 @@ docker compose logs -f
 
 # Stop everything
 docker compose down
+```
+
+### Healthchecks
+
+- **PostgreSQL** uses `pg_isready` with a 5-second interval
+- The `api` service waits for `db` to be healthy (`depends_on` with `condition: service_healthy`)
+
+### Rebuilding after code changes
+
+```bash
+# Rebuild a specific service
+docker compose up -d --build api
+docker compose up -d --build web
 ```
 
 ---

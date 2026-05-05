@@ -12,47 +12,93 @@ concurrency:
 
 jobs:
   ci:
-    name: Lint, Type Check & Build
+    name: ${{ matrix.task }}
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [20]
+        task: [lint, typecheck, test, build]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           cache: 'npm'
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint (web)
-        run: npm run lint -w apps/web
+      - name: Lint
+        if: matrix.task == 'lint'
+        run: npm run lint -w apps/web && npm run lint -w apps/api
 
-      - name: Lint (api)
-        run: npm run lint -w apps/api
+      - name: Type Check
+        if: matrix.task == 'typecheck'
+        run: npm run typecheck -w apps/web && npm run typecheck -w apps/api
 
-      - name: Type check (web)
-        run: npm run typecheck -w apps/web
-
-      - name: Type check (api)
-        run: npm run typecheck -w apps/api
-
-      - name: Build (web)
-        run: npm run build -w apps/web
-        env:
-          VITE_SUPABASE_URL: https://mock-url.supabase.co
-          VITE_SUPABASE_ANON_KEY: mock-anon-key
-
-      - name: Build (api)
-        run: npm run build -w apps/api
+      - name: Test
+        if: matrix.task == 'test'
+        run: |
+          npm run test -w apps/web -- --coverage
+          npm run test -w apps/api -- --coverage
         env:
           SUPABASE_URL: https://mock-url.supabase.co
           SUPABASE_ANON_KEY: mock-anon-key
+          SUPABASE_SERVICE_ROLE_KEY: mock-service-key
+
+      - name: Upload Coverage
+        if: matrix.task == 'test' && always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./apps/web/coverage/lcov.info,./apps/api/coverage/lcov.info
+          fail_ci_if_error: false
+
+      - name: Build
+        if: matrix.task == 'build'
+        run: npm run build -w apps/web && npm run build -w apps/api
+        env:
+          VITE_SUPABASE_URL: https://mock-url.supabase.co
+          VITE_SUPABASE_ANON_KEY: mock-anon-key
+          SUPABASE_URL: https://mock-url.supabase.co
+          SUPABASE_ANON_KEY: mock-anon-key
           DATABASE_URL: postgresql://mock:mock@localhost:5432/mock
+
+  integration:
+    name: Docker Integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start Postgres
+        run: docker compose up -d db
+
+      - name: Wait for Postgres healthcheck
+        run: |
+          for i in {1..30}; do
+            if docker compose exec -T db pg_isready -U postgres >/dev/null 2>&1; then
+              echo "Postgres is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Postgres did not become healthy in time"
+          docker compose logs db
+          exit 1
+
+      - name: Stop services
+        if: always()
+        run: docker compose down
