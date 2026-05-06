@@ -1,4 +1,5 @@
 import { IsString, IsOptional, IsIn, MinLength } from 'class-validator';
+import type { ItemStatus } from './create-item.dto';
 
 export class UpdateItemDto {
   @IsString()
@@ -13,5 +14,5 @@ export class UpdateItemDto {
   @IsString()
   @IsOptional()
   @IsIn(['todo', 'in_progress', 'done'])
-  status?: string;
+  status?: ItemStatus;
 }

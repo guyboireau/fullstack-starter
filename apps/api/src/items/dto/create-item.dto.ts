@@ -1,5 +1,7 @@
 import { IsString, IsOptional, IsIn, MinLength } from 'class-validator';
 
+export type ItemStatus = 'todo' | 'in_progress' | 'done';
+
 export class CreateItemDto {
   @IsString()
   @MinLength(1)
@@ -12,5 +14,5 @@ export class CreateItemDto {
   @IsString()
   @IsOptional()
   @IsIn(['todo', 'in_progress', 'done'])
-  status?: string;
+  status?: ItemStatus;
 }
