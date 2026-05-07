@@ -8,6 +8,9 @@ interface AuthState {
   loading: boolean;
 }
 
+/**
+ * Synchronizes auth state with the Supabase session and provides sign-in/up/out actions.
+ */
 export function useAuth() {
   const [state, setState] = useState<AuthState>({
     user: null,
@@ -36,15 +39,13 @@ export function useAuth() {
       }
     );
 
+    // Cleanup to avoid memory leak if the component unmounts before an auth event fires
     return () => subscription.unsubscribe();
   }, []);
 
   const signIn = useCallback(
     async (email: string, password: string) => {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       return data;
     },
@@ -56,9 +57,7 @@ export function useAuth() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: { full_name: fullName },
-        },
+        options: { data: { full_name: fullName } },
       });
       if (error) throw error;
       return data;
