@@ -18,6 +18,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
+      // whitelist: true silently removes unknown fields; forbidNonWhitelisted: true returns a 400 if fields not declared in the DTO are sent. Together they ensure strict validation.
       forbidNonWhitelisted: true,
       transform: true,
     }),
