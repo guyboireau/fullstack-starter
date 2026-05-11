@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { Request } from 'express';
@@ -15,6 +16,8 @@ export interface AuthenticatedRequest extends Request {
 
 @Injectable()
 export class SupabaseAuthGuard implements CanActivate {
+  private readonly logger = new Logger(SupabaseAuthGuard.name);
+
   constructor(private readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -22,12 +25,14 @@ export class SupabaseAuthGuard implements CanActivate {
     const token = this.extractToken(request);
 
     if (!token) {
+      this.logger.warn('Authentication failed: missing authorization token');
       throw new UnauthorizedException('Missing authorization token');
     }
 
     const user = await this.authService.validateToken(token);
 
     if (!user) {
+      this.logger.warn('Authentication failed: invalid or expired token');
       throw new UnauthorizedException('Invalid or expired token');
     }
 
