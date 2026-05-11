@@ -8,7 +8,7 @@ export class CreateItemDto {
   @IsString()
   @IsNotEmpty()
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
-  title: string;
+  title!: string;
 
   @IsString()
   @IsOptional()
