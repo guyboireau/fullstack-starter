@@ -9,8 +9,8 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '../../.env',
+      isGlobal: true, // Rend le module global pour éviter d'importer ConfigModule dans chaque module enfant
+      envFilePath: '../../.env', // nest start s'exécute depuis apps/api, donc ../../ remonte à la racine du monorepo
     }),
     AuthModule,
     UsersModule,

@@ -14,6 +14,7 @@ export interface AuthenticatedRequest extends Request {
   accessToken: string;
 }
 
+/** Vérifie le JWT Supabase via l'Authorization header et attache user + token à la request. */
 @Injectable()
 export class SupabaseAuthGuard implements CanActivate {
   private readonly logger = new Logger(SupabaseAuthGuard.name);
@@ -48,7 +49,7 @@ export class SupabaseAuthGuard implements CanActivate {
     if (!authHeader) return null;
 
     const [type, ...rest] = authHeader.split(' ');
-    const token = rest.join(' ');
+    const token = rest.join(' '); // join au lieu de [0] pour gérer les tokens contenant des espaces (même si rare, évite une troncature silencieuse)
     return type === 'Bearer' && token ? token : null;
   }
 }
