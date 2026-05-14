@@ -84,6 +84,74 @@ const contactHref = nav.find(n => n.label === 'Contact')?.href || '#contact';
   </div>
 </header>
 
+{/* ── Variante E : Le Salon — Éditorial ──────────────────────────────── */}
+<header class="hdr-e v-only-e" id="main-header-e">
+  <div class="hdr-e-inner">
+    <a href="/" class="hdr-e-logo">{business.name}</a>
+    <nav class="hdr-e-nav" aria-label="Navigation principale">
+      {nav.map(l => <a href={l.href} class="hdr-e-link">{l.label}</a>)}
+    </nav>
+    <div class="hdr-e-actions">
+      <span class="hdr-e-lang">FR · EN</span>
+      <a href={contactHref} class="hdr-e-btn">Réserver</a>
+    </div>
+  </div>
+</header>
+
+{/* ── Variante F : Stade — Tech BtoB ──────────────────────────────────── */}
+<header class="hdr-f v-only-f" id="main-header-f">
+  <div class="container hdr-f-inner">
+    <div class="hdr-f-left">
+      <a href="/" class="hdr-f-logo">
+        <span class="hdr-f-logo-mark">◆</span>
+        <span class="hdr-f-logo-name">{business.name}</span>
+      </a>
+      <div class="hdr-f-sep" aria-hidden="true"></div>
+      <nav class="hdr-f-nav">
+        {nav.map(l => <a href={l.href} class="hdr-f-link">{l.label}</a>)}
+      </nav>
+    </div>
+    <div class="hdr-f-right">
+      <span class="hdr-f-dispo">
+        <span class="hdr-f-dot" aria-hidden="true"></span>
+        {business.availability}
+      </span>
+      <a href={contactHref} class="hdr-f-btn">Demander une démo →</a>
+    </div>
+  </div>
+</header>
+
+{/* ── Variante G : Verveine — Wellness soft ──────────────────────────── */}
+<header class="hdr-g v-only-g" id="main-header-g">
+  <div class="hdr-g-pill">
+    <a href="/" class="hdr-g-logo">
+      <span class="hdr-g-dot" aria-hidden="true"></span>
+      {business.name}
+    </a>
+    <nav class="hdr-g-nav" aria-label="Navigation principale">
+      {nav.map(l => <a href={l.href} class="hdr-g-link">{l.label}</a>)}
+    </nav>
+    <a href={contactHref} class="hdr-g-btn">Prendre rendez-vous</a>
+  </div>
+</header>
+
+{/* ── Variante D : Forge / Brutalist Warm ────────────────────────────── */}
+<header class="hdr-d v-only-d" id="main-header-d">
+  <div class="hdr-d-inner">
+    <div class="hdr-d-brand">
+      <span class="hdr-d-name">{business.name}</span>
+      <span class="hdr-d-est">EST. 2012</span>
+    </div>
+    <nav class="hdr-d-nav" aria-label="Navigation principale">
+      {nav.map(l => <a href={l.href} class="hdr-d-link">{l.label}</a>)}
+    </nav>
+    <div class="hdr-d-actions">
+      <span class="hdr-d-open">ATELIER OUVERT · LUN–VEN</span>
+      <a href={contactHref} class="hdr-d-btn">Devis →</a>
+    </div>
+  </div>
+</header>
+
 {/* ── Mobile menu (partagé A + B) ─────────────────────────────────────── */}
 <div class="mobile-menu" id="mobile-menu" aria-hidden="true" role="dialog" aria-label="Menu mobile">
   <nav>
@@ -217,9 +285,9 @@ if (menuTrigger && overlayNav) {
 .overlay-menu {
   position: fixed; inset: 0; background: var(--bg); z-index: 200;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
-  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.3s, visibility 0.3s;
 }
-.overlay-menu.open { opacity: 1; pointer-events: auto; }
+.overlay-menu.open { opacity: 1; visibility: visible; pointer-events: auto; }
 .overlay-close { position: absolute; top: 24px; right: 24px; font-size: 32px; background: none; border: none; cursor: pointer; }
 .overlay-nav { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 .overlay-link { font-size: 24px; font-weight: 600; }
@@ -245,5 +313,175 @@ if (menuTrigger && overlayNav) {
 @media (max-width: 900px) {
   .nav-desktop, .hdr-actions-a, .hdr-left .hdr-sep, .hdr-left .nav-b, .hdr-right { display: none; }
   .burger { display: flex; }
+}
+
+/* ─── Variante E : Le Salon ───────────────────────────────────────────── */
+.hdr-e {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(244,237,224,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #2c2520;
+}
+.hdr-e-inner {
+  display: flex; align-items: center; gap: 40px;
+  padding: 0 64px; height: 68px;
+}
+.hdr-e-logo {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 20px; font-style: italic; color: #1a1612;
+  text-decoration: none; flex-shrink: 0;
+}
+.hdr-e-nav { display: flex; gap: 36px; }
+.hdr-e-link {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; color: #5a504a; transition: color 0.15s;
+}
+.hdr-e-link:hover { color: #1a1612; }
+.hdr-e-actions { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+.hdr-e-lang {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: #8a8074; letter-spacing: 0.1em;
+}
+.hdr-e-btn {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; padding: 10px 18px;
+  border: 1px solid #2c2520; color: #2c2520; background: transparent;
+  border-radius: 0; text-decoration: none; transition: background 0.15s, color 0.15s;
+}
+.hdr-e-btn:hover { background: #2c2520; color: #fbf6ec; }
+
+/* ─── Variante F : Stade ──────────────────────────────────────────────── */
+.hdr-f {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e3e7ee;
+}
+.hdr-f-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px; gap: 32px;
+}
+.hdr-f-left { display: flex; align-items: center; gap: 20px; }
+.hdr-f-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
+.hdr-f-logo-mark {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: #0a0e1a; color: #fff;
+  display: grid; place-items: center;
+  font-family: 'Geist Mono', monospace; font-size: 11px;
+}
+.hdr-f-logo-name {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px; font-weight: 600; color: #0a0e1a;
+}
+.hdr-f-sep { width: 1px; height: 20px; background: #e3e7ee; }
+.hdr-f-nav { display: flex; gap: 26px; }
+.hdr-f-link {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px; color: #3d4458; transition: color 0.15s;
+}
+.hdr-f-link:hover { color: #0a0e1a; }
+.hdr-f-right { display: flex; align-items: center; gap: 20px; }
+.hdr-f-dispo {
+  display: flex; align-items: center; gap: 7px;
+  font-family: 'Geist Mono', monospace; font-size: 11px; color: #3d4458;
+}
+.hdr-f-dot { width: 7px; height: 7px; border-radius: 50%; background: #0f9a6e; }
+.hdr-f-btn {
+  font-family: 'Geist', sans-serif; font-weight: 500;
+  font-size: 13px; padding: 8px 14px;
+  background: #0a0e1a; color: #fff;
+  border: 1px solid #0a0e1a; border-radius: 8px;
+  text-decoration: none; transition: background 0.15s;
+}
+.hdr-f-btn:hover { background: #3a63ff; border-color: #3a63ff; }
+
+/* ─── Variante G : Verveine ───────────────────────────────────────────── */
+.hdr-g {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 16px 48px;
+}
+.hdr-g-pill {
+  display: flex; align-items: center; gap: 24px;
+  background: #fbf8f0;
+  border-radius: 9999px;
+  padding: 10px 14px 10px 22px;
+  box-shadow: 0 2px 12px rgba(62,74,58,.07);
+}
+.hdr-g-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px; font-weight: 600; color: #3e4a3a;
+  letter-spacing: -0.01em; text-decoration: none; flex-shrink: 0;
+}
+.hdr-g-dot { width: 22px; height: 22px; border-radius: 50%; background: #3e4a3a; }
+.hdr-g-nav { display: flex; gap: 28px; }
+.hdr-g-link {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; color: #5a5f50; transition: color 0.15s;
+}
+.hdr-g-link:hover { color: #3e4a3a; }
+.hdr-g-btn {
+  font-family: 'DM Sans', sans-serif; font-weight: 500;
+  font-size: 14px; padding: 10px 20px;
+  background: #3e4a3a; color: #fbf8f0;
+  border: 1.5px solid #3e4a3a; border-radius: 9999px;
+  text-decoration: none; margin-left: auto; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.hdr-g-btn:hover { background: #2a3427; }
+@media (max-width: 900px) {
+  .hdr-e-nav, .hdr-e-lang { display: none; }
+  .hdr-f-nav, .hdr-f-dispo { display: none; }
+  .hdr-g-nav { display: none; }
+}
+
+/* ─── Variante D : Forge ───────────────────────────────────────────────── */
+.hdr-d {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: #ecdcbe;
+  border-bottom: 3px solid #241c12;
+}
+.hdr-d-inner {
+  display: flex; align-items: center; gap: 24px;
+  padding: 0 40px; height: 64px;
+}
+.hdr-d-brand { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
+.hdr-d-name {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 20px; letter-spacing: -0.01em; color: #241c12;
+}
+.hdr-d-est {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: #7a6a4e; letter-spacing: 0.15em;
+}
+.hdr-d-nav {
+  display: flex; gap: 24px; margin-left: 28px;
+}
+.hdr-d-link {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px; font-weight: 700; color: #241c12;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  transition: color 0.15s;
+}
+.hdr-d-link:hover { color: #c08c3c; }
+.hdr-d-actions {
+  display: flex; align-items: center; gap: 16px; margin-left: auto;
+}
+.hdr-d-open {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: #4a3d2a; letter-spacing: 0.1em;
+}
+.hdr-d-btn {
+  font-family: 'Manrope', sans-serif; font-weight: 700;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 10px 18px;
+  background: #241c12; color: #ecdcbe;
+  border: 2px solid #241c12; border-radius: 0;
+  cursor: pointer; text-decoration: none; display: inline-block;
+  transition: background 0.15s, color 0.15s;
+}
+.hdr-d-btn:hover { background: #c08c3c; border-color: #241c12; color: #241c12; }
+@media (max-width: 900px) {
+  .hdr-d-nav, .hdr-d-open { display: none; }
 }
 </style>

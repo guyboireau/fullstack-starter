@@ -3,7 +3,7 @@
 // A : Centré · eyebrow → H1 → sous-titre → 2 CTAs → trust strip
 // B : Asymétrique · texte gauche (55%) + image droite + badge flottant
 // C : Full-bleed éditorial · image plein cadre + H1 overlay + infos dessous
-import { variants, hero } from '../config/site';
+import { variants, hero, business } from '../config/site';
 
 const v = variants.hero;
 ---
@@ -91,6 +91,125 @@ const v = variants.hero;
         <p class="infocard-location text-muted">{hero.infoCard.location}</p>
       </div>
     </div>
+  </div>
+</section>
+
+{/* ── Variante E : Le Salon — Éditorial Serif ─────────────────────────── */}
+<section class="hero-e v-only-e" id="hero-e">
+  <div class="hero-e-inner">
+    <div class="hero-e-eyebrow">
+      <span class="hero-e-rule"></span>
+      <span class="hero-e-eyebrow-text">{hero.eyebrow}</span>
+      <span class="hero-e-rule"></span>
+    </div>
+    <h1 class="hero-e-h1">{hero.h1.split(' ').slice(0,3).join(' ')} <em>{hero.h1.split(' ').slice(3).join(' ')}</em></h1>
+    <p class="hero-e-sub">{hero.subtitle}</p>
+    <div class="hero-e-actions">
+      <a href={hero.cta1.href} class="hero-e-btn-primary">{hero.cta1.label}</a>
+      <a href={hero.cta2.href} class="hero-e-btn-ghost">{hero.cta2.label} →</a>
+    </div>
+  </div>
+  <div class="hero-e-img-wrap">
+    <img src={hero.image} class="hero-e-img" alt={hero.h1} />
+  </div>
+</section>
+
+{/* ── Variante F : Stade — Tech BtoB ───────────────────────────────────── */}
+<section class="hero-f v-only-f" id="hero-f">
+  <div class="container hero-f-inner">
+    <div class="hero-f-text">
+      <div class="hero-f-badge">
+        <span class="hero-f-badge-dot" aria-hidden="true"></span>
+        <span>{hero.badge.sub}</span>
+      </div>
+      <h1 class="hero-f-h1">{hero.h1}</h1>
+      <p class="hero-f-sub">{hero.subtitle}</p>
+      <div class="hero-f-actions">
+        <a href={hero.cta1.href} class="hero-f-btn-primary">{hero.cta1.label} →</a>
+        <a href={hero.cta2.href} class="hero-f-btn-secondary">{hero.cta2.label}</a>
+      </div>
+      <div class="hero-f-trust">
+        {hero.trust.map((t: string) => <span class="hero-f-trust-item">✓ {t}</span>)}
+      </div>
+    </div>
+    <div class="hero-f-visual">
+      <div class="hero-f-mock-chrome">
+        <div class="hero-f-mock-dots">
+          {['#ff5f56','#ffbd2e','#27c93f'].map(c => <span style={`background:${c}`}></span>)}
+        </div>
+        <span class="hero-f-mock-url">{business.name.toLowerCase().replace(' ','-')}.app</span>
+      </div>
+      <div class="hero-f-mock-body">
+        <div class="hero-f-mock-metric">
+          <span class="hero-f-metric-val">{hero.badge.value}</span>
+          <span class="hero-f-metric-lbl">{hero.badge.label}</span>
+        </div>
+        <div class="hero-f-mock-bar-wrap">
+          {[34,42,56,64,72,80,88,94].map((h: number, i: number) => (
+            <div class="hero-f-mock-bar" style={`height:${h}%;background:${i>5?'#3a63ff':'#dde6ff'}`}></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* ── Variante G : Verveine — Wellness Soft ──────────────────────────────── */}
+<section class="hero-g v-only-g" id="hero-g">
+  <div class="hero-g-blobs" aria-hidden="true">
+    <div class="hero-g-blob hero-g-blob-1"></div>
+    <div class="hero-g-blob hero-g-blob-2"></div>
+  </div>
+  <div class="hero-g-inner">
+    <div class="hero-g-badge">
+      <span class="hero-g-badge-dot" aria-hidden="true"></span>
+      <span>{hero.badge.sub}</span>
+    </div>
+    <h1 class="hero-g-h1">{hero.h1}</h1>
+    <p class="hero-g-sub">{hero.subtitle}</p>
+    <div class="hero-g-actions">
+      <a href={hero.cta1.href} class="hero-g-btn-primary">{hero.cta1.label}</a>
+      <a href={hero.cta2.href} class="hero-g-btn-secondary">{hero.cta2.label} →</a>
+    </div>
+  </div>
+  <div class="hero-g-img-wrap">
+    <img src={hero.image} class="hero-g-img" alt={hero.h1} />
+  </div>
+</section>
+
+{/* ── Variante D : Forge / Brutalist Warm ─────────────────────────────── */}
+<section class="hero-d v-only-d" id="hero-d">
+  <div class="hero-d-stamps">
+    <span class="hero-d-stamp-text">{hero.eyebrow.toUpperCase()}</span>
+    <span class="hero-d-dot" aria-hidden="true"></span>
+    <span class="hero-d-stamp-text">{business.address.city.toUpperCase()}</span>
+    <span class="hero-d-dot" aria-hidden="true"></span>
+    <span class="hero-d-stamp-text">FAIT MAIN · FRANCE</span>
+    <span class="hero-d-scroll">↘ DÉFILER</span>
+  </div>
+  <div class="container hero-d-main">
+    <div class="hero-d-left">
+      <span class="hero-d-stamp-label">N°01 — L'ATELIER</span>
+      <h1 class="hero-d-h1">{hero.h1}</h1>
+    </div>
+    <div class="hero-d-infocard">
+      <div class="hero-d-card-tag">▼ ACTU</div>
+      <div class="hero-d-card-val">{hero.badge.value}</div>
+      <div class="hero-d-card-lbl">{hero.badge.label}</div>
+      <div class="hero-d-card-sub">{hero.badge.sub}</div>
+    </div>
+  </div>
+  <div class="container hero-d-below">
+    <p class="hero-d-sub">{hero.subtitle}</p>
+    <div class="hero-d-actions">
+      <a href={hero.cta1.href} class="hero-d-btn-primary">{hero.cta1.label} →</a>
+      <a href={hero.cta2.href} class="hero-d-btn-secondary">{hero.cta2.label}</a>
+    </div>
+  </div>
+  <div class="hero-d-trust">
+    {hero.trust.map((t: string) => (
+      <span class="hero-d-trust-item">— {t.toUpperCase()}</span>
+    ))}
   </div>
 </section>
 
@@ -263,5 +382,321 @@ const v = variants.hero;
   .hero-a-actions .btn, .hero-b-actions .btn, .hero-c-actions .btn {
     width: 100%; justify-content: center;
   }
+}
+
+/* ─── Variante E : Le Salon ──────────────────────────────────────────── */
+.hero-e {
+  padding-top: 68px;
+  background: #f4ede0;
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 90vh;
+}
+.hero-e-inner {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(48px, 8vw, 96px) clamp(32px, 5vw, 64px);
+  text-align: center; align-items: center;
+}
+.hero-e-eyebrow {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: #5a504a;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.hero-e-rule { width: 36px; height: 1px; background: #2c2520; }
+.hero-e-eyebrow-text { white-space: nowrap; }
+.hero-e-h1 {
+  font-family: 'Newsreader', Georgia, serif;
+  font-weight: 400; font-size: clamp(48px, 6vw, 96px);
+  line-height: 0.98; letter-spacing: -0.025em;
+  color: #1a1612; margin: 0 0 24px;
+}
+.hero-e-h1 em { font-style: italic; color: #b04324; }
+.hero-e-sub {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 18px; color: #5a504a; max-width: 52ch;
+  line-height: 1.55; margin: 0 0 40px;
+}
+.hero-e-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.hero-e-btn-primary {
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
+  padding: 14px 26px; background: #2c2520; color: #fbf6ec;
+  border: 1px solid #2c2520; border-radius: 0; text-decoration: none;
+  transition: background 0.15s;
+}
+.hero-e-btn-primary:hover { background: #b04324; border-color: #b04324; }
+.hero-e-btn-ghost {
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
+  padding: 14px 26px; background: transparent; color: #2c2520;
+  border: 1px solid #2c2520; border-radius: 0; text-decoration: none;
+}
+.hero-e-img-wrap { overflow: hidden; }
+.hero-e-img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 900px) {
+  .hero-e { grid-template-columns: 1fr; min-height: auto; }
+  .hero-e-img-wrap { height: 320px; }
+}
+
+/* ─── Variante F : Stade ─────────────────────────────────────────────── */
+.hero-f {
+  padding-top: 56px;
+  background-image: radial-gradient(#e3e7ee 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-color: #fafbfc;
+  border-bottom: 1px solid #e3e7ee;
+  padding-bottom: clamp(48px, 8vw, 80px);
+}
+.hero-f-inner {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 64px; align-items: center;
+  padding-top: 80px;
+}
+.hero-f-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 12px;
+  border: 1px solid #e3e7ee; border-radius: 999px;
+  background: #fff;
+  font-family: 'Geist Mono', monospace; font-size: 11px; color: #3d4458;
+  margin-bottom: 28px;
+}
+.hero-f-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #0f9a6e; }
+.hero-f-h1 {
+  font-family: 'Geist', sans-serif; font-weight: 600;
+  font-size: clamp(40px, 5vw, 68px);
+  line-height: 1.02; letter-spacing: -0.035em;
+  color: #0a0e1a; margin: 0 0 24px;
+}
+.hero-f-sub {
+  font-family: 'Geist', sans-serif;
+  font-size: 18px; color: #3d4458; max-width: 48ch;
+  line-height: 1.55; margin: 0 0 32px;
+}
+.hero-f-actions { display: flex; gap: 10px; margin-bottom: 36px; flex-wrap: wrap; }
+.hero-f-btn-primary {
+  font-family: 'Geist', sans-serif; font-weight: 500; font-size: 14px;
+  padding: 12px 20px; background: #0a0e1a; color: #fff;
+  border: 1px solid #0a0e1a; border-radius: 8px; text-decoration: none;
+  transition: background 0.15s;
+}
+.hero-f-btn-primary:hover { background: #3a63ff; border-color: #3a63ff; }
+.hero-f-btn-secondary {
+  font-family: 'Geist', sans-serif; font-weight: 500; font-size: 14px;
+  padding: 12px 20px; background: #fff; color: #0a0e1a;
+  border: 1px solid #e3e7ee; border-radius: 8px; text-decoration: none;
+}
+.hero-f-trust {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  font-family: 'Geist', sans-serif; font-size: 13px; color: #7a8195;
+}
+.hero-f-visual {
+  background: #fff; border: 1px solid #e3e7ee; border-radius: 12px;
+  box-shadow: 0 24px 60px -20px rgba(15,28,80,.12);
+  overflow: hidden;
+}
+.hero-f-mock-chrome {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 14px; border-bottom: 1px solid #e3e7ee;
+  background: #fafbfc;
+}
+.hero-f-mock-dots { display: flex; gap: 5px; }
+.hero-f-mock-dots span { width: 10px; height: 10px; border-radius: 50%; opacity: 0.7; }
+.hero-f-mock-url {
+  font-family: 'Geist Mono', monospace; font-size: 11px; color: #7a8195;
+  margin-left: 10px;
+}
+.hero-f-mock-body { padding: 20px; min-height: 200px; }
+.hero-f-mock-metric { margin-bottom: 20px; }
+.hero-f-metric-val {
+  font-family: 'Geist', sans-serif; font-weight: 600; font-size: 28px;
+  color: #0f9a6e; letter-spacing: -0.02em; display: block;
+}
+.hero-f-metric-lbl {
+  font-family: 'Geist', sans-serif; font-size: 12px; color: #7a8195;
+}
+.hero-f-mock-bar-wrap {
+  display: flex; align-items: flex-end; gap: 4px; height: 80px;
+}
+.hero-f-mock-bar { flex: 1; border-radius: 2px 2px 0 0; }
+@media (max-width: 900px) {
+  .hero-f-inner { grid-template-columns: 1fr; }
+  .hero-f-visual { display: none; }
+}
+
+/* ─── Variante G : Verveine ──────────────────────────────────────────── */
+.hero-g {
+  padding-top: 88px;
+  background: #f4f1e8;
+  position: relative;
+  overflow: hidden;
+}
+.hero-g-blobs { position: absolute; inset: 0; pointer-events: none; }
+.hero-g-blob {
+  position: absolute; border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
+}
+.hero-g-blob-1 { width: 280px; height: 280px; top: 60px; right: 10%; background: #f5dac4; opacity: 0.5; }
+.hero-g-blob-2 { width: 180px; height: 180px; top: 260px; left: 5%; background: #cfd6c5; opacity: 0.4; border-radius: 50%; }
+.hero-g-inner {
+  position: relative; z-index: 1;
+  max-width: 720px; margin: 0 auto;
+  padding: clamp(48px, 8vw, 80px) clamp(24px, 5vw, 48px);
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+}
+.hero-g-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 7px 14px; background: #fbf8f0; border-radius: 9999px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: #3e4a3a;
+  margin-bottom: 32px;
+}
+.hero-g-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #e8b896; }
+.hero-g-h1 {
+  font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 1.0; letter-spacing: -0.03em;
+  color: #3e4a3a; margin: 0 0 24px;
+}
+.hero-g-h1 em { font-style: italic; color: #e8b896; font-weight: 400; }
+.hero-g-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px; color: #5a5f50; max-width: 52ch;
+  line-height: 1.55; margin: 0 0 36px;
+}
+.hero-g-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.hero-g-btn-primary {
+  font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 15px;
+  padding: 14px 26px; background: #3e4a3a; color: #fbf8f0;
+  border: 1.5px solid #3e4a3a; border-radius: 9999px; text-decoration: none;
+  transition: background 0.15s;
+}
+.hero-g-btn-primary:hover { background: #2a3427; }
+.hero-g-btn-secondary {
+  font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 15px;
+  padding: 14px 26px; background: transparent; color: #3e4a3a;
+  border: 1.5px solid #3e4a3a; border-radius: 9999px; text-decoration: none;
+}
+.hero-g-img-wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 48px; }
+.hero-g-img {
+  width: 100%; border-radius: 50% 50% 20px 20px / 30% 30% 20px 20px;
+  max-height: 400px; object-fit: cover;
+}
+
+/* ─── Variante D : Forge ─────────────────────────────────────────────── */
+.hero-d {
+  padding-top: 64px;
+  background: #f3e8d0;
+  color: #241c12;
+}
+.hero-d-stamps {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 40px;
+  border-bottom: 1.5px solid #241c12;
+  background: #ecdcbe;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: #4a3d2a; letter-spacing: 0.15em;
+}
+.hero-d-stamp-text { text-transform: uppercase; }
+.hero-d-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #241c12; flex-shrink: 0;
+}
+.hero-d-scroll { margin-left: auto; }
+.hero-d-main {
+  display: grid; grid-template-columns: 1fr 340px;
+  gap: 40px; align-items: flex-end;
+  padding-top: 72px; padding-bottom: 48px;
+}
+.hero-d-left { display: flex; flex-direction: column; gap: 20px; }
+.hero-d-stamp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.15em;
+  color: #7a6a4e; text-transform: uppercase;
+}
+.hero-d-h1 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(56px, 8vw, 120px);
+  line-height: 0.92; letter-spacing: -0.04em;
+  text-transform: uppercase; color: #241c12;
+  margin: 0;
+}
+.hero-d-h1 em { font-style: italic; color: #8a3a1e; }
+.hero-d-infocard {
+  background: #241c12; color: #ecdcbe;
+  padding: 24px 28px;
+  transform: rotate(1.5deg);
+  border: 2px solid #241c12;
+  flex-shrink: 0;
+}
+.hero-d-card-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.15em; color: #c08c3c;
+  margin-bottom: 12px;
+}
+.hero-d-card-val {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 36px; line-height: 1; margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.hero-d-card-lbl {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px; color: rgba(236,220,190,0.75);
+  margin-bottom: 4px;
+}
+.hero-d-card-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: rgba(192,140,60,0.8);
+  letter-spacing: 0.08em; margin-top: 12px;
+  padding-top: 12px; border-top: 1px solid rgba(192,140,60,0.3);
+}
+.hero-d-below {
+  padding-top: 36px;
+  border-top: 3px solid #241c12;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 40px; align-items: center;
+  padding-bottom: 56px;
+}
+.hero-d-sub {
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px; line-height: 1.5;
+  color: #4a3d2a; max-width: 56ch; margin: 0;
+}
+.hero-d-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.hero-d-btn-primary {
+  font-family: 'Manrope', sans-serif; font-weight: 700;
+  font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em;
+  padding: 14px 24px;
+  background: #c08c3c; color: #241c12;
+  border: 2px solid #241c12; border-radius: 0;
+  text-decoration: none; white-space: nowrap;
+  transition: background 0.15s;
+}
+.hero-d-btn-primary:hover { background: #a06b1c; color: #ecdcbe; }
+.hero-d-btn-secondary {
+  font-family: 'Manrope', sans-serif; font-weight: 700;
+  font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em;
+  padding: 14px 24px;
+  background: transparent; color: #241c12;
+  border: 2px solid #241c12; border-radius: 0;
+  text-decoration: none; white-space: nowrap;
+  transition: background 0.15s;
+}
+.hero-d-btn-secondary:hover { background: #241c12; color: #ecdcbe; }
+.hero-d-trust {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  padding: 18px 40px;
+  border-top: 1.5px solid #241c12;
+  background: #ecdcbe;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: #7a6a4e; letter-spacing: 0.12em;
+}
+.hero-d-trust-item { white-space: nowrap; }
+@media (max-width: 900px) {
+  .hero-d-main { grid-template-columns: 1fr; }
+  .hero-d-infocard { display: none; }
+  .hero-d-below { grid-template-columns: 1fr; gap: 24px; }
+  .hero-d-stamps { padding: 10px 24px; }
+  .hero-d-trust { padding: 18px 24px; gap: 18px; }
+}
+@media (max-width: 600px) {
+  .hero-d-actions { flex-direction: column; }
 }
 </style>

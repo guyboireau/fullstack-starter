@@ -45,7 +45,7 @@ const v = variants.about;
 </section>
 
 {/* ── Variante B : stats éditoriales ────────────────────────────────── */}
-<section class="section v-only-b v-only-c" id="apropos-b">
+<section class="section v-only-b v-only-c v-only-d v-only-e v-only-f v-only-g" id="apropos-b">
   <div class="container">
     <div class="abt-b-head">
       <p class="eyebrow">{about.eyebrow}</p>
@@ -143,5 +143,45 @@ const v = variants.about;
 @media (max-width: 600px) {
   .abt-b-stats { grid-template-columns: 1fr; }
   .abt-a-stats-row { gap: 24px; }
+}
+
+/* ─── E : Le Salon overrides ─────────────────────────────────────────── */
+body.v-e #apropos-b { background: #f4ede0; }
+body.v-e .abt-b-stat { border-right: 1px solid #2c2520; border-bottom: 1px solid #2c2520; }
+body.v-e .abt-b-stats { border-top: 1px solid #2c2520; border-left: 1px solid #2c2520; }
+body.v-e .abt-b-stat-val { font-family: 'Newsreader', Georgia, serif; font-style: italic; color: #b04324; }
+body.v-e .abt-h2 { font-family: 'Newsreader', Georgia, serif; font-weight: 400; }
+
+/* ─── F : Stade overrides ─────────────────────────────────────────────── */
+body.v-f #apropos-b { background: #fafbfc; }
+body.v-f .abt-b-stat { border-right: 1px solid #e3e7ee; border-bottom: 1px solid #e3e7ee; border-radius: 0; }
+body.v-f .abt-b-stats { border-top: 1px solid #e3e7ee; border-left: 1px solid #e3e7ee; }
+body.v-f .abt-b-stat-val { font-family: 'Geist', sans-serif; color: #3a63ff; }
+body.v-f .abt-h2 { font-family: 'Geist', sans-serif; }
+
+/* ─── G : Verveine overrides ─────────────────────────────────────────── */
+body.v-g #apropos-b { background: #f4f1e8; }
+body.v-g .abt-b-stat { border-right: 1px solid #d8d2c2; border-bottom: 1px solid #d8d2c2; border-radius: 0; }
+body.v-g .abt-b-stats { border-top: 1px solid #d8d2c2; border-left: 1px solid #d8d2c2; }
+body.v-g .abt-b-stat-val { font-family: 'Bricolage Grotesque', sans-serif; color: #e8b896; }
+body.v-g .abt-h2 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500; }
+
+/* ─── D : Forge overrides pour section B ─────────────────────────────── */
+body.v-d #apropos-b { background: #f3e8d0; }
+body.v-d .abt-b-stat {
+  border-right: 1.5px solid #241c12;
+  border-bottom: 1.5px solid #241c12;
+}
+body.v-d .abt-b-stats {
+  border-top: 1.5px solid #241c12;
+  border-left: 1.5px solid #241c12;
+}
+body.v-d .abt-b-stat-val {
+  font-family: 'Archivo Black', sans-serif;
+  color: #8a3a1e;
+}
+body.v-d .abt-h2 {
+  font-family: 'Archivo Black', sans-serif;
+  text-transform: uppercase; letter-spacing: -0.03em;
 }
 </style>

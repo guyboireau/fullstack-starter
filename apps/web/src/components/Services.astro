@@ -117,6 +117,102 @@ const icons: Record<string, string> = {
   </div>
 </section>
 
+{/* ── Variante E : Le Salon — liste numérotée éditoriale ─────────────── */}
+<section class="section v-only-e srv-e" id="services-e">
+  <div class="container">
+    <div class="srv-e-grid">
+      <div class="srv-e-head">
+        <div class="srv-e-eyebrow">{services.eyebrow}</div>
+        <h2 class="srv-e-h2">{services.title}</h2>
+      </div>
+      <div class="srv-e-list">
+        {services.items.map((item, i) => (
+          <div class="srv-e-row">
+            <span class="srv-e-num">0{i + 1}</span>
+            <div class="srv-e-body">
+              <h3 class="srv-e-title">{item.title}</h3>
+              <p class="srv-e-text">{item.text}</p>
+            </div>
+            <span class="srv-e-arrow">↓ découvrir</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* ── Variante F : Stade — grille cards bordered ───────────────────────── */}
+<section class="section v-only-f srv-f" id="services-f">
+  <div class="container">
+    <div class="srv-f-head">
+      <div class="srv-f-eyebrow">{services.eyebrow}</div>
+      <h2 class="srv-f-h2">{services.title}</h2>
+    </div>
+    <div class="srv-f-grid">
+      {services.items.map((item, i) => (
+        <article class="srv-f-card">
+          <div class="srv-f-card-top">
+            <div class="srv-f-icon">◆</div>
+            <span class="srv-f-num">0{i + 1}</span>
+          </div>
+          <h3 class="srv-f-title">{item.title}</h3>
+          <p class="srv-f-text">{item.text}</p>
+          <a href="#contact" class="srv-f-link">En savoir plus →</a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* ── Variante G : Verveine — cards rondes soft ───────────────────────── */}
+<section class="section v-only-g srv-g" id="services-g">
+  <div class="container">
+    <div class="srv-g-head">
+      <div class="srv-g-eyebrow">{services.eyebrow}</div>
+      <h2 class="srv-g-h2">{services.title}</h2>
+    </div>
+    <div class="srv-g-grid">
+      {services.items.map((item, i) => (
+        <article class="srv-g-card">
+          <div class={`srv-g-icon ${i === 1 ? 'srv-g-icon-peach' : 'srv-g-icon-sage'}`}>
+            {['◯','✿','✦'][i]}
+          </div>
+          <h3 class="srv-g-title">{item.title}</h3>
+          <p class="srv-g-text">{item.text}</p>
+          <div class="srv-g-footer">
+            <span class="srv-g-tag">{item.tag || 'Découvrir'}</span>
+            <span class="srv-g-link">→</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* ── Variante D : Forge / liste numérotée avec règles épaisses ──────── */}
+<section class="section v-only-d srv-d" id="services-d">
+  <div class="container">
+    <div class="srv-d-head">
+      <h2 class="srv-d-h2">{services.title}</h2>
+      <p class="srv-d-sub">{services.subtitle}</p>
+    </div>
+    <div class="srv-d-list">
+      {services.items.map((item, i) => (
+        <div class="srv-d-row">
+          <span class="srv-d-num">0{i + 1}</span>
+          <div class="srv-d-body">
+            <h3 class="srv-d-title">{item.title}</h3>
+            <p class="srv-d-text">{item.text}</p>
+          </div>
+          {item.tag && <span class="srv-d-tag">{item.tag}</span>}
+          <a href="#contact" class="srv-d-link" aria-label={`En savoir plus : ${item.title}`}>VOIR →</a>
+        </div>
+      ))}
+      <div class="srv-d-rule"></div>
+    </div>
+  </div>
+</section>
+
 <style>
 .srv-h2 {
   font-size: clamp(26px, 3.5vw, 42px);
@@ -196,6 +292,172 @@ const icons: Record<string, string> = {
 @media (max-width: 600px) {
   .srv-b-row { grid-template-columns: 1fr auto; }
   .srv-b-num { display: none; }
+}
+
+/* ─── E : Le Salon ───────────────────────────────────────────────────── */
+.srv-e { background: #f4ede0; }
+.srv-e-grid { display: grid; grid-template-columns: 240px 1fr; gap: 64px; }
+.srv-e-head { padding-top: 8px; }
+.srv-e-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: #b04324; letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.srv-e-h2 {
+  font-family: 'Newsreader', Georgia, serif;
+  font-weight: 400; font-size: clamp(28px, 3.5vw, 44px);
+  line-height: 1.05; letter-spacing: -0.02em; color: #1a1612; margin: 0;
+}
+.srv-e-list { display: flex; flex-direction: column; }
+.srv-e-row {
+  display: grid; grid-template-columns: 72px 1fr 100px;
+  gap: 28px; padding: 28px 0; align-items: baseline;
+  border-bottom: 1px solid #2c2520;
+}
+.srv-e-row:first-child { border-top: 1px solid #2c2520; }
+.srv-e-num {
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic; font-size: 36px; color: #b8884a;
+}
+.srv-e-title {
+  font-family: 'Newsreader', Georgia, serif;
+  font-weight: 400; font-size: 26px; color: #1a1612; margin: 0 0 6px;
+}
+.srv-e-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px; color: #5a504a; margin: 0; line-height: 1.6;
+}
+.srv-e-arrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: #8a8074; letter-spacing: 0.1em; text-align: right;
+}
+@media (max-width: 900px) { .srv-e-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+/* ─── F : Stade ───────────────────────────────────────────────────────── */
+.srv-f { background: #fafbfc; }
+.srv-f-head { margin-bottom: 48px; }
+.srv-f-eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px; color: #3a63ff; letter-spacing: 0.1em;
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.srv-f-h2 {
+  font-family: 'Geist', sans-serif; font-weight: 600;
+  font-size: clamp(28px, 3.5vw, 44px);
+  line-height: 1.05; letter-spacing: -0.025em; color: #0a0e1a; margin: 0;
+}
+.srv-f-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.srv-f-card {
+  background: #fff; border: 1px solid #e3e7ee; border-radius: 12px;
+  padding: 24px; display: flex; flex-direction: column;
+}
+.srv-f-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.srv-f-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: #dde6ff; color: #3a63ff;
+  display: grid; place-items: center; font-size: 14px;
+}
+.srv-f-num { font-family: 'Geist Mono', monospace; font-size: 11px; color: #7a8195; }
+.srv-f-title { font-family: 'Geist', sans-serif; font-weight: 600; font-size: 17px; color: #0a0e1a; margin: 0 0 8px; }
+.srv-f-text { font-family: 'Geist', sans-serif; font-size: 14px; color: #3d4458; margin: 0; flex: 1; line-height: 1.5; }
+.srv-f-link { font-family: 'Geist', sans-serif; font-size: 13px; font-weight: 500; color: #3a63ff; margin-top: 16px; text-decoration: none; }
+@media (max-width: 900px) { .srv-f-grid { grid-template-columns: 1fr; } }
+
+/* ─── G : Verveine ────────────────────────────────────────────────────── */
+.srv-g { background: #f4f1e8; }
+.srv-g-head { text-align: center; margin-bottom: 48px; }
+.srv-g-eyebrow {
+  font-family: 'DM Sans', sans-serif; font-weight: 500;
+  font-size: 13px; color: #e8b896; letter-spacing: 0.15em;
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.srv-g-h2 {
+  font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
+  font-size: clamp(28px, 3.5vw, 48px);
+  line-height: 1.1; letter-spacing: -0.025em; color: #3e4a3a; margin: 0;
+}
+.srv-g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.srv-g-card {
+  background: #fbf8f0; border-radius: 28px;
+  padding: 28px; display: flex; flex-direction: column;
+  border: 1px solid transparent;
+}
+.srv-g-card:nth-child(2) { border-color: #f5dac4; }
+.srv-g-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #cfd6c5; color: #3e4a3a;
+  display: grid; place-items: center; font-size: 24px;
+  margin-bottom: 20px;
+}
+.srv-g-icon-peach { background: #f5dac4; }
+.srv-g-title {
+  font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
+  font-size: 24px; color: #3e4a3a; margin: 0 0 10px; letter-spacing: -0.02em;
+}
+.srv-g-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; color: #5a5f50; margin: 0; flex: 1; line-height: 1.6;
+}
+.srv-g-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 16px; margin-top: 20px;
+  border-top: 1px solid #d8d2c2;
+}
+.srv-g-tag {
+  font-family: 'DM Sans', sans-serif; font-size: 12px; color: #888a78;
+}
+.srv-g-link { font-size: 14px; font-weight: 500; color: #3e4a3a; }
+@media (max-width: 900px) { .srv-g-grid { grid-template-columns: 1fr; } }
+
+/* ─── D : Forge ──────────────────────────────────────────────────────── */
+.srv-d { background: #f3e8d0; }
+.srv-d-head { margin-bottom: 56px; }
+.srv-d-h2 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(36px, 5vw, 64px);
+  line-height: 0.95; letter-spacing: -0.04em;
+  text-transform: uppercase; color: #241c12; margin: 0 0 20px;
+}
+.srv-d-sub {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px; color: #4a3d2a; max-width: 56ch; margin: 0;
+}
+.srv-d-list { display: flex; flex-direction: column; }
+.srv-d-row {
+  display: grid; grid-template-columns: 100px 1fr auto auto;
+  gap: 28px; padding: 28px 0; align-items: baseline;
+  border-top: 3px solid #241c12;
+}
+.srv-d-rule { height: 3px; background: #241c12; }
+.srv-d-num {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 52px; line-height: 0.85; color: #8a3a1e;
+}
+.srv-d-body { display: flex; flex-direction: column; gap: 8px; }
+.srv-d-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 22px; letter-spacing: -0.02em;
+  text-transform: uppercase; color: #241c12; margin: 0;
+}
+.srv-d-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px; color: #4a3d2a; line-height: 1.6; margin: 0;
+}
+.srv-d-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: #7a6a4e; letter-spacing: 0.12em;
+  text-transform: uppercase; align-self: center; white-space: nowrap;
+}
+.srv-d-link {
+  font-family: 'Manrope', sans-serif; font-weight: 700;
+  font-size: 11px; letter-spacing: 0.08em; color: #4a3d2a;
+  text-decoration: none; align-self: center; white-space: nowrap;
+  transition: color 0.15s;
+}
+.srv-d-link:hover { color: #c08c3c; }
+@media (max-width: 768px) {
+  .srv-d-row { grid-template-columns: 56px 1fr; gap: 16px; }
+  .srv-d-tag, .srv-d-link { display: none; }
 }
 </style>
 

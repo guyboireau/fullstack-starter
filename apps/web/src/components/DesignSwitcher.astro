@@ -1,5 +1,5 @@
 ---
-// DesignSwitcher — Outil de démo pour basculer entre les variantes A, B, C
+// DesignSwitcher — Outil de démo pour basculer entre les variantes A–G
 ---
 
 <div class="ds-container" id="design-switcher">
@@ -11,7 +11,6 @@
   </button>
 
   <div class="ds-panel">
-    <p class="ds-title">Variante Globale</p>
     <div class="ds-grid">
       <button class="ds-btn active" data-variant="A">
         <span class="ds-btn-mark">A</span>
@@ -25,22 +24,31 @@
         <span class="ds-btn-mark">C</span>
         <span class="ds-btn-label">Édito</span>
       </button>
-    </div>
-
-    <div class="ds-sep"></div>
-
-    <div class="ds-row">
-      <label class="ds-switch-label" for="sketchy-toggle">Mode "Sketchy"</label>
-      <input type="checkbox" id="sketchy-toggle" class="ds-checkbox" checked>
+      <button class="ds-btn ds-btn-d" data-variant="D">
+        <span class="ds-btn-mark">D</span>
+        <span class="ds-btn-label">Forge</span>
+      </button>
+      <button class="ds-btn ds-btn-e" data-variant="E">
+        <span class="ds-btn-mark">E</span>
+        <span class="ds-btn-label">Le Salon</span>
+      </button>
+      <button class="ds-btn ds-btn-f" data-variant="F">
+        <span class="ds-btn-mark">F</span>
+        <span class="ds-btn-label">Stade</span>
+      </button>
+      <button class="ds-btn ds-btn-g" data-variant="G">
+        <span class="ds-btn-mark">G</span>
+        <span class="ds-btn-label">Verveine</span>
+      </button>
     </div>
   </div>
 </div>
 
 <script>
+  const ALL_VARIANTS = ['a','b','c','d','e','f','g'];
   const switcher = document.getElementById('design-switcher');
   const toggle = switcher?.querySelector('.ds-toggle');
   const btns = switcher?.querySelectorAll('.ds-btn');
-  const sketchyToggle = document.getElementById('sketchy-toggle') as HTMLInputElement;
 
   // Toggle Panel
   toggle?.addEventListener('click', () => {
@@ -58,28 +66,23 @@
       btn.classList.add('active');
 
       // Update Body Class
-      document.body.classList.remove('v-a', 'v-b', 'v-c');
+      document.body.classList.remove(...ALL_VARIANTS.map(v => `v-${v}`));
       document.body.classList.add(`v-${variant.toLowerCase()}`);
-      
-      // Save to localStorage for demo persistence
+
+      // Close overlay if open
+      document.getElementById('overlay-nav')?.classList.remove('open');
+      document.body.style.overflow = '';
+
       localStorage.setItem('demo-variant', variant);
     });
   });
 
-  // Toggle Sketchy
-  sketchyToggle?.addEventListener('change', () => {
-    document.body.classList.toggle('is-sketchy', sketchyToggle.checked);
-    localStorage.setItem('demo-sketchy', String(sketchyToggle.checked));
-  });
-
   // Load Initial State
   const savedVariant = localStorage.getItem('demo-variant') || 'A';
-  const savedSketchy = localStorage.getItem('demo-sketchy') !== 'false'; // default true
 
+  document.body.classList.remove(...ALL_VARIANTS.map(v => `v-${v}`));
   document.body.classList.add(`v-${savedVariant.toLowerCase()}`);
-  document.body.classList.toggle('is-sketchy', savedSketchy);
-  
-  if (sketchyToggle) sketchyToggle.checked = savedSketchy;
+
   btns?.forEach(btn => {
     if (btn.getAttribute('data-variant') === savedVariant) {
       btn.classList.add('active');
@@ -123,7 +126,7 @@
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 16px;
-    padding: 20px;
+    padding: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     opacity: 0;
     transform: translateY(10px);
@@ -136,28 +139,18 @@
     pointer-events: auto;
   }
 
-  .ds-title {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #9ca3af;
-    margin-bottom: 12px;
-    font-weight: 700;
-  }
-
   .ds-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
   }
 
   .ds-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 10px 4px;
+    gap: 5px;
+    padding: 8px 4px;
     background: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -165,62 +158,20 @@
     transition: all 0.15s;
   }
   .ds-btn:hover { background: #f3f4f6; }
-  .ds-btn.active {
-    background: #f6e7d4;
-    border-color: #b8763d;
-    color: #b8763d;
-  }
+  .ds-btn.active { border-color: #374151; background: #f3f4f6; }
+
+  /* Active colors per variant */
+  .ds-btn-d.active { background: #ecdcbe; border-color: #241c12; color: #241c12; }
+  .ds-btn-e.active { background: #f4ede0; border-color: #b04324; color: #b04324; }
+  .ds-btn-f.active { background: #dde6ff; border-color: #3a63ff; color: #3a63ff; }
+  .ds-btn-g.active { background: #cfd6c5; border-color: #3e4a3a; color: #3e4a3a; }
 
   .ds-btn-mark {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 800;
   }
   .ds-btn-label {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
   }
-
-  .ds-sep {
-    height: 1px;
-    background: #e5e7eb;
-    margin: 16px 0;
-  }
-
-  .ds-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .ds-switch-label {
-    font-size: 13px;
-    font-weight: 500;
-    color: #374151;
-  }
-
-  /* Checkbox switch style */
-  .ds-checkbox {
-    width: 36px;
-    height: 20px;
-    appearance: none;
-    background: #d1d5db;
-    border-radius: 20px;
-    position: relative;
-    cursor: pointer;
-    outline: none;
-    transition: background 0.2s;
-  }
-  .ds-checkbox:checked { background: #b8763d; }
-  .ds-checkbox::before {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    background: white;
-    border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.2s;
-  }
-  .ds-checkbox:checked::before { transform: translateX(16px); }
 </style>
