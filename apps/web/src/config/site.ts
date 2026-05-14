@@ -161,6 +161,7 @@ export const siteConfig = {
       eyebrow:  'Avocat en droit des affaires · Lyon',
       h1:       'Votre partenaire juridique pour développer sereinement',
       subtitle: 'Contrats, contentieux, création d\'entreprise : un accompagnement clair, humain et efficace pour les TPE et PME.',
+      image:    '/assets/images/hero.png',
       cta1:     { label: 'Prendre rendez-vous', href: '#contact' },
       cta2:     { label: 'Nos honoraires →',    href: '#tarifs' },
       trust:    ['12 ans d\'expérience', '180+ clients accompagnés', 'Réponse sous 24h'],
@@ -213,8 +214,8 @@ export const siteConfig = {
         { value: '4.9',  label: 'note moyenne' },
       ],
       cta:    { label: 'Notre méthode →', href: '#contact' },
-      image:  '/images/about.jpg',
-      author: { name: 'Sophie Aubry', role: 'Avocate associée', image: '/images/sophie.jpg' },
+      image:  '/assets/images/team.png',
+      author: { name: 'Sophie Aubry', role: 'Avocate associée', image: '/assets/images/portrait.png' },
     },
 
     testimonials: {
