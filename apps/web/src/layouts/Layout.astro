@@ -1,0 +1,311 @@
+---
+import { siteConfig } from '../config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+}
+
+const { title, description, canonical } = Astro.props;
+const { branding, seo, features } = siteConfig;
+const canonicalUrl = canonical ?? `${seo.siteUrl}${Astro.url.pathname}`;
+
+// Tokens neutrals warm-paper (invariants, indépendants de la couleur brand)
+const tokens = {
+  bg:         '#faf9f7',
+  bgCard:     '#ffffff',
+  paper:      '#fefdf9',
+  ink:        '#1a1916',
+  inkSoft:    '#5a574e',
+  inkFaint:   '#8c887c',
+  line:       '#d9d4c7',
+  lineSoft:   '#ebe7dc',
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={branding.faviconPath} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Webmaster verification -->
+    {seo.googleSearchConsole && <meta name="google-site-verification" content={seo.googleSearchConsole} />}
+    {seo.bingWebmasterKey    && <meta name="msvalidate.01" content={seo.bingWebmasterKey} />}
+
+    <!-- Open Graph -->
+    <meta property="og:title"       content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url"         content={canonicalUrl} />
+    <meta property="og:locale"      content={seo.locale} />
+    <meta property="og:type"        content="website" />
+    {seo.ogImage && <meta property="og:image" content={`${seo.siteUrl}${seo.ogImage}`} />}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Polices : Geist (heading/body) + Kalam (handwritten) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href={`https://fonts.googleapis.com/css2?family=${encodeURIComponent(branding.fontHeading)}:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Kalam:wght@400;700&display=swap`}
+      rel="stylesheet"
+    />
+
+    <!-- Analytics GA (opt-in via features.analytics) -->
+    {features.analytics && seo.googleAnalyticsId && (
+      <script is:inline define:vars={{ gid: seo.googleAnalyticsId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date()); gtag('config', gid);
+      </script>
+    )}
+
+    <!-- Analytics Plausible (opt-in via features.plausible, privacy-friendly) -->
+    {features.plausible && seo.plausibleDomain && (
+      <script
+        is:inline
+        defer
+        data-domain={seo.plausibleDomain}
+        src="https://plausible.io/js/script.js"
+      />
+    )}
+
+    <!-- Sentry (opt-in via features.sentry) -->
+    {features.sentry && seo.sentryDsn && (
+      <script is:inline define:vars={{ dsn: seo.sentryDsn }}>
+        import('https://browser.sentry-cdn.com/7.x.x/bundle.min.js').then(() => {
+          Sentry.init({ dsn, tracesSampleRate: 0.1 });
+        });
+      </script>
+    )}
+  </head>
+  <body class={design.isSketchy ? 'sketchy' : ''}>
+    <!-- Hidden SVG filters for sketchy mode -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <filter id="rough" x="-2%" y="-2%" width="104%" height="104%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="3" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6"/>
+        </filter>
+        <filter id="rough-strong" x="-3%" y="-3%" width="106%" height="106%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="7" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <slot />
+  </body>
+</html>
+
+<style is:global define:vars={{
+  primary:     branding.primaryColor,
+  primaryDark: branding.primaryDark,
+  primarySoft: branding.primarySoft,
+  accent:      branding.accentColor,
+  fontHeading: branding.fontHeading,
+  fontBody:    branding.fontBody,
+  fontMono:    branding.fontMono,
+  fontHand:    'Kalam',
+  bg:          tokens.bg,
+  bgCard:      tokens.bgCard,
+  paper:       tokens.paper,
+  ink:         tokens.ink,
+  inkSoft:     tokens.inkSoft,
+  inkFaint:    tokens.inkFaint,
+  line:        tokens.line,
+  lineSoft:    tokens.lineSoft,
+}}>
+
+/* ─── Reset ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--fontBody), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px; line-height: 1.6;
+  background-color: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a { text-decoration: none; color: inherit; }
+ul, ol { list-style: none; margin: 0; padding: 0; }
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; }
+h1, h2, h3, h4, h5, h6 { margin: 0; line-height: 1.1; }
+p { margin: 0; }
+
+/* ─── Tokens ─────────────────────────────────────────────────────────────── */
+:root {
+  --sans:  'Geist', ui-sans-serif, system-ui, sans-serif;
+  --mono:  'Geist Mono', ui-monospace, monospace;
+
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-pill: 9999px;
+
+  --shadow-xs:  0 1px 2px rgba(0,0,0,.05);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:  0 12px 32px rgba(0,0,0,.10), 0 4px 8px rgba(0,0,0,.04);
+
+  --transition: 0.18s cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+/* ─── Container ─────────────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 56px);
+}
+
+/* ─── Boutons ────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 24px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  border: 1.5px solid transparent;
+  transition: background var(--transition), color var(--transition),
+              border-color var(--transition), box-shadow var(--transition),
+              transform var(--transition);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.btn-primary:hover {
+  background: var(--inkSoft);
+  border-color: var(--inkSoft);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn-outline:hover {
+  border-color: var(--ink);
+  box-shadow: var(--shadow-xs);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--inkSoft);
+  border-color: transparent;
+  padding-left: 0; padding-right: 0;
+}
+.btn-ghost:hover { color: var(--ink); }
+
+.btn-sm { height: 34px; padding: 0 16px; font-size: 13px; }
+.btn-lg { height: 52px; padding: 0 32px; font-size: 15px; }
+
+/* ─── Badge / chip ───────────────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--inkFaint);
+}
+
+/* ─── Card ───────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--bgCard);
+  border: 1px solid var(--lineSoft);
+  border-radius: var(--radius-lg);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ─── Section layout ─────────────────────────────────────────────────────── */
+.section {
+  padding: clamp(64px, 10vw, 120px) 0;
+}
+.section-alt {
+  background: var(--paper);
+}
+
+/* ─── Séparateur fin ─────────────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--lineSoft);
+  border: none;
+  margin: 0;
+}
+
+/* ─── Utilitaires texte ──────────────────────────────────────────────────── */
+.text-muted  { color: var(--inkSoft); }
+.text-faint  { color: var(--inkFaint); }
+.text-mono   { font-family: var(--mono); }
+.hand-on     { font-family: var(--fontHand), cursive; }
+
+/* ─── Sketchy Mode ───────────────────────────────────────────────────────── */
+.sketchy * { filter: url(#rough); }
+.sketchy .rough-strong { filter: url(#rough-strong); }
+.sketchy .hand-on, .sketchy h1, .sketchy h2, .sketchy h3 { font-family: var(--fontHand), cursive; }
+
+/* ─── Image placeholder (avant la vraie photo) ───────────────────────────── */
+.img-placeholder {
+  background: var(--lineSoft);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--line) 0px,
+    var(--line) 1px,
+    transparent 1px,
+    transparent 10px
+  );
+  border-radius: var(--radius-md);
+}
+
+/* ─── Star rating ────────────────────────────────────────────────────────── */
+.stars { display: flex; gap: 2px; }
+.star  { color: var(--primary); font-size: 14px; }
+
+/* ─── Scrollbar subtile ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--inkFaint); }
+
+/* ─── Responsive utilitaires ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+}
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
+}
+
+</style>

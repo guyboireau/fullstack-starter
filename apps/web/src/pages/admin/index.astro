@@ -33,13 +33,13 @@ const done     = items.filter(i => i.status === 'done').length;
   <!-- Stats -->
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     {[
-      { label: 'Total',      value: total,    color: 'text-indigo-400' },
-      { label: 'À faire',    value: todo,     color: 'text-yellow-400' },
-      { label: 'En cours',   value: progress, color: 'text-blue-400'   },
-      { label: 'Terminés',   value: done,     color: 'text-green-400'  },
+      { label: 'Total',      value: total,    color: 'text-[#1a1916]' },
+      { label: 'À faire',    value: todo,     color: 'text-[#8c887c]' },
+      { label: 'En cours',   value: progress, color: 'text-[#c44a1e]'   },
+      { label: 'Terminés',   value: done,     color: 'text-[#3f9c5a]'  },
     ].map(stat => (
-      <div class="bg-gray-900 border border-gray-800 rounded-xl p-4">
-        <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">{stat.label}</p>
+      <div class="bg-[#ffffff] border border-[#d9d4c7] rounded-xl p-4">
+        <p class="text-[10px] text-[#8c887c] font-mono uppercase tracking-wider mb-1">{stat.label}</p>
         <p class:list={['text-3xl font-bold', stat.color]}>{stat.value}</p>
       </div>
     ))}
@@ -47,24 +47,24 @@ const done     = items.filter(i => i.status === 'done').length;
 
   <!-- Recent items -->
   <div class="flex items-center justify-between mb-4">
-    <h2 class="text-sm font-medium text-gray-300">Derniers items</h2>
-    <a href="/admin/items" class="text-xs text-indigo-400 hover:text-indigo-300">Voir tout →</a>
+    <h2 class="text-xs font-semibold text-[#1a1916] uppercase tracking-wide">Derniers items</h2>
+    <a href="/admin/items" class="text-xs text-[#1a1916] font-medium border-b border-[#1a1916]/30 hover:border-[#1a1916]">Voir tout →</a>
   </div>
 
   {items.length === 0 ? (
-    <div class="bg-gray-900 border border-gray-800 rounded-xl p-10 text-center">
-      <p class="text-gray-500 text-sm">Aucun item. <a href="/admin/items" class="text-indigo-400 hover:text-indigo-300">Créer le premier</a></p>
+    <div class="bg-[#ffffff] border border-[#d9d4c7] rounded-xl p-10 text-center">
+      <p class="text-[#8c887c] text-sm">Aucun item. <a href="/admin/items" class="text-[#c44a1e] hover:underline">Créer le premier</a></p>
     </div>
   ) : (
-    <div class="bg-gray-900 border border-gray-800 rounded-xl divide-y divide-gray-800">
+    <div class="bg-[#ffffff] border border-[#d9d4c7] rounded-xl divide-y divide-[#ebe7dc]">
       {items.slice(0, 5).map(item => (
         <div class="flex items-center justify-between px-4 py-3">
-          <span class="text-sm text-gray-200 truncate">{item.title}</span>
+          <span class="text-sm text-[#1a1916] truncate font-medium">{item.title}</span>
           <span class:list={[
-            'ml-3 shrink-0 text-xs px-2 py-0.5 rounded-full font-medium',
-            item.status === 'done'        && 'bg-green-500/15 text-green-400',
-            item.status === 'in_progress' && 'bg-blue-500/15 text-blue-400',
-            item.status === 'todo'        && 'bg-yellow-500/15 text-yellow-400',
+            'ml-3 shrink-0 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider',
+            item.status === 'done'        && 'bg-[#3f9c5a]/10 text-[#3f9c5a]',
+            item.status === 'in_progress' && 'bg-[#c44a1e]/10 text-[#c44a1e]',
+            item.status === 'todo'        && 'bg-[#d9d4c7]/30 text-[#8c887c]',
           ]}>
             {item.status === 'todo' ? 'À faire' : item.status === 'in_progress' ? 'En cours' : 'Terminé'}
           </span>

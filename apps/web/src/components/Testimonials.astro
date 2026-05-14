@@ -1,0 +1,191 @@
+---
+// Testimonials — 3 variantes
+// A : 3 cards (safe classique)
+// B : Citation pleine page — 1 citation grande + navigation
+// C : Mur d'avis compact — grille dense
+import { variants, testimonials } from '../config/site';
+
+const v = variants.testimonials;
+---
+
+{/* ── Variante A : 3 cards ────────────────────────────────────────────── */}
+{v === 'A' && (
+  <section class="section section-alt" id="temoignages">
+    <div class="container">
+      <div class="tst-head">
+        <div>
+          <p class="eyebrow">{testimonials.eyebrow}</p>
+          <h2 class="tst-h2">{testimonials.title}</h2>
+        </div>
+        <p class="tst-rating eyebrow">{testimonials.ratingStr}</p>
+      </div>
+      <div class="tst-a-grid">
+        {testimonials.items.map((t) => (
+          <article class="card tst-a-card">
+            <div class="stars" aria-label="5 étoiles">
+              {'★★★★★'.split('').map(s => <span class="star">{s}</span>)}
+            </div>
+            <blockquote class="tst-a-quote">"{t.quote}"</blockquote>
+            <div class="tst-a-divider"></div>
+            <div class="tst-a-author">
+              <span class="tst-avatar" aria-hidden="true">{t.initial}</span>
+              <div>
+                <p class="tst-name">{t.name}</p>
+                <p class="tst-role eyebrow">{t.role}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{/* ── Variante B : citation pleine page ──────────────────────────────── */}
+{v === 'B' && (
+  <section class="section" id="temoignages">
+    <div class="container tst-b-inner">
+      <div class="tst-b-left">
+        <p class="eyebrow">{testimonials.eyebrow}</p>
+        <h2 class="tst-h2">{testimonials.title}</h2>
+        <p class="tst-rating eyebrow" style="margin-top: 8px;">{testimonials.ratingStr}</p>
+      </div>
+      <div class="tst-b-right">
+        <div class="tst-b-featured">
+          <div class="stars" aria-label="5 étoiles" style="margin-bottom: 20px;">
+            {'★★★★★'.split('').map(s => <span class="star">{s}</span>)}
+          </div>
+          <blockquote class="tst-b-quote">"{testimonials.items[0].quote}"</blockquote>
+          <div class="tst-b-author">
+            <span class="tst-avatar tst-avatar-lg" aria-hidden="true">{testimonials.items[0].initial}</span>
+            <div>
+              <p class="tst-name">{testimonials.items[0].name}</p>
+              <p class="tst-role eyebrow">{testimonials.items[0].role}</p>
+            </div>
+          </div>
+        </div>
+        <div class="tst-b-mini-list">
+          {testimonials.items.slice(1).map((t) => (
+            <article class="tst-b-mini">
+              <span class="tst-avatar tst-avatar-sm" aria-hidden="true">{t.initial}</span>
+              <div>
+                <p class="tst-b-mini-quote">"{t.quote.slice(0, 80)}…"</p>
+                <p class="tst-role eyebrow">{t.name} · {t.role}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+{/* ── Variante C : mur d'avis compact ────────────────────────────────── */}
+{v === 'C' && (
+  <section class="section section-alt" id="temoignages">
+    <div class="container">
+      <div class="tst-head">
+        <div>
+          <p class="eyebrow">{testimonials.eyebrow}</p>
+          <h2 class="tst-h2">{testimonials.title}</h2>
+        </div>
+        <p class="tst-rating eyebrow">{testimonials.ratingStr}</p>
+      </div>
+      <div class="tst-c-grid">
+        {testimonials.items.map((t) => (
+          <article class="tst-c-card">
+            <div class="stars" aria-label="5 étoiles">
+              {'★★★★★'.split('').map(s => <span class="star">{s}</span>)}
+            </div>
+            <blockquote class="tst-c-quote">"{t.quote}"</blockquote>
+            <div class="tst-c-author">
+              <span class="tst-avatar tst-avatar-sm" aria-hidden="true">{t.initial}</span>
+              <div>
+                <p class="tst-name">{t.name}</p>
+                <p class="tst-role eyebrow">{t.role}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+.tst-h2 {
+  font-size: clamp(26px, 3.5vw, 42px); font-weight: 600;
+  letter-spacing: -0.025em; line-height: 1.1; color: var(--ink); margin: 12px 0 0;
+}
+.tst-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; margin-bottom: 48px; flex-wrap: wrap;
+}
+.tst-rating { margin: 0; }
+
+/* Avatar */
+.tst-avatar {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  background: var(--lineSoft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 600; color: var(--ink);
+}
+.tst-avatar-lg { width: 52px; height: 52px; font-size: 20px; }
+.tst-avatar-sm { width: 32px; height: 32px; font-size: 12px; }
+.tst-name { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.tst-role { margin: 0; }
+
+/* ─── A ───────────────────────────────────────────────────────────────── */
+.tst-a-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.tst-a-card { padding: 28px 24px; display: flex; flex-direction: column; gap: 16px; }
+.tst-a-quote {
+  font-size: 15px; color: var(--ink); line-height: 1.7;
+  flex: 1; margin: 0; font-style: normal;
+}
+.tst-a-divider { height: 1px; background: var(--lineSoft); }
+.tst-a-author { display: flex; align-items: center; gap: 12px; }
+
+/* ─── B ───────────────────────────────────────────────────────────────── */
+.tst-b-inner { display: grid; grid-template-columns: 1fr 2fr; gap: clamp(48px, 8vw, 96px); align-items: start; }
+.tst-b-left { display: flex; flex-direction: column; position: sticky; top: 100px; }
+.tst-b-right { display: flex; flex-direction: column; gap: 32px; }
+.tst-b-featured {
+  background: var(--bgCard); border: 1px solid var(--lineSoft);
+  border-radius: var(--radius-lg); padding: 36px 32px;
+}
+.tst-b-quote {
+  font-size: clamp(18px, 2.5vw, 24px); font-weight: 400;
+  line-height: 1.55; color: var(--ink); font-style: normal;
+  margin: 0 0 28px;
+}
+.tst-b-author { display: flex; align-items: center; gap: 16px; }
+.tst-b-mini-list { display: flex; flex-direction: column; gap: 16px; }
+.tst-b-mini {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 20px; background: var(--paper);
+  border-radius: var(--radius-md); border: 1px solid var(--lineSoft);
+}
+.tst-b-mini-quote { font-size: 14px; color: var(--inkSoft); line-height: 1.6; margin: 0 0 4px; font-style: italic; }
+
+/* ─── C ───────────────────────────────────────────────────────────────── */
+.tst-c-grid { columns: 3; gap: 20px; }
+.tst-c-card {
+  background: var(--bgCard); border: 1px solid var(--lineSoft);
+  border-radius: var(--radius-md); padding: 20px;
+  break-inside: avoid; margin-bottom: 20px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.tst-c-quote { font-size: 14px; color: var(--ink); line-height: 1.65; flex: 1; margin: 0; font-style: normal; }
+.tst-c-author { display: flex; align-items: center; gap: 10px; }
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .tst-a-grid { grid-template-columns: 1fr; }
+  .tst-b-inner { grid-template-columns: 1fr; }
+  .tst-b-left { position: static; flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .tst-c-grid { columns: 1; }
+}
+@media (max-width: 600px) {
+  .tst-head { flex-direction: column; align-items: flex-start; }
+}
+</style>

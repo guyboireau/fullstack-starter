@@ -1,0 +1,239 @@
+---
+// Services — 3 variantes
+// A : Grille 3 colonnes avec cards icône
+// B : Liste verticale avec gros numéros + tags
+// C : Split — heading gauche, liste des services droite avec détails
+import { variants, services } from '../config/site';
+
+const v = variants.services;
+
+const icons: Record<string, string> = {
+  scale:    `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l9-4 9 4M3 6v12l9 4 9-4V6M12 2v18"/>`,
+  building: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M3 7h18M3 14h18M5 7V5h14v2M7 21V14h10v7"/>`,
+  shield:   `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3l8 4v4c0 5-3.5 9-8 10-4.5-1-8-5-8-10V7l8-4z"/>`,
+  star:     `<polygon stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" points="12,2 15.1,8.3 22,9.3 17,14.1 18.2,21 12,17.8 5.8,21 7,14.1 2,9.3 8.9,8.3"/>`,
+  check:    `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 6L9 17l-5-5"/>`,
+  arrow:    `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14m-7-7 7 7-7 7"/>`,
+};
+---
+
+{/* ── Variante A : grille 3 colonnes ─────────────────────────────────── */}
+{v === 'A' && (
+  <section class="section" id="services">
+    <div class="container">
+      <div class="srv-a-head">
+        <p class="eyebrow">{services.eyebrow}</p>
+        <h2 class="srv-h2">{services.title}</h2>
+        <p class="srv-sub">{services.subtitle}</p>
+      </div>
+      <div class="srv-a-grid">
+        {services.items.map((item) => (
+          <article class="card srv-a-card">
+            <div class="srv-a-icon-wrap" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" set:html={icons[item.icon] ?? icons.star} />
+            </div>
+            <h3 class="srv-a-title">{item.title}</h3>
+            <p class="srv-a-text">{item.text}</p>
+            <a href="#contact" class="srv-a-link">{item.link}</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{/* ── Variante B : liste numérotée ────────────────────────────────────── */}
+{v === 'B' && (
+  <section class="section section-alt" id="services">
+    <div class="container">
+      <div class="srv-b-head">
+        <p class="eyebrow">{services.eyebrow}</p>
+        <h2 class="srv-h2">{services.title}</h2>
+      </div>
+      <div class="srv-b-list">
+        {services.items.map((item, i) => (
+          <article class="srv-b-row">
+            <span class="srv-b-num" aria-hidden="true">0{i + 1}</span>
+            <div class="srv-b-body">
+              <div class="srv-b-titlerow">
+                <h3 class="srv-b-title">{item.title}</h3>
+                {item.tag && <span class="srv-b-tag">{item.tag}</span>}
+              </div>
+              <p class="srv-b-text">{item.text}</p>
+            </div>
+            <a href="#contact" class="btn btn-ghost srv-b-link" aria-label={`En savoir plus : ${item.title}`}>→</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{/* ── Variante C : accordéon (expand) ─────────────────────────────────── */}
+{v === 'C' && (
+  <section class="section" id="services">
+    <div class="container">
+      <div class="srv-c-head">
+        <p class="eyebrow">{services.eyebrow}</p>
+        <h2 class="srv-h2">{services.title}</h2>
+      </div>
+      <div class="srv-c-list">
+        {services.items.map((item, i) => (
+          <div class={`srv-c-item ${i === 0 ? 'open' : ''}`}>
+            <button
+              class="srv-c-trigger"
+              aria-expanded={i === 0 ? 'true' : 'false'}
+              aria-controls={`srv-panel-${i}`}
+            >
+              <div class="srv-c-trigger-left">
+                <span class="srv-c-num eyebrow">0{i + 1}</span>
+                <h3 class="srv-c-title">{item.title}</h3>
+              </div>
+              <span class="srv-c-icon">{i === 0 ? '–' : '+'}</span>
+            </button>
+            <div
+              class="srv-c-panel"
+              id={`srv-panel-${i}`}
+              hidden={i !== 0}
+            >
+              <div class="srv-c-content">
+                <div class="srv-c-text-wrap">
+                  <p class="srv-c-text">{item.text}</p>
+                  <a href="#contact" class="btn btn-outline btn-sm">Voir un cas →</a>
+                </div>
+                {item.features && (
+                  <ul class="srv-c-features">
+                    {item.features.map(f => (
+                      <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M20 6L9 17l-5-5"/>
+                        </svg>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+.srv-h2 {
+  font-size: clamp(26px, 3.5vw, 42px);
+  font-weight: 600; letter-spacing: -0.025em; line-height: 1.1;
+  color: var(--ink); margin: 12px 0 16px;
+}
+.srv-sub { font-size: 16px; color: var(--inkSoft); line-height: 1.6; max-width: 56ch; }
+
+/* ─── A ───────────────────────────────────────────────────────────────── */
+.srv-a-head { margin-bottom: 48px; }
+.srv-a-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.srv-a-card { padding: 32px 28px; display: flex; flex-direction: column; }
+.srv-a-icon-wrap {
+  width: 44px; height: 44px; background: var(--lineSoft); border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center; color: var(--ink); margin-bottom: 24px;
+}
+.srv-a-title { font-size: 17px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
+.srv-a-text { font-size: 14.5px; color: var(--inkSoft); line-height: 1.65; flex: 1; margin-bottom: 20px; }
+.srv-a-link {
+  font-size: 13.5px; font-weight: 500; color: var(--ink);
+  display: inline-flex; align-items: center; gap: 4px; transition: gap 0.15s;
+}
+.srv-a-link:hover { gap: 8px; }
+
+/* ─── B ───────────────────────────────────────────────────────────────── */
+.srv-b-head { margin-bottom: 48px; }
+.srv-b-list { display: flex; flex-direction: column; }
+.srv-b-row {
+  display: grid; grid-template-columns: 56px 1fr auto;
+  gap: 24px; align-items: center;
+  padding: 28px 0; border-top: 1px solid var(--lineSoft);
+}
+.srv-b-row:last-child { border-bottom: 1px solid var(--lineSoft); }
+.srv-b-num {
+  font-family: var(--mono); font-size: 28px; color: var(--lineSoft);
+  letter-spacing: -0.02em; align-self: flex-start; padding-top: 4px;
+}
+.srv-b-body { display: flex; flex-direction: column; gap: 8px; }
+.srv-b-titlerow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.srv-b-title { font-size: 18px; font-weight: 500; color: var(--ink); }
+.srv-b-tag {
+  font-family: var(--mono); font-size: 10px; padding: 3px 8px;
+  border-radius: var(--radius-pill); background: var(--lineSoft); color: var(--inkSoft);
+}
+.srv-b-text { font-size: 14px; color: var(--inkSoft); line-height: 1.65; max-width: 64ch; }
+.srv-b-link { font-size: 18px; color: var(--inkFaint); transition: color 0.15s; }
+.srv-b-link:hover { color: var(--ink); }
+
+/* ─── C ───────────────────────────────────────────────────────────────── */
+.srv-c-head { margin-bottom: 48px; }
+.srv-c-list { display: flex; flex-direction: column; }
+.srv-c-item { border-top: 1px solid var(--lineSoft); }
+.srv-c-item:last-child { border-bottom: 1px solid var(--lineSoft); }
+.srv-c-item.open { background: var(--paper); border-radius: var(--radius-md); border: 1px solid var(--lineSoft); margin: 8px 0; }
+.srv-c-trigger {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 24px 20px; background: none; border: none; cursor: pointer;
+}
+.srv-c-trigger-left { display: flex; align-items: center; gap: 24px; }
+.srv-c-num { color: var(--inkFaint); }
+.srv-c-title { font-size: 18px; font-weight: 500; color: var(--ink); margin: 0; }
+.srv-c-icon { font-size: 24px; color: var(--ink); font-family: var(--sans); }
+.srv-c-panel { padding: 0 20px 32px 76px; }
+.srv-c-content { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; }
+.srv-c-text { font-size: 15px; color: var(--inkSoft); line-height: 1.65; margin-bottom: 24px; }
+.srv-c-features { display: flex; flex-direction: column; gap: 12px; }
+.srv-c-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink); }
+.srv-c-features svg { color: var(--ink); flex-shrink: 0; }
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .srv-a-grid { grid-template-columns: 1fr; }
+  .srv-c-content { grid-template-columns: 1fr; gap: 24px; }
+  .srv-c-panel { padding-left: 20px; }
+  .srv-b-row { grid-template-columns: 44px 1fr auto; gap: 16px; }
+}
+@media (max-width: 600px) {
+  .srv-b-row { grid-template-columns: 1fr auto; }
+  .srv-b-num { display: none; }
+}
+</style>
+
+<script>
+document.querySelectorAll<HTMLButtonElement>('.srv-c-trigger').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.srv-c-item');
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    const panelId = btn.getAttribute('aria-controls');
+    const panel = panelId ? document.getElementById(panelId) : null;
+    const icon = btn.querySelector('.srv-c-icon');
+
+    // Close others
+    document.querySelectorAll('.srv-c-item').forEach(other => {
+      if (other === item) return;
+      other.classList.remove('open');
+      const otherBtn = other.querySelector('.srv-c-trigger');
+      const otherPanelId = otherBtn?.getAttribute('aria-controls');
+      const otherPanel = otherPanelId ? document.getElementById(otherPanelId) : null;
+      otherBtn?.setAttribute('aria-expanded', 'false');
+      if (otherPanel) otherPanel.hidden = true;
+      const otherIcon = otherBtn?.querySelector('.srv-c-icon');
+      if (otherIcon) otherIcon.textContent = '+';
+    });
+
+    if (item && panel && icon) {
+      const isOpening = !expanded;
+      btn.setAttribute('aria-expanded', String(isOpening));
+      panel.hidden = !isOpening;
+      item.classList.toggle('open', isOpening);
+      icon.textContent = isOpening ? '–' : '+';
+    }
+  });
+});
+</script>

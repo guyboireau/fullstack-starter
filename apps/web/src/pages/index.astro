@@ -1,3 +1,31 @@
 ---
-return Astro.redirect('/admin');
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Services from '../components/Services.astro';
+import About from '../components/About.astro';
+import Testimonials from '../components/Testimonials.astro';
+import FAQ from '../components/FAQ.astro';
+import CTA from '../components/CTA.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+
+import { business, seo, features } from '../config/site';
 ---
+
+<Layout
+  title={`${business.name} — ${business.tagline}`}
+  description={seo.defaultDescription}
+>
+  <Header />
+  <main>
+    <Hero />
+    <Services />
+    <About />
+    {features.testimonials && <Testimonials />}
+    <FAQ />
+    <CTA />
+    <Contact />
+  </main>
+  <Footer />
+</Layout>

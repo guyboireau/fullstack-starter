@@ -1,0 +1,174 @@
+---
+// Pricing — 2 variantes
+// A : 3 cards — centre mis en avant (highlight)
+// B : Comparatif tableau
+import { variants, pricing } from '../config/site';
+
+const v = variants.pricing;
+---
+
+{/* ── Variante A : 3 cards ────────────────────────────────────────────── */}
+{v === 'A' && (
+  <section class="section" id="tarifs">
+    <div class="container">
+      <div class="prc-head">
+        <p class="eyebrow">{pricing.eyebrow}</p>
+        <h2 class="prc-h2">{pricing.title}</h2>
+        <p class="prc-sub">{pricing.subtitle}</p>
+      </div>
+      <div class="prc-a-grid">
+        {pricing.plans.map((plan) => (
+          <article class={`prc-a-card ${plan.highlight ? 'prc-a-card--hi' : ''}`}>
+            {plan.highlight && <div class="prc-a-badge">Populaire</div>}
+            <div class="prc-a-top">
+              <h3 class="prc-a-name">{plan.name}</h3>
+              <div class="prc-a-price">
+                <span class="prc-a-amount">{plan.price}</span>
+                {plan.unit && <span class="prc-a-unit">{plan.unit}</span>}
+              </div>
+              <p class="prc-a-desc">{plan.desc}</p>
+            </div>
+            <ul class="prc-a-features">
+              {plan.features.map((f) => (
+                <li class="prc-a-feature">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <a href="#contact" class={`btn ${plan.highlight ? 'btn-primary' : 'btn-outline'}`}
+               style="width: 100%; justify-content: center;">
+              {plan.cta}
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{/* ── Variante B : tableau comparatif ───────────────────────────────── */}
+{v === 'B' && (
+  <section class="section section-alt" id="tarifs">
+    <div class="container">
+      <div class="prc-head">
+        <p class="eyebrow">{pricing.eyebrow}</p>
+        <h2 class="prc-h2">{pricing.title}</h2>
+        <p class="prc-sub">{pricing.subtitle}</p>
+      </div>
+      <div class="prc-b-table" role="table" aria-label="Comparatif des formules">
+        <div class="prc-b-header" role="row">
+          <div role="columnheader">Formule</div>
+          <div role="columnheader">Tarif</div>
+          <div role="columnheader">Inclus</div>
+          <div role="columnheader"></div>
+        </div>
+        {pricing.plans.map((plan) => (
+          <div class={`prc-b-row ${plan.highlight ? 'prc-b-row--hi' : ''}`} role="row">
+            <div class="prc-b-name" role="cell">
+              <span class="prc-b-plan-name">{plan.name}</span>
+              <span class="prc-b-plan-desc">{plan.desc}</span>
+            </div>
+            <div class="prc-b-price" role="cell">
+              <span class="prc-b-amount">{plan.price}</span>
+              {plan.unit && <span class="prc-b-unit">{plan.unit}</span>}
+            </div>
+            <div class="prc-b-features" role="cell">
+              {plan.features.map((f) => (
+                <span class="prc-b-feature">{f}</span>
+              ))}
+            </div>
+            <div class="prc-b-action" role="cell">
+              <a href="#contact" class={`btn btn-sm ${plan.highlight ? 'btn-primary' : 'btn-outline'}`}>
+                {plan.cta}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+.prc-h2 {
+  font-size: clamp(26px, 3.5vw, 42px); font-weight: 600;
+  letter-spacing: -0.025em; line-height: 1.1; color: var(--ink); margin: 12px 0 16px;
+}
+.prc-head { text-align: center; margin-bottom: 56px; }
+.prc-sub { font-size: 16px; color: var(--inkSoft); line-height: 1.6; max-width: 54ch; margin: 0 auto; }
+
+/* ─── A ───────────────────────────────────────────────────────────────── */
+.prc-a-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start;
+}
+.prc-a-card {
+  background: var(--bgCard); border: 1px solid var(--lineSoft);
+  border-radius: var(--radius-lg); padding: 28px 24px;
+  display: flex; flex-direction: column; gap: 24px;
+  position: relative;
+}
+.prc-a-card--hi {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink), var(--shadow-lg);
+}
+.prc-a-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: var(--bg);
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: var(--radius-pill);
+}
+.prc-a-top { display: flex; flex-direction: column; gap: 8px; }
+.prc-a-name { font-size: 14px; font-weight: 500; color: var(--inkSoft); }
+.prc-a-price { display: flex; align-items: baseline; gap: 6px; }
+.prc-a-amount { font-size: clamp(28px, 4vw, 36px); font-weight: 600; letter-spacing: -0.03em; color: var(--ink); }
+.prc-a-unit { font-size: 14px; color: var(--inkSoft); }
+.prc-a-desc { font-size: 13.5px; color: var(--inkSoft); line-height: 1.55; margin: 0; }
+.prc-a-features { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.prc-a-feature {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13.5px; color: var(--inkSoft); line-height: 1.45;
+}
+.prc-a-feature svg { flex-shrink: 0; color: var(--primary); margin-top: 2px; }
+
+/* ─── B ───────────────────────────────────────────────────────────────── */
+.prc-b-table { display: flex; flex-direction: column; border: 1px solid var(--lineSoft); border-radius: var(--radius-lg); overflow: hidden; }
+.prc-b-header {
+  display: grid; grid-template-columns: 2fr 1fr 2fr 1fr;
+  padding: 14px 24px; background: var(--paper);
+  border-bottom: 1px solid var(--lineSoft);
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--inkFaint); gap: 16px;
+}
+.prc-b-row {
+  display: grid; grid-template-columns: 2fr 1fr 2fr 1fr;
+  padding: 24px; gap: 16px; align-items: center;
+  border-bottom: 1px solid var(--lineSoft);
+  background: var(--bgCard);
+  transition: background 0.15s;
+}
+.prc-b-row:last-child { border-bottom: none; }
+.prc-b-row--hi { background: var(--paper); }
+.prc-b-row:hover { background: var(--paper); }
+.prc-b-name { display: flex; flex-direction: column; gap: 4px; }
+.prc-b-plan-name { font-size: 15px; font-weight: 500; color: var(--ink); }
+.prc-b-plan-desc { font-size: 12.5px; color: var(--inkFaint); }
+.prc-b-price { display: flex; align-items: baseline; gap: 4px; }
+.prc-b-amount { font-size: 20px; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; }
+.prc-b-unit { font-size: 12px; color: var(--inkSoft); }
+.prc-b-features { display: flex; flex-direction: column; gap: 6px; }
+.prc-b-feature { font-size: 13px; color: var(--inkSoft); }
+.prc-b-feature::before { content: '· '; color: var(--primary); }
+.prc-b-action { display: flex; justify-content: flex-end; }
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .prc-a-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+  .prc-b-header { display: none; }
+  .prc-b-row { grid-template-columns: 1fr; gap: 12px; }
+  .prc-b-action { justify-content: flex-start; }
+}
+</style>

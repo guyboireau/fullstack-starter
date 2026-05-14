@@ -1,0 +1,137 @@
+---
+// FAQ — 2 variantes
+// A : Accordéon classique pleine largeur
+// B : 2 colonnes Q&R
+import { variants, faq } from '../config/site';
+
+const v = variants.faq;
+---
+
+{/* ── Variante A : accordéon ──────────────────────────────────────────── */}
+{v === 'A' && (
+  <section class="section section-alt" id="faq">
+    <div class="container faq-a-inner">
+      <div class="faq-a-head">
+        <p class="eyebrow">{faq.eyebrow}</p>
+        <h2 class="faq-h2">{faq.title}</h2>
+      </div>
+      <div class="faq-a-list" role="list">
+        {faq.items.map((item, i) => (
+          <div class="faq-item" role="listitem">
+            <button
+              class="faq-trigger"
+              aria-expanded="false"
+              aria-controls={`faq-panel-${i}`}
+              id={`faq-btn-${i}`}
+            >
+              <span class="faq-q">{item.q}</span>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            <div
+              class="faq-panel"
+              role="region"
+              id={`faq-panel-${i}`}
+              aria-labelledby={`faq-btn-${i}`}
+              hidden
+            >
+              <p class="faq-a-answer">{item.a}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{/* ── Variante B : 2 colonnes ─────────────────────────────────────────── */}
+{v === 'B' && (
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="faq-b-head">
+        <p class="eyebrow">{faq.eyebrow}</p>
+        <h2 class="faq-h2">{faq.title}</h2>
+      </div>
+      <div class="faq-b-grid">
+        {faq.items.map((item) => (
+          <article class="faq-b-item">
+            <h3 class="faq-b-q">{item.q}</h3>
+            <p class="faq-b-a">{item.a}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+// Accordéon accessible (variante A)
+document.querySelectorAll<HTMLButtonElement>('.faq-trigger').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    const panelId = btn.getAttribute('aria-controls');
+    const panel = panelId ? document.getElementById(panelId) : null;
+
+    // Ferme tous les autres
+    document.querySelectorAll<HTMLButtonElement>('.faq-trigger').forEach(b => {
+      const pid = b.getAttribute('aria-controls');
+      const p = pid ? document.getElementById(pid) : null;
+      b.setAttribute('aria-expanded', 'false');
+      b.closest('.faq-item')?.classList.remove('open');
+      if (p) p.hidden = true;
+    });
+
+    if (!expanded && panel) {
+      btn.setAttribute('aria-expanded', 'true');
+      btn.closest('.faq-item')?.classList.add('open');
+      panel.hidden = false;
+    }
+  });
+});
+</script>
+
+<style>
+.faq-h2 {
+  font-size: clamp(26px, 3.5vw, 42px); font-weight: 600;
+  letter-spacing: -0.025em; line-height: 1.1; color: var(--ink); margin: 12px 0 0;
+}
+
+/* ─── A ───────────────────────────────────────────────────────────────── */
+.faq-a-inner { display: grid; grid-template-columns: 1fr 2fr; gap: clamp(40px, 8vw, 96px); align-items: start; }
+.faq-a-head { position: sticky; top: 100px; }
+.faq-a-list { display: flex; flex-direction: column; }
+.faq-item { border-top: 1px solid var(--lineSoft); }
+.faq-item:last-child { border-bottom: 1px solid var(--lineSoft); }
+.faq-trigger {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 20px 0;
+  background: none; border: none; cursor: pointer; text-align: left;
+}
+.faq-q { font-size: 16px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+.faq-icon { flex-shrink: 0; color: var(--inkFaint); transition: transform 0.2s; }
+.faq-item.open .faq-icon { transform: rotate(180deg); }
+.faq-item.open .faq-q { color: var(--inkSoft); }
+.faq-panel { padding-bottom: 20px; }
+.faq-a-answer { font-size: 15px; color: var(--inkSoft); line-height: 1.7; margin: 0; }
+
+/* ─── B ───────────────────────────────────────────────────────────────── */
+.faq-b-head { margin-bottom: 48px; text-align: center; }
+.faq-b-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 40px; }
+.faq-b-item {
+  padding: 28px; background: var(--paper);
+  border: 1px solid var(--lineSoft); border-radius: var(--radius-md);
+}
+.faq-b-q { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 12px; line-height: 1.4; }
+.faq-b-a { font-size: 14px; color: var(--inkSoft); line-height: 1.65; margin: 0; }
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .faq-a-inner { grid-template-columns: 1fr; }
+  .faq-a-head { position: static; }
+  .faq-b-grid { grid-template-columns: 1fr; }
+}
+</style>

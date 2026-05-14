@@ -22,23 +22,45 @@ const navItems = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
     <title>{title} — Admin</title>
+    
+    <!-- Polices : Geist -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Kalam:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
       @import "tailwindcss";
+
+      /* Sketchy Mode for Admin */
+      .sketchy * { filter: url(#rough); }
+      .sketchy .hand-on { font-family: 'Kalam', cursive; }
     </style>
   </head>
-  <body class="bg-gray-950 text-gray-100 min-h-screen flex">
+  <body class="bg-[#faf9f7] text-[#1a1916] min-h-screen flex font-sans">
+    <!-- Hidden SVG filters for sketchy mode -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <filter id="rough" x="-2%" y="-2%" width="104%" height="104%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="3" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2"/>
+        </filter>
+      </defs>
+    </svg>
 
     <!-- Sidebar -->
-    <aside class="w-56 shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col">
-      <div class="px-6 py-5 border-b border-gray-800">
-        <span class="font-semibold text-indigo-400 text-sm tracking-widest uppercase">Admin</span>
+    <aside class="w-56 shrink-0 bg-[#ffffff] border-r border-[#d9d4c7] flex flex-col">
+      <div class="px-6 py-5 border-b border-[#d9d4c7]">
+        <span class="font-semibold text-[#1a1916] text-xs tracking-widest uppercase opacity-70">Tableau de Bord</span>
       </div>
 
       <nav class="flex-1 px-3 py-4 space-y-1">
         {navItems.map(item => (
           <a
             href={item.href}
-            class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#5a574e] hover:text-[#1a1916] hover:bg-[#faf9f7] transition-colors"
           >
             <span class="text-base">{item.icon}</span>
             {item.label}
@@ -46,12 +68,12 @@ const navItems = [
         ))}
       </nav>
 
-      <div class="px-4 py-4 border-t border-gray-800">
-        <p class="text-xs text-gray-500 truncate mb-3">{user?.email}</p>
+      <div class="px-4 py-4 border-t border-[#d9d4c7]">
+        <p class="text-xs text-[#8c887c] truncate mb-3">{user?.email}</p>
         <form method="POST" action="/api/auth/signout">
           <button
             type="submit"
-            class="w-full text-left text-xs text-gray-500 hover:text-red-400 transition-colors"
+            class="w-full text-left text-xs text-[#8c887c] hover:text-[#c44a1e] transition-colors"
           >
             Se déconnecter
           </button>
@@ -61,8 +83,8 @@ const navItems = [
 
     <!-- Main content -->
     <div class="flex-1 flex flex-col min-w-0">
-      <header class="h-14 border-b border-gray-800 flex items-center px-6">
-        <h1 class="text-sm font-medium text-gray-200">{title}</h1>
+      <header class="h-14 border-b border-[#d9d4c7] flex items-center px-6 bg-[#ffffff]/80 backdrop-blur-md">
+        <h1 class="text-sm font-semibold text-[#1a1916]">{title}</h1>
       </header>
 
       <main class="flex-1 p-6">

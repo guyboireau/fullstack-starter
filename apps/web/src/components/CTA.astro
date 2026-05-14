@@ -1,0 +1,89 @@
+---
+// CTA finale — 2 variantes
+// A : Fond contrasté (ink) avec invitation forte
+// B : Minimaliste inline — titre + boutons sur fond paper
+import { variants, cta } from '../config/site';
+
+const v = variants.cta;
+---
+
+{/* ── Variante A : fond contrasté ────────────────────────────────────── */}
+{v === 'A' && (
+  <section class="cta-a" id="cta">
+    <div class="container cta-a-inner">
+      <div class="cta-a-content">
+        <p class="eyebrow cta-a-eyebrow">{cta.eyebrow}</p>
+        <h2 class="cta-a-h2">{cta.title}</h2>
+        <p class="cta-a-sub">{cta.subtitle}</p>
+      </div>
+      <div class="cta-a-actions">
+        <a href={cta.cta1.href} class="btn btn-lg cta-btn-primary">{cta.cta1.label}</a>
+        <a href={cta.cta2.href} class="btn btn-lg cta-btn-ghost">{cta.cta2.label}</a>
+      </div>
+    </div>
+  </section>
+)}
+
+{/* ── Variante B : minimaliste inline ────────────────────────────────── */}
+{v === 'B' && (
+  <section class="section section-alt" id="cta">
+    <div class="container cta-b-inner">
+      <div>
+        <p class="eyebrow">{cta.eyebrow}</p>
+        <h2 class="cta-b-h2">{cta.title}</h2>
+        <p class="cta-b-sub">{cta.subtitle}</p>
+      </div>
+      <div class="cta-b-actions">
+        <a href={cta.cta1.href} class="btn btn-primary btn-lg">{cta.cta1.label}</a>
+        <a href={cta.cta2.href} class="btn btn-outline btn-lg">{cta.cta2.label}</a>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+/* ─── A ───────────────────────────────────────────────────────────────── */
+.cta-a {
+  background: var(--ink);
+  padding: clamp(64px, 10vw, 120px) 0;
+}
+.cta-a-inner {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 36px;
+}
+.cta-a-eyebrow { color: rgba(255,255,255,.45); }
+.cta-a-h2 {
+  font-size: clamp(28px, 4vw, 52px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 1.1; color: #fff; margin: 0;
+}
+.cta-a-sub { font-size: 17px; color: rgba(255,255,255,.65); line-height: 1.6; max-width: 48ch; margin: 0; }
+.cta-a-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+/* Boutons sur fond sombre */
+.cta-btn-primary {
+  background: #fff; color: var(--ink); border-color: #fff;
+}
+.cta-btn-primary:hover { background: rgba(255,255,255,.88); }
+.cta-btn-ghost {
+  background: transparent; color: rgba(255,255,255,.75); border-color: rgba(255,255,255,.25);
+}
+.cta-btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,.6); }
+
+/* ─── B ───────────────────────────────────────────────────────────────── */
+.cta-b-inner {
+  display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center;
+}
+.cta-b-h2 {
+  font-size: clamp(24px, 3vw, 38px); font-weight: 600;
+  letter-spacing: -0.025em; line-height: 1.1; color: var(--ink); margin: 12px 0 12px;
+}
+.cta-b-sub { font-size: 15px; color: var(--inkSoft); margin: 0; }
+.cta-b-actions { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cta-a-actions, .cta-b-actions { flex-direction: column; align-items: stretch; }
+  .cta-a-actions .btn, .cta-b-actions .btn { justify-content: center; }
+  .cta-b-inner { grid-template-columns: 1fr; }
+}
+</style>

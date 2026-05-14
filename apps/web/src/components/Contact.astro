@@ -1,0 +1,218 @@
+---
+// Contact — formulaire propre avec validation client + infos business
+import { contact, business } from '../config/site';
+---
+
+<section class="section" id="contact">
+  <div class="container cnt-inner">
+    <div class="cnt-info">
+      <p class="eyebrow">{contact.eyebrow}</p>
+      <h2 class="cnt-h2">{contact.title}</h2>
+      <p class="cnt-sub">{contact.subtitle}</p>
+
+      <div class="cnt-details">
+        <a href={`mailto:${business.email}`} class="cnt-detail">
+          <span class="cnt-detail-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </span>
+          <span>{business.email}</span>
+        </a>
+        <a href={`tel:${business.phone.replace(/\s/g, '')}`} class="cnt-detail">
+          <span class="cnt-detail-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.6a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.94h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z"/>
+            </svg>
+          </span>
+          <span>{business.phone}</span>
+        </a>
+        {(business.address.street) && (
+          <div class="cnt-detail">
+            <span class="cnt-detail-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span>{business.address.street}, {business.address.zip} {business.address.city}</span>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="cnt-form-wrap">
+      <form class="cnt-form" id="contact-form" novalidate>
+        <div class="cnt-row cnt-row-2">
+          <div class="cnt-field">
+            <label for="cnt-nom" class="cnt-label">Nom *</label>
+            <input type="text" id="cnt-nom" name="nom" class="cnt-input"
+                   placeholder="Sophie Martin" required autocomplete="name" />
+            <span class="cnt-error" aria-live="polite"></span>
+          </div>
+          <div class="cnt-field">
+            <label for="cnt-email" class="cnt-label">Email *</label>
+            <input type="email" id="cnt-email" name="email" class="cnt-input"
+                   placeholder="sophie@exemple.fr" required autocomplete="email" />
+            <span class="cnt-error" aria-live="polite"></span>
+          </div>
+        </div>
+        <div class="cnt-field">
+          <label for="cnt-sujet" class="cnt-label">Sujet</label>
+          <input type="text" id="cnt-sujet" name="sujet" class="cnt-input"
+                 placeholder="Création d'entreprise, contrat…" />
+        </div>
+        <div class="cnt-field">
+          <label for="cnt-message" class="cnt-label">Message *</label>
+          <textarea id="cnt-message" name="message" class="cnt-input cnt-textarea"
+                    placeholder="Décrivez votre situation en quelques lignes…"
+                    rows="5" required></textarea>
+          <span class="cnt-error" aria-live="polite"></span>
+        </div>
+        <div class="cnt-footer">
+          <button type="submit" class="btn btn-primary btn-lg cnt-submit">
+            Envoyer le message
+          </button>
+          <p class="cnt-privacy eyebrow">Vos données ne sont jamais revendues.</p>
+        </div>
+        <div class="cnt-success" id="cnt-success" hidden aria-live="polite">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          {contact.successMessage}
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+const form = document.getElementById('contact-form') as HTMLFormElement | null;
+const successEl = document.getElementById('cnt-success');
+
+function validateField(input: HTMLInputElement | HTMLTextAreaElement): boolean {
+  const field = input.closest('.cnt-field');
+  const errorEl = field?.querySelector<HTMLElement>('.cnt-error');
+  let msg = '';
+
+  if (input.required && !input.value.trim()) {
+    msg = 'Ce champ est requis.';
+  } else if (input.type === 'email' && input.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
+    msg = 'Email invalide.';
+  }
+
+  if (errorEl) errorEl.textContent = msg;
+  input.setAttribute('data-invalid', msg ? 'true' : 'false');
+  return !msg;
+}
+
+form?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea').forEach(input => {
+  input.addEventListener('blur', () => validateField(input));
+  input.addEventListener('input', () => {
+    if (input.getAttribute('data-invalid') === 'true') validateField(input);
+  });
+});
+
+form?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const inputs = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]'));
+  const valid = inputs.map(validateField).every(Boolean);
+  if (!valid) { inputs.find(i => i.getAttribute('data-invalid') === 'true')?.focus(); return; }
+
+  const submitBtn = form.querySelector<HTMLButtonElement>('.cnt-submit');
+  if (submitBtn) { submitBtn.textContent = 'Envoi…'; submitBtn.disabled = true; }
+
+  try {
+    const res = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.fromEntries(new FormData(form))),
+    });
+    if (res.ok) {
+      form.style.display = 'none';
+      if (successEl) successEl.hidden = false;
+    } else {
+      throw new Error('Erreur serveur');
+    }
+  } catch {
+    if (submitBtn) { submitBtn.textContent = 'Réessayer'; submitBtn.disabled = false; }
+  }
+});
+</script>
+
+<style>
+/* ─── Layout ─────────────────────────────────────────────────────────── */
+.cnt-inner {
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: clamp(48px, 8vw, 100px); align-items: start;
+}
+.cnt-h2 {
+  font-size: clamp(26px, 3.5vw, 40px); font-weight: 600;
+  letter-spacing: -0.025em; line-height: 1.1; color: var(--ink); margin: 12px 0 16px;
+}
+.cnt-sub { font-size: 15px; color: var(--inkSoft); line-height: 1.65; margin-bottom: 36px; }
+
+/* Infos */
+.cnt-details { display: flex; flex-direction: column; gap: 14px; }
+.cnt-detail {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 14px; color: var(--inkSoft);
+  transition: color 0.15s;
+}
+.cnt-detail:hover { color: var(--ink); }
+.cnt-detail-icon {
+  width: 32px; height: 32px; border-radius: var(--radius-sm);
+  background: var(--lineSoft); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; color: var(--ink);
+}
+
+/* Form wrapper */
+.cnt-form-wrap {
+  background: var(--bgCard); border: 1px solid var(--lineSoft);
+  border-radius: var(--radius-lg); padding: clamp(24px, 4vw, 40px);
+}
+.cnt-form { display: flex; flex-direction: column; gap: 20px; }
+.cnt-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.cnt-field { display: flex; flex-direction: column; gap: 6px; }
+.cnt-label { font-size: 13px; font-weight: 500; color: var(--ink); }
+.cnt-input {
+  width: 100%; padding: 11px 14px; font-size: 14px; font-family: var(--sans);
+  color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+}
+.cnt-input::placeholder { color: var(--inkFaint); }
+.cnt-input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(26,25,22,.06); }
+.cnt-input[data-invalid="true"] { border-color: #e05252; }
+.cnt-textarea { resize: vertical; min-height: 120px; line-height: 1.55; }
+.cnt-error { font-size: 12px; color: #e05252; min-height: 16px; }
+
+.cnt-footer { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.cnt-privacy { margin: 0; }
+
+/* Succès */
+.cnt-success {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; border-radius: var(--radius-md);
+  background: #f0faf4; border: 1px solid #b9e6cc;
+  color: #1e6a3c; font-size: 14px; font-weight: 500;
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .cnt-inner { grid-template-columns: 1fr; }
+  .cnt-info { display: none; }
+}
+@media (max-width: 600px) {
+  .cnt-row-2 { grid-template-columns: 1fr; }
+  .cnt-footer { flex-direction: column; align-items: stretch; }
+  .cnt-submit { justify-content: center; }
+}
+</style>
