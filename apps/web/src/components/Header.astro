@@ -74,15 +74,16 @@ const contactHref = nav.find(n => n.label === 'Contact')?.href || '#contact';
       <a href={contactHref} class="btn btn-primary btn-sm">Réserver un appel</a>
     </div>
   </div>
-  {/* Full-screen overlay menu */}
-  <div class="overlay-menu" id="overlay-nav">
-    <button class="overlay-close" id="overlay-close">&times;</button>
-    <nav class="overlay-nav" aria-label="Navigation principale">
-      {nav.map(l => <a href={l.href} class="overlay-link">{l.label}</a>)}
-    </nav>
-    <a href={contactHref} class="btn btn-primary btn-lg overlay-cta">Réserver un appel</a>
-  </div>
 </header>
+
+{/* Full-screen overlay — outside header (backdrop-filter on header breaks position:fixed children) */}
+<div class="overlay-menu" id="overlay-nav">
+  <button class="overlay-close" id="overlay-close">&times;</button>
+  <nav class="overlay-nav" aria-label="Navigation principale">
+    {nav.map(l => <a href={l.href} class="overlay-link">{l.label}</a>)}
+  </nav>
+  <a href={contactHref} class="btn btn-primary btn-lg overlay-cta">Réserver un appel</a>
+</div>
 
 {/* ── Variante E : Le Salon — Éditorial ──────────────────────────────── */}
 <header class="hdr-e v-only-e" id="main-header-e">
