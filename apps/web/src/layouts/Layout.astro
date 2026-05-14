@@ -78,30 +78,29 @@ const tokens = {
     )}
 
     <!-- Sentry (opt-in via features.sentry) -->
-    {features.sentry && seo.sentryDsn && (
-      <script is:inline define:vars={{ dsn: seo.sentryDsn }}>
-        import('https://browser.sentry-cdn.com/7.x.x/bundle.min.js').then(() => {
-          Sentry.init({ dsn, tracesSampleRate: 0.1 });
-        });
-      </script>
-    )}
+    <!-- Google Fonts : Geist + Kalam (sketchy) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
   </head>
-  <body class={design.isSketchy ? 'sketchy' : ''}>
-    <!-- Hidden SVG filters for sketchy mode -->
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <body class="v-a is-sketchy">
+    <slot />
+
+    <DesignSwitcher />
+
+    <!-- Filtres SVG pour le mode Sketchy (Rough) -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
       <defs>
         <filter id="rough" x="-2%" y="-2%" width="104%" height="104%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="3" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6"/>
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="1" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
         </filter>
-        <filter id="rough-strong" x="-3%" y="-3%" width="106%" height="106%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="7" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4"/>
+        <filter id="rough-strong" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </defs>
     </svg>
-
-    <slot />
   </body>
 </html>
 
@@ -124,7 +123,7 @@ const tokens = {
   lineSoft:    tokens.lineSoft,
 }}>
 
-/* ─── Reset ─────────────────────────────────────────────────────────────── */
+/* ─── Reset & Base ──────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
@@ -136,12 +135,21 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ─── Variantes Globales (Show/Hide) ────────────────────────────────── */
+.v-only-a, .v-only-b, .v-only-c { display: none !important; }
+
+body.v-a .v-only-a { display: block !important; }
+body.v-b .v-only-b { display: block !important; }
+body.v-c .v-only-c { display: block !important; }
+
+/* Cas particulier pour les headers/footers qui sont flex ou grid */
+body.v-a header.v-only-a { display: block !important; }
+body.v-b header.v-only-b { display: block !important; }
+body.v-c header.v-only-c { display: block !important; }
+
 a { text-decoration: none; color: inherit; }
 ul, ol { list-style: none; margin: 0; padding: 0; }
-img { display: block; max-width: 100%; }
-button { font-family: inherit; cursor: pointer; }
-h1, h2, h3, h4, h5, h6 { margin: 0; line-height: 1.1; }
-p { margin: 0; }
 
 /* ─── Tokens ─────────────────────────────────────────────────────────────── */
 :root {

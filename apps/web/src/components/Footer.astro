@@ -10,122 +10,116 @@ const year = new Date().getFullYear();
 ---
 
 {/* ── Variante A : 4 colonnes ────────────────────────────────────────── */}
-{v === 'A' && (
-  <footer class="ftr ftr-a">
-    <div class="container ftr-a-grid">
-      <div class="ftr-brand">
-        <a href="/" class="logo">
-          <span class="logo-mark"></span>
-          <span class="logo-name">{business.name}</span>
-        </a>
-        <p class="ftr-desc">{footer.description}</p>
-        <div class="ftr-social">
-          {business.socialLinks.linkedin && (
-            <a href={business.socialLinks.linkedin} class="ftr-social-link" aria-label="LinkedIn" rel="noopener">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
-              </svg>
-            </a>
-          )}
-          {business.socialLinks.instagram && (
-            <a href={business.socialLinks.instagram} class="ftr-social-link" aria-label="Instagram" rel="noopener">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                <circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
-              </svg>
-            </a>
-          )}
-        </div>
-      </div>
-
-      <div class="ftr-col">
-        <p class="eyebrow ftr-col-title">Site</p>
-        <ul>
-          {footer.links.map(l => (
-            <li><a href={l.href} class="ftr-link">{l.label}</a></li>
-          ))}
-        </ul>
-      </div>
-
-      <div class="ftr-col">
-        <p class="eyebrow ftr-col-title">Légal</p>
-        <ul>
-          {footer.legal.map(l => (
-            <li><a href={l.href} class="ftr-link">{l.label}</a></li>
-          ))}
-        </ul>
-      </div>
-
-      <div class="ftr-col">
-        <p class="eyebrow ftr-col-title">Contact</p>
-        <a href={`mailto:${business.email}`} class="ftr-link">{business.email}</a>
-        <a href={`tel:${business.phone.replace(/\s/g, '')}`} class="ftr-link">{business.phone}</a>
-        <address class="ftr-address">
-          {business.address.street}<br />
-          {business.address.zip} {business.address.city}
-        </address>
+<footer class="ftr ftr-a v-only-a" id="footer-a">
+  <div class="container ftr-a-grid">
+    <div class="ftr-brand">
+      <a href="/" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-name">{business.name}</span>
+      </a>
+      <p class="ftr-desc">{footer.description}</p>
+      <div class="ftr-social">
+        {business.socialLinks.linkedin && (
+          <a href={business.socialLinks.linkedin} class="ftr-social-link" aria-label="LinkedIn" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+              <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+            </svg>
+          </a>
+        )}
+        {business.socialLinks.instagram && (
+          <a href={business.socialLinks.instagram} class="ftr-social-link" aria-label="Instagram" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+            </svg>
+          </a>
+        )}
       </div>
     </div>
 
-    <div class="container ftr-bottom">
-      <p class="eyebrow">© {year} {business.name} · SIRET {business.siret}</p>
-      <p class="eyebrow">{footer.madeBy}</p>
+    <div class="ftr-col">
+      <p class="eyebrow ftr-col-title">Site</p>
+      <ul>
+        {footer.links.map(l => (
+          <li><a href={l.href} class="ftr-link">{l.label}</a></li>
+        ))}
+      </ul>
     </div>
-  </footer>
-)}
+
+    <div class="ftr-col">
+      <p class="eyebrow ftr-col-title">Légal</p>
+      <ul>
+        {footer.legal.map(l => (
+          <li><a href={l.href} class="ftr-link">{l.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="ftr-col">
+      <p class="eyebrow ftr-col-title">Contact</p>
+      <a href={`mailto:${business.email}`} class="ftr-link">{business.email}</a>
+      <a href={`tel:${business.phone.replace(/\s/g, '')}`} class="ftr-link">{business.phone}</a>
+      <address class="ftr-address">
+        {business.address.street}<br />
+        {business.address.zip} {business.address.city}
+      </address>
+    </div>
+  </div>
+
+  <div class="container ftr-bottom">
+    <p class="eyebrow">© {year} {business.name} · SIRET {business.siret}</p>
+    <p class="eyebrow">{footer.madeBy}</p>
+  </div>
+</footer>
 
 {/* ── Variante B : gros logo + minimal ───────────────────────────────── */}
-{v === 'B' && (
-  <footer class="ftr ftr-b">
-    <div class="container ftr-b-inner">
-      <div class="ftr-b-top">
-        <a href="/" class="logo ftr-b-logo">
-          <span class="logo-mark ftr-b-mark"></span>
-          <span class="logo-name ftr-b-name">{business.name}</span>
-        </a>
-        <nav class="ftr-b-nav" aria-label="Navigation footer">
-          {footer.links.map(l => <a href={l.href} class="ftr-link">{l.label}</a>)}
-        </nav>
-      </div>
-      <div class="ftr-b-bottom">
-        <p class="eyebrow">© {year} {business.name}</p>
-        <div class="ftr-b-legal">
-          {footer.legal.map((l, i) => (
-            <>
-              <a href={l.href} class="ftr-link eyebrow">{l.label}</a>
-              {i < footer.legal.length - 1 && <span class="ftr-sep" aria-hidden="true">·</span>}
-            </>
-          ))}
-        </div>
+<footer class="ftr ftr-b v-only-b" id="footer-b">
+  <div class="container ftr-b-inner">
+    <div class="ftr-b-top">
+      <a href="/" class="logo ftr-b-logo">
+        <span class="logo-mark ftr-b-mark"></span>
+        <span class="logo-name ftr-b-name">{business.name}</span>
+      </a>
+      <nav class="ftr-b-nav" aria-label="Navigation footer">
+        {footer.links.map(l => <a href={l.href} class="ftr-link">{l.label}</a>)}
+      </nav>
+    </div>
+    <div class="ftr-b-bottom">
+      <p class="eyebrow">© {year} {business.name}</p>
+      <div class="ftr-b-legal">
+        {footer.legal.map((l, i) => (
+          <>
+            <a href={l.href} class="ftr-link eyebrow">{l.label}</a>
+            {i < footer.legal.length - 1 && <span class="ftr-sep" aria-hidden="true">·</span>}
+          </>
+        ))}
       </div>
     </div>
-  </footer>
-)}
+  </div>
+</footer>
 
 {/* ── Variante C : colonne éditoriale ────────────────────────────────── */}
-{v === 'C' && (
-  <footer class="ftr ftr-c">
-    <div class="container ftr-c-inner">
-      <div class="ftr-c-top">
-        <a href="/" class="logo">
-          <span class="logo-mark"></span>
-          <span class="logo-name">{business.name}</span>
-        </a>
-        <p class="ftr-c-tagline">{business.tagline}</p>
-      </div>
-      <div class="ftr-c-nav-row">
-        {footer.links.map(l => <a href={l.href} class="ftr-link">{l.label}</a>)}
-        <span class="ftr-sep" aria-hidden="true">|</span>
-        {footer.legal.map(l => <a href={l.href} class="ftr-link ftr-link-faint">{l.label}</a>)}
-      </div>
-      <p class="eyebrow ftr-c-copy">
-        © {year} {business.name} · {footer.madeBy}
-      </p>
+<footer class="ftr ftr-c v-only-c" id="footer-c">
+  <div class="container ftr-c-inner">
+    <div class="ftr-c-top">
+      <a href="/" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-name">{business.name}</span>
+      </a>
+      <p class="ftr-c-tagline">{business.tagline}</p>
     </div>
-  </footer>
-)}
+    <div class="ftr-c-nav-row">
+      {footer.links.map(l => <a href={l.href} class="ftr-link">{l.label}</a>)}
+      <span class="ftr-sep" aria-hidden="true">|</span>
+      {footer.legal.map(l => <a href={l.href} class="ftr-link ftr-link-faint">{l.label}</a>)}
+    </div>
+    <p class="eyebrow ftr-c-copy">
+      © {year} {business.name} · {footer.madeBy}
+    </p>
+  </div>
+</footer>
 
 <style>
 /* ─── Commun ─────────────────────────────────────────────────────────── */
@@ -182,7 +176,7 @@ const year = new Date().getFullYear();
   display: flex; flex-direction: column; gap: 28px;
 }
 .ftr-c-top { display: flex; flex-direction: column; gap: 8px; }
-.ftr-c-tagline { font-family: var(--mono); font-size: 12px; color: var(--inkFaint); margin: 0; }
+.ftr-c-tagline { font-family: var(--fontMono); font-size: 12px; color: var(--inkFaint); margin: 0; }
 .ftr-c-nav-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; border-top: 1px solid var(--lineSoft); padding-top: 24px; }
 .ftr-c-copy { margin: 0; }
 

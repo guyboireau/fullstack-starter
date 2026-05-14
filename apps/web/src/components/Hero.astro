@@ -9,95 +9,89 @@ const v = variants.hero;
 ---
 
 {/* ── Variante A : centré classique ──────────────────────────────────── */}
-{v === 'A' && (
-  <section class="hero hero-a section" id="hero">
-    <div class="container hero-a-inner">
+<section class="hero hero-a section v-only-a" id="hero-a">
+  <div class="container hero-a-inner">
+    <p class="eyebrow hero-eyebrow">{hero.eyebrow}</p>
+    <h1 class="hero-a-h1">{hero.h1}</h1>
+    <p class="hero-a-sub">{hero.subtitle}</p>
+    <div class="hero-a-actions">
+      <a href={hero.cta1.href} class="btn btn-primary btn-lg">{hero.cta1.label}</a>
+      <a href={hero.cta2.href} class="btn btn-outline btn-lg">{hero.cta2.label}</a>
+    </div>
+    <div class="trust-strip">
+      <p class="eyebrow trust-label">Ils nous font confiance</p>
+      <div class="trust-items">
+        {hero.trust.map(t => (
+          <span class="trust-item">{t}</span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* ── Variante B : asymétrique texte + image ─────────────────────────── */}
+<section class="hero hero-b section v-only-b" id="hero-b">
+  <div class="container hero-b-inner">
+    <div class="hero-b-text">
       <p class="eyebrow hero-eyebrow">{hero.eyebrow}</p>
-      <h1 class="hero-a-h1">{hero.h1}</h1>
-      <p class="hero-a-sub">{hero.subtitle}</p>
-      <div class="hero-a-actions">
+      <h1 class="hero-b-h1">{hero.h1}</h1>
+      <p class="hero-b-sub">{hero.subtitle}</p>
+      <div class="hero-b-actions">
         <a href={hero.cta1.href} class="btn btn-primary btn-lg">{hero.cta1.label}</a>
         <a href={hero.cta2.href} class="btn btn-outline btn-lg">{hero.cta2.label}</a>
       </div>
-      <div class="trust-strip">
-        <p class="eyebrow trust-label">Ils nous font confiance</p>
-        <div class="trust-items">
-          {hero.trust.map(t => (
-            <span class="trust-item">{t}</span>
-          ))}
+      <div class="hero-b-meta">
+        <div class="hero-b-divider"></div>
+        <div class="hero-b-author">
+          <span class="author-avatar" aria-hidden="true"></span>
+          <div>
+            <p class="author-name">{hero.badge.label}</p>
+            <p class="author-sub eyebrow">{hero.badge.sub}</p>
+          </div>
         </div>
       </div>
     </div>
-  </section>
-)}
+    <div class="hero-b-visual">
+      <div class="hero-b-img img-placeholder" aria-label="Image principale"></div>
+      <div class="hero-b-badge">
+        <p class="badge-label eyebrow">{hero.badge.label}</p>
+        <p class="badge-value">{hero.badge.value}</p>
+        <div class="stars" aria-label="5 étoiles">
+          {'★★★★★'.split('').map(s => <span class="star">{s}</span>)}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-{/* ── Variante B : asymétrique texte + image ─────────────────────────── */}
-{v === 'B' && (
-  <section class="hero hero-b section" id="hero">
-    <div class="container hero-b-inner">
-      <div class="hero-b-text">
-        <p class="eyebrow hero-eyebrow">{hero.eyebrow}</p>
-        <h1 class="hero-b-h1">{hero.h1}</h1>
-        <p class="hero-b-sub">{hero.subtitle}</p>
-        <div class="hero-b-actions">
+{/* ── Variante C : full-bleed éditorial ─────────────────────────────── */}
+<section class="hero hero-c v-only-c" id="hero-c">
+  <div class="hero-c-visual img-placeholder" aria-label="Image principale">
+    <div class="hero-c-overlay"></div>
+    <div class="hero-c-eyebrow-wrap">
+      <p class="eyebrow hero-c-eyebrow-pill">{hero.eyebrow}</p>
+    </div>
+    <div class="hero-c-h1-wrap">
+      <h1 class="hero-c-h1">{hero.h1}</h1>
+    </div>
+  </div>
+  <div class="hero-c-below section">
+    <div class="container hero-c-below-inner">
+      <div class="hero-c-text">
+        <p class="hero-c-sub">{hero.subtitle}</p>
+        <div class="hero-c-actions">
           <a href={hero.cta1.href} class="btn btn-primary btn-lg">{hero.cta1.label}</a>
           <a href={hero.cta2.href} class="btn btn-outline btn-lg">{hero.cta2.label}</a>
         </div>
-        <div class="hero-b-meta">
-          <div class="hero-b-divider"></div>
-          <div class="hero-b-author">
-            <span class="author-avatar" aria-hidden="true"></span>
-            <div>
-              <p class="author-name">{hero.badge.label}</p>
-              <p class="author-sub eyebrow">{hero.badge.sub}</p>
-            </div>
-          </div>
-        </div>
       </div>
-      <div class="hero-b-visual">
-        <div class="hero-b-img img-placeholder" aria-label="Image principale"></div>
-        <div class="hero-b-badge">
-          <p class="badge-label eyebrow">{hero.badge.label}</p>
-          <p class="badge-value">{hero.badge.value}</p>
-          <div class="stars" aria-label="5 étoiles">
-            {'★★★★★'.split('').map(s => <span class="star">{s}</span>)}
-          </div>
-        </div>
+      <div class="hero-c-infocard">
+        <p class="eyebrow" style="color: var(--inkFaint)">{hero.infoCard.status}</p>
+        <p class="infocard-hours">{hero.infoCard.hours}</p>
+        <p class="infocard-location text-muted">{hero.infoCard.location}</p>
       </div>
     </div>
-  </section>
-)}
-
-{/* ── Variante C : full-bleed éditorial ─────────────────────────────── */}
-{v === 'C' && (
-  <section class="hero hero-c" id="hero">
-    <div class="hero-c-visual img-placeholder" aria-label="Image principale">
-      <div class="hero-c-overlay"></div>
-      <div class="hero-c-eyebrow-wrap">
-        <p class="eyebrow hero-c-eyebrow-pill">{hero.eyebrow}</p>
-      </div>
-      <div class="hero-c-h1-wrap">
-        <h1 class="hero-c-h1">{hero.h1}</h1>
-      </div>
-    </div>
-    <div class="hero-c-below section">
-      <div class="container hero-c-below-inner">
-        <div class="hero-c-text">
-          <p class="hero-c-sub">{hero.subtitle}</p>
-          <div class="hero-c-actions">
-            <a href={hero.cta1.href} class="btn btn-primary btn-lg">{hero.cta1.label}</a>
-            <a href={hero.cta2.href} class="btn btn-outline btn-lg">{hero.cta2.label}</a>
-          </div>
-        </div>
-        <div class="hero-c-infocard">
-          <p class="eyebrow" style="color: var(--inkFaint)">{hero.infoCard.status}</p>
-          <p class="infocard-hours">{hero.infoCard.hours}</p>
-          <p class="infocard-location text-muted">{hero.infoCard.location}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-)}
+  </div>
+</section>
 
 <style>
 /* ─── Commun ────────────────────────────────────────────────────────────── */
@@ -140,7 +134,7 @@ const v = variants.hero;
   display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px;
 }
 .trust-item {
-  font-size: 13px; color: var(--inkSoft); font-family: var(--mono);
+  font-size: 13px; color: var(--inkSoft); font-family: var(--fontMono);
 }
 .trust-item::before { content: '✓  '; color: var(--primary); }
 
@@ -215,7 +209,7 @@ const v = variants.hero;
 .hero-c-eyebrow-pill {
   background: rgba(255,255,255,.88);
   backdrop-filter: blur(8px);
-  padding: 6px 14px; border-radius: var(--radius-pill);
+  padding: 6px 14px; border-radius: 100px;
   color: var(--ink); margin: 0;
 }
 .hero-c-h1-wrap {

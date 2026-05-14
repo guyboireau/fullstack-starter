@@ -8,71 +8,67 @@ const v = variants.about;
 ---
 
 {/* ── Variante A : 2 colonnes texte + image ──────────────────────────── */}
-{v === 'A' && (
-  <section class="section section-alt" id="apropos">
-    <div class="container abt-a-inner">
-      <div class="abt-a-text">
-        <p class="eyebrow">{about.eyebrow}</p>
-        <h2 class="abt-h2">{about.title}</h2>
-        <div class="abt-a-body">
-          {about.text.map((p: string) => <p class="abt-para">{p}</p>)}
-        </div>
-        <div class="abt-a-stats">
-          <div class="abt-a-divider"></div>
-          <div class="abt-a-stats-row">
-            {about.stats.map((s) => (
-              <div class="abt-a-stat">
-                <span class="abt-stat-val">{s.value}</span>
-                <span class="abt-stat-lbl eyebrow">{s.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <a href={about.cta.href} class="btn btn-outline" style="align-self: flex-start; margin-top: 32px;">
-          {about.cta.label}
-        </a>
+<section class="section section-alt v-only-a" id="apropos-a">
+  <div class="container abt-a-inner">
+    <div class="abt-a-text">
+      <p class="eyebrow">{about.eyebrow}</p>
+      <h2 class="abt-h2">{about.title}</h2>
+      <div class="abt-a-body">
+        {about.text.map((p: string) => <p class="abt-para">{p}</p>)}
       </div>
-      <div class="abt-a-visual">
-        <div class="abt-a-img img-placeholder" aria-label="Photo équipe ou portrait"></div>
-        <div class="abt-a-author-card">
-          <span class="abt-a-avatar" aria-hidden="true">
-            {about.author.name.charAt(0)}
-          </span>
-          <div>
-            <p class="abt-author-name">{about.author.name}</p>
-            <p class="abt-author-role eyebrow">{about.author.role}</p>
-          </div>
+      <div class="abt-a-stats">
+        <div class="abt-a-divider"></div>
+        <div class="abt-a-stats-row">
+          {about.stats.map((s) => (
+            <div class="abt-a-stat">
+              <span class="abt-stat-val">{s.value}</span>
+              <span class="abt-stat-lbl eyebrow">{s.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <a href={about.cta.href} class="btn btn-outline" style="align-self: flex-start; margin-top: 32px;">
+        {about.cta.label}
+      </a>
+    </div>
+    <div class="abt-a-visual">
+      <div class="abt-a-img img-placeholder" aria-label="Photo équipe ou portrait"></div>
+      <div class="abt-a-author-card">
+        <span class="abt-a-avatar" aria-hidden="true">
+          {about.author.name.charAt(0)}
+        </span>
+        <div>
+          <p class="abt-author-name">{about.author.name}</p>
+          <p class="abt-author-role eyebrow">{about.author.role}</p>
         </div>
       </div>
     </div>
-  </section>
-)}
+  </div>
+</section>
 
 {/* ── Variante B : stats éditoriales ────────────────────────────────── */}
-{v === 'B' && (
-  <section class="section" id="apropos">
-    <div class="container">
-      <div class="abt-b-head">
-        <p class="eyebrow">{about.eyebrow}</p>
-        <h2 class="abt-h2 abt-b-h2">{about.title}</h2>
-      </div>
-      <div class="abt-b-stats">
-        {about.stats.map((s) => (
-          <div class="abt-b-stat">
-            <span class="abt-b-stat-val">{s.value}</span>
-            <span class="abt-stat-lbl eyebrow">{s.label}</span>
-          </div>
-        ))}
-      </div>
-      <div class="abt-b-body">
-        {about.text.map((p: string) => <p class="abt-para">{p}</p>)}
-        <a href={about.cta.href} class="btn btn-outline" style="align-self: flex-start; margin-top: 24px;">
-          {about.cta.label}
-        </a>
-      </div>
+<section class="section v-only-b v-only-c" id="apropos-b">
+  <div class="container">
+    <div class="abt-b-head">
+      <p class="eyebrow">{about.eyebrow}</p>
+      <h2 class="abt-h2 abt-b-h2">{about.title}</h2>
     </div>
-  </section>
-)}
+    <div class="abt-b-stats">
+      {about.stats.map((s) => (
+        <div class="abt-b-stat">
+          <span class="abt-b-stat-val">{s.value}</span>
+          <span class="abt-stat-lbl eyebrow">{s.label}</span>
+        </div>
+      ))}
+    </div>
+    <div class="abt-b-body">
+      {about.text.map((p: string) => <p class="abt-para">{p}</p>)}
+      <a href={about.cta.href} class="btn btn-outline" style="align-self: flex-start; margin-top: 24px;">
+        {about.cta.label}
+      </a>
+    </div>
+  </div>
+</section>
 
 <style>
 .abt-h2 {

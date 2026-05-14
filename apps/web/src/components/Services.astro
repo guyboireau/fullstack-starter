@@ -2,7 +2,7 @@
 // Services — 3 variantes
 // A : Grille 3 colonnes avec cards icône
 // B : Liste verticale avec gros numéros + tags
-// C : Split — heading gauche, liste des services droite avec détails
+// C : Accordéon (expand)
 import { variants, services } from '../config/site';
 
 const v = variants.services;
@@ -18,110 +18,104 @@ const icons: Record<string, string> = {
 ---
 
 {/* ── Variante A : grille 3 colonnes ─────────────────────────────────── */}
-{v === 'A' && (
-  <section class="section" id="services">
-    <div class="container">
-      <div class="srv-a-head">
-        <p class="eyebrow">{services.eyebrow}</p>
-        <h2 class="srv-h2">{services.title}</h2>
-        <p class="srv-sub">{services.subtitle}</p>
-      </div>
-      <div class="srv-a-grid">
-        {services.items.map((item) => (
-          <article class="card srv-a-card">
-            <div class="srv-a-icon-wrap" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" set:html={icons[item.icon] ?? icons.star} />
-            </div>
-            <h3 class="srv-a-title">{item.title}</h3>
-            <p class="srv-a-text">{item.text}</p>
-            <a href="#contact" class="srv-a-link">{item.link}</a>
-          </article>
-        ))}
-      </div>
+<section class="section v-only-a" id="services-a">
+  <div class="container">
+    <div class="srv-a-head">
+      <p class="eyebrow">{services.eyebrow}</p>
+      <h2 class="srv-h2">{services.title}</h2>
+      <p class="srv-sub">{services.subtitle}</p>
     </div>
-  </section>
-)}
+    <div class="srv-a-grid">
+      {services.items.map((item) => (
+        <article class="card srv-a-card">
+          <div class="srv-a-icon-wrap" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" set:html={icons[item.icon] ?? icons.star} />
+          </div>
+          <h3 class="srv-a-title">{item.title}</h3>
+          <p class="srv-a-text">{item.text}</p>
+          <a href="#contact" class="srv-a-link">{item.link}</a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
 
 {/* ── Variante B : liste numérotée ────────────────────────────────────── */}
-{v === 'B' && (
-  <section class="section section-alt" id="services">
-    <div class="container">
-      <div class="srv-b-head">
-        <p class="eyebrow">{services.eyebrow}</p>
-        <h2 class="srv-h2">{services.title}</h2>
-      </div>
-      <div class="srv-b-list">
-        {services.items.map((item, i) => (
-          <article class="srv-b-row">
-            <span class="srv-b-num" aria-hidden="true">0{i + 1}</span>
-            <div class="srv-b-body">
-              <div class="srv-b-titlerow">
-                <h3 class="srv-b-title">{item.title}</h3>
-                {item.tag && <span class="srv-b-tag">{item.tag}</span>}
-              </div>
-              <p class="srv-b-text">{item.text}</p>
-            </div>
-            <a href="#contact" class="btn btn-ghost srv-b-link" aria-label={`En savoir plus : ${item.title}`}>→</a>
-          </article>
-        ))}
-      </div>
+<section class="section section-alt v-only-b" id="services-b">
+  <div class="container">
+    <div class="srv-b-head">
+      <p class="eyebrow">{services.eyebrow}</p>
+      <h2 class="srv-h2">{services.title}</h2>
     </div>
-  </section>
-)}
+    <div class="srv-b-list">
+      {services.items.map((item, i) => (
+        <article class="srv-b-row">
+          <span class="srv-b-num" aria-hidden="true">0{i + 1}</span>
+          <div class="srv-b-body">
+            <div class="srv-b-titlerow">
+              <h3 class="srv-b-title">{item.title}</h3>
+              {item.tag && <span class="srv-b-tag">{item.tag}</span>}
+            </div>
+            <p class="srv-b-text">{item.text}</p>
+          </div>
+          <a href="#contact" class="btn btn-ghost srv-b-link" aria-label={`En savoir plus : ${item.title}`}>→</a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
 
 {/* ── Variante C : accordéon (expand) ─────────────────────────────────── */}
-{v === 'C' && (
-  <section class="section" id="services">
-    <div class="container">
-      <div class="srv-c-head">
-        <p class="eyebrow">{services.eyebrow}</p>
-        <h2 class="srv-h2">{services.title}</h2>
-      </div>
-      <div class="srv-c-list">
-        {services.items.map((item, i) => (
-          <div class={`srv-c-item ${i === 0 ? 'open' : ''}`}>
-            <button
-              class="srv-c-trigger"
-              aria-expanded={i === 0 ? 'true' : 'false'}
-              aria-controls={`srv-panel-${i}`}
-            >
-              <div class="srv-c-trigger-left">
-                <span class="srv-c-num eyebrow">0{i + 1}</span>
-                <h3 class="srv-c-title">{item.title}</h3>
+<section class="section v-only-c" id="services-c">
+  <div class="container">
+    <div class="srv-c-head">
+      <p class="eyebrow">{services.eyebrow}</p>
+      <h2 class="srv-h2">{services.title}</h2>
+    </div>
+    <div class="srv-c-list">
+      {services.items.map((item, i) => (
+        <div class={`srv-c-item ${i === 0 ? 'open' : ''}`}>
+          <button
+            class="srv-c-trigger"
+            aria-expanded={i === 0 ? 'true' : 'false'}
+            aria-controls={`srv-panel-${i}`}
+          >
+            <div class="srv-c-trigger-left">
+              <span class="srv-c-num eyebrow">0{i + 1}</span>
+              <h3 class="srv-c-title">{item.title}</h3>
+            </div>
+            <span class="srv-c-icon">{i === 0 ? '–' : '+'}</span>
+          </button>
+          <div
+            class="srv-c-panel"
+            id={`srv-panel-${i}`}
+            hidden={i !== 0}
+          >
+            <div class="srv-c-content">
+              <div class="srv-c-text-wrap">
+                <p class="srv-c-text">{item.text}</p>
+                <a href="#contact" class="btn btn-outline btn-sm">Voir un cas →</a>
               </div>
-              <span class="srv-c-icon">{i === 0 ? '–' : '+'}</span>
-            </button>
-            <div
-              class="srv-c-panel"
-              id={`srv-panel-${i}`}
-              hidden={i !== 0}
-            >
-              <div class="srv-c-content">
-                <div class="srv-c-text-wrap">
-                  <p class="srv-c-text">{item.text}</p>
-                  <a href="#contact" class="btn btn-outline btn-sm">Voir un cas →</a>
-                </div>
-                {item.features && (
-                  <ul class="srv-c-features">
-                    {item.features.map(f => (
-                      <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <path d="M20 6L9 17l-5-5"/>
-                        </svg>
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              {item.features && (
+                <ul class="srv-c-features">
+                  {item.features.map(f => (
+                    <li>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 6L9 17l-5-5"/>
+                      </svg>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
-  </section>
-)}
+  </div>
+</section>
 
 <style>
 .srv-h2 {
@@ -157,15 +151,15 @@ const icons: Record<string, string> = {
 }
 .srv-b-row:last-child { border-bottom: 1px solid var(--lineSoft); }
 .srv-b-num {
-  font-family: var(--mono); font-size: 28px; color: var(--lineSoft);
+  font-family: var(--fontMono); font-size: 28px; color: var(--lineSoft);
   letter-spacing: -0.02em; align-self: flex-start; padding-top: 4px;
 }
 .srv-b-body { display: flex; flex-direction: column; gap: 8px; }
 .srv-b-titlerow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .srv-b-title { font-size: 18px; font-weight: 500; color: var(--ink); }
 .srv-b-tag {
-  font-family: var(--mono); font-size: 10px; padding: 3px 8px;
-  border-radius: var(--radius-pill); background: var(--lineSoft); color: var(--inkSoft);
+  font-family: var(--fontMono); font-size: 10px; padding: 3px 8px;
+  border-radius: 100px; background: var(--lineSoft); color: var(--inkSoft);
 }
 .srv-b-text { font-size: 14px; color: var(--inkSoft); line-height: 1.65; max-width: 64ch; }
 .srv-b-link { font-size: 18px; color: var(--inkFaint); transition: color 0.15s; }
