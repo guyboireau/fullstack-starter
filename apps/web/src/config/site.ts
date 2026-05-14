@@ -22,15 +22,15 @@ export const siteConfig = {
 
   // ── 1. INFORMATIONS BUSINESS ───────────────────────────────────────────────
   business: {
-    name:     'Cabinet Aubry',
-    tagline:  'Avocat·e en droit des affaires',
-    industry: 'juridique',          // utilisé pour schema.org + choix de contenu IA
-    phone:    '+33 6 12 34 56 78',
-    email:    'contact@cabinet-aubry.fr',
+    name:     '[NOM DE L\'ENTREPRISE]',
+    tagline:  '[VOTRE SLOGAN ICI]',
+    industry: 'services',          // utilisé pour schema.org + choix de contenu IA
+    phone:    '+33 6 00 00 00 00',
+    email:    'contact@votre-domaine.fr',
     address: {
-      street:     '12 rue Mercière',
-      city:       'Lyon',
-      postalCode: '69002',
+      street:     '[RUE ET NUMÉRO]',
+      city:       '[VILLE]',
+      postalCode: '[CODE POSTAL]',
       country:    'FR',
     },
     openingHours: {
@@ -38,279 +38,276 @@ export const siteConfig = {
       tuesday:   '09:00-18:00',
       wednesday: '09:00-18:00',
       thursday:  '09:00-18:00',
-      friday:    '09:00-17:00',
+      friday:    '09:00-18:00',
       saturday:  null,
       sunday:    null,
     },
     socialLinks: {
-      linkedin:  'https://linkedin.com',
+      linkedin:  '',
       instagram: '',
       facebook:  '',
       twitter:   '',
     },
-    siret:        '123 456 789 00012',
-    availability: 'Disponible — répond sous 24h',
+    siret:        '000 000 000 00000',
+    availability: 'Disponible',
   },
 
   // ── 2. BRANDING ────────────────────────────────────────────────────────────
-  // Couleurs directes (pas de preset — copiez depuis les palettes ci-dessous)
   branding: {
-    primaryColor:    '#b8763d',   // couleur brand principale (boutons, accents)
-    primaryDark:     '#9a6128',   // hover/darken du primary
-    primarySoft:     '#f6e7d4',   // bg très doux (badges, chips)
-    secondaryColor:  '#1a1916',   // ink / texte principal
-    accentColor:     '#c44a1e',   // accent sparingly (warning, highlight)
-    fontHeading:     'Geist',     // police titres  → Google Fonts name
-    fontBody:        'Geist',     // police corps   → Google Fonts name
+    primaryColor:    '#3b82f6',   // Bleu standard
+    primaryDark:     '#2563eb',
+    primarySoft:     '#eff6ff',
+    secondaryColor:  '#1a1916',
+    accentColor:     '#f59e0b',
+    fontHeading:     'Geist',
+    fontBody:        'Geist',
     fontMono:        'Geist Mono',
-    logoPath:        '/assets/logo.svg',  // chemin depuis /public
+    logoPath:        '/assets/logo.svg',
     faviconPath:     '/favicon.svg',
   },
 
   // ── 3. SEO ─────────────────────────────────────────────────────────────────
   seo: {
-    titleTemplate:      '%s | Cabinet Aubry — Lyon',
-    defaultTitle:       'Cabinet Aubry — Avocat en droit des affaires · Lyon',
-    defaultDescription: 'Cabinet d\'avocat spécialisé en droit des affaires pour entrepreneurs et TPE depuis 2012. Contrats, création d\'entreprise, contentieux.',
+    titleTemplate:      '%s | [NOM DE L\'ENTREPRISE]',
+    defaultTitle:       '[NOM DE L\'ENTREPRISE] — [ACTIVITÉ PRINCIPALE]',
+    defaultDescription: 'Description courte de vos services et de votre valeur ajoutée pour vos clients.',
     keywords: [
-      'avocat droit des affaires lyon',
-      'avocat entreprise lyon',
-      'cabinet juridique lyon',
-      'création entreprise avocat',
+      'mot-clé 1',
+      'mot-clé 2',
+      'mot-clé 3',
     ],
-    googleBusinessUrl:   '',   // URL du profil Google Business
-    googleAnalyticsId:   '',   // G-XXXXXXXXXX
-    googleSearchConsole: '',   // meta verification tag (content="...")
-    bingWebmasterKey:    '',   // Bing Webmaster Tools verification key
-    plausibleDomain:     '',   // ex: cabinet-aubry.fr (Plausible Analytics)
-    sentryDsn:           '',   // Sentry DSN (https://xxx@sentry.io/yyy)
+    googleBusinessUrl:   '',
+    googleAnalyticsId:   '',
+    googleSearchConsole: '',
+    bingWebmasterKey:    '',
+    plausibleDomain:     '',
+    sentryDsn:           '',
     locale:              'fr_FR',
-    siteUrl:             'https://cabinet-aubry.fr',
+    siteUrl:             'https://votre-site.fr',
     ogImage:             '/assets/og-image.jpg',
   },
 
   // ── 4. DESIGN VARIANTS ─────────────────────────────────────────────────────
-  // 'A' = Safe / Classique  |  'B' = Clean / Vercel  |  'C' = Audacieux
   design: {
-    isSketchy: true,      // true = style "main levée" (filtres SVG)
+    isSketchy: false,
     variants: {
-      header:       'B',  // A=nav-centrée | B=inline Vercel | C=identité forte + Menu
-      hero:         'B',  // A=centré      | B=asymétrique   | C=full-bleed éditorial
-      services:     'A',  // A=grille 3col | B=liste numéros | C=split sticky
-      about:        'A',  // A=2-col img   | B=stats édito
-      testimonials: 'A',  // A=3 cards     | B=citation pleine page | C=mur compact
-      pricing:      'A',  // A=3 plans     | B=tableau comparatif
-      faq:          'A',  // A=accordéon   | B=2 colonnes Q&R
-      cta:          'A',  // A=fond encré  | B=inline minimal
-      footer:       'A',  // A=4 colonnes  | B=logo+minimal  | C=éditoriale
+      header:       'A',
+      hero:         'A',
+      services:     'A',
+      about:        'A',
+      testimonials: 'A',
+      pricing:      'A',
+      faq:          'A',
+      cta:          'A',
+      footer:       'A',
     },
   },
 
-  // ── 5. PAGES (multipage — ignoré en landing 1 page) ───────────────────────
+  // ── 5. PAGES (multipage) ──────────────────────────────────────────────────
   pages: {
     home: {
       slug:        '/',
       title:       'Accueil',
-      description: 'Cabinet d\'avocat en droit des affaires à Lyon.',
+      description: 'Bienvenue sur notre site.',
     },
     services: {
       slug:        '/services',
       title:       'Nos services',
-      description: 'Contrats, création d\'entreprise, contentieux.',
+      description: 'Découvrez nos prestations.',
     },
     about: {
       slug:        '/a-propos',
       title:       'À propos',
-      description: 'Le Cabinet Aubry : 12 ans d\'expertise au service des entrepreneurs.',
+      description: 'En savoir plus sur notre entreprise.',
     },
     blog: {
       slug:        '/blog',
       title:       'Blog',
-      description: 'Conseils juridiques pour entrepreneurs.',
+      description: 'Actualités et conseils.',
     },
     realisations: {
       slug:        '/realisations',
       title:       'Réalisations',
-      description: 'Découvrez nos derniers projets et chantiers.',
+      description: 'Nos projets récents.',
     },
     contact: {
       slug:        '/contact',
       title:       'Contact',
-      description: 'Prenez rendez-vous avec le Cabinet Aubry.',
+      description: 'Contactez-nous pour toute demande.',
     },
   },
 
   // ── 6. FEATURES ────────────────────────────────────────────────────────────
   features: {
-    blog:          false,   // true = section + page /blog
-    booking:       false,   // true = intégration Cal.com / Calendly
-    multilingual:  false,   // true = i18n fr/en
-    pricing:       true,    // true = section tarifs visible
-    testimonials:  true,    // true = section témoignages visible
-    newsletter:    false,   // true = champ email dans footer
-    cookieBanner:  true,    // true = bandeau RGPD
-    analytics:     false,   // true = inject GA (seo.googleAnalyticsId requis)
-    plausible:     false,   // true = inject Plausible (seo.plausibleDomain requis)
-    sentry:        false,   // true = inject Sentry (seo.sentryDsn requis)
+    blog:          false,
+    booking:       false,
+    multilingual:  false,
+    pricing:       true,
+    testimonials:  true,
+    newsletter:    false,
+    cookieBanner:  true,
+    analytics:     false,
+    plausible:     false,
+    sentry:        false,
   },
 
   // ── 7. CONTENT ─────────────────────────────────────────────────────────────
   content: {
 
     hero: {
-      eyebrow:  'Avocat en droit des affaires · Lyon',
-      h1:       'Votre partenaire juridique pour développer sereinement',
-      subtitle: 'Contrats, contentieux, création d\'entreprise : un accompagnement clair, humain et efficace pour les TPE et PME.',
-      image:    '/assets/images/hero.png',
-      cta1:     { label: 'Prendre rendez-vous', href: '#contact' },
-      cta2:     { label: 'Nos honoraires →',    href: '#tarifs' },
-      trust:    ['12 ans d\'expérience', '180+ clients accompagnés', 'Réponse sous 24h'],
-      badge:    { label: 'Note Google', value: '4.9 / 5', sub: '47 avis vérifiés' },
-      infoCard: { status: 'Disponible', hours: 'Lun–Ven · 9h–18h', location: '12 rue Mercière, Lyon' },
+      eyebrow:  '[SOUSTITRE / ACTIVITÉ]',
+      h1:       '[TITRE PRINCIPAL CAPTIVANT]',
+      subtitle: '[Description détaillée de ce que vous faites et pourquoi vous êtes le meilleur choix pour vos clients.]',
+      image:    '/assets/images/placeholder-hero.png',
+      cta1:     { label: '[BOUTON PRINCIPAL]', href: '#contact' },
+      cta2:     { label: '[BOUTON SECONDAIRE]', href: '#services' },
+      trust:    ['[Argument 1]', '[Argument 2]', '[Argument 3]'],
+      badge:    { label: '[LABEL]', value: '[VALEUR]', sub: '[DÉTAIL]' },
+      infoCard: { status: 'Disponible', hours: 'Lun–Ven · 9h–18h', location: '[VOTRE ADRESSE]' },
     },
 
     services: {
       eyebrow:  '— Nos prestations',
-      title:    'Un accompagnement sur-mesure à chaque étape',
-      subtitle: 'Que vous créiez votre activité ou traversiez un contentieux, nous vous guidons avec précision.',
+      title:    '[TITRE DE LA SECTION SERVICES]',
+      subtitle: '[Introduction à vos services et votre savoir-faire.]',
       items: [
         {
-          icon:  'scale',
-          title: 'Droit des contrats',
-          text:  'Rédaction, relecture et négociation de vos contrats commerciaux, CGV, baux professionnels.',
+          icon:  'star',
+          title: '[Service 1]',
+          text:  '[Description courte du service 1 expliquant les bénéfices.]',
           link:  'En savoir plus →',
-          tag:   '4–6 sem',
-          features: ['Audit de contrats', 'Rédaction CGV', 'Négociations B2B'],
+          tag:   '[Tag/Info]',
+          features: ['[Caractéristique 1]', '[Caractéristique 2]', '[Caractéristique 3]'],
         },
         {
-          icon:  'building',
-          title: 'Création d\'entreprise',
-          text:  'Choix de la forme juridique, rédaction des statuts, accompagnement au lancement.',
+          icon:  'check',
+          title: '[Service 2]',
+          text:  '[Description courte du service 2 expliquant les bénéfices.]',
           link:  'En savoir plus →',
-          tag:   '2–3 sem',
-          features: ['Statuts sur mesure', 'Pacte d\'associés', 'Formalités greffe'],
+          tag:   '[Tag/Info]',
+          features: ['[Caractéristique 1]', '[Caractéristique 2]', '[Caractéristique 3]'],
         },
         {
           icon:  'shield',
-          title: 'Contentieux & litiges',
-          text:  'Défense de vos intérêts en cas de conflit commercial, recouvrement de créances, procédures.',
+          title: '[Service 3]',
+          text:  '[Description courte du service 3 expliquant les bénéfices.]',
           link:  'En savoir plus →',
-          tag:   'Sur devis',
-          features: ['Recouvrement', 'Défense tribunal', 'Médiation'],
+          tag:   '[Tag/Info]',
+          features: ['[Caractéristique 1]', '[Caractéristique 2]', '[Caractéristique 3]'],
         },
       ],
     },
 
     about: {
       eyebrow: '— À propos',
-      title:   'Un cabinet à taille humaine, à votre service',
+      title:   '[QUI SOMMES-NOUS ?]',
       text: [
-        'Fondé il y a 12 ans, le Cabinet Aubry accompagne les entrepreneurs et dirigeants de TPE dans tous leurs besoins juridiques quotidiens.',
-        'Notre approche : être un partenaire de confiance, pas un prestataire ponctuel. Nous prenons le temps de comprendre votre activité pour vous donner les bons conseils au bon moment.',
+        '[Paragraphe 1 : Présentez votre histoire et votre mission.]',
+        '[Paragraphe 2 : Expliquez votre approche et vos valeurs.]',
       ],
       stats: [
-        { value: '12',   label: 'ans d\'expérience' },
-        { value: '180+', label: 'projets livrés' },
-        { value: '4.9',  label: 'note moyenne' },
+        { value: '[XX]',   label: '[Label 1]' },
+        { value: '[XX]+',  label: '[Label 2]' },
+        { value: '[X.X]',  label: '[Label 3]' },
       ],
-      cta:    { label: 'Notre méthode →', href: '#contact' },
-      image:  '/assets/images/team.png',
-      author: { name: 'Sophie Aubry', role: 'Avocate associée', image: '/assets/images/portrait.png' },
+      cta:    { label: '[EN SAVOIR PLUS]', href: '#contact' },
+      image:  '/assets/images/placeholder-about.png',
+      author: { name: '[NOM]', role: '[RÔLE]', image: '/assets/images/placeholder-portrait.png' },
     },
 
     testimonials: {
       eyebrow:   '— Témoignages',
-      title:     'Ils nous font confiance',
-      ratingStr: '4.9 / 5 · 47 avis Google',
+      title:     '[TITRE TÉMOIGNAGES]',
+      ratingStr: '[X.X] / 5 · [XX] avis clients',
       items: [
         {
-          quote:   'Le Cabinet Aubry nous a accompagnés dès la création de notre SAS. Sophie a su expliquer les choses simplement et nous a évité plusieurs erreurs coûteuses.',
-          name:    'Marie L.',
-          role:    'Restauratrice · Lyon 2e',
-          initial: 'M',
+          quote:   '[Citation du client 1 : Expliquez comment vous avez aidé ce client.]',
+          name:    '[NOM CLIENT 1]',
+          role:    '[RÔLE / ENTREPRISE]',
+          initial: 'C',
         },
         {
-          quote:   'Réactif, clair dans ses conseils et disponible en cas d\'urgence. Je recommande à tous les artisans qui ont besoin d\'un soutien juridique fiable.',
-          name:    'Paul R.',
-          role:    'Plombier · Villeurbanne',
-          initial: 'P',
+          quote:   '[Citation du client 2 : Expliquez comment vous avez aidé ce client.]',
+          name:    '[NOM CLIENT 2]',
+          role:    '[RÔLE / ENTREPRISE]',
+          initial: 'C',
         },
         {
-          quote:   'Nous avons géré plusieurs contentieux fournisseurs avec leur aide. Résultats rapides et communication impeccable tout au long de la procédure.',
-          name:    'Inès K.',
-          role:    'Directrice générale · Cabinet conseil',
-          initial: 'I',
+          quote:   '[Citation du client 3 : Expliquez comment vous avez aidé ce client.]',
+          name:    '[NOM CLIENT 3]',
+          role:    '[RÔLE / ENTREPRISE]',
+          initial: 'C',
         },
       ],
     },
 
     pricing: {
-      eyebrow:  '— Honoraires',
-      title:    'Des formules transparentes',
-      subtitle: 'Pas de surprise : nos honoraires sont définis en amont selon la nature de la mission.',
+      eyebrow:  '— Tarifs',
+      title:    '[TITRE TARIFS]',
+      subtitle: '[Introduction à vos tarifs et vos différentes offres.]',
       plans: [
         {
-          name:      'Consultation',
-          price:     '180',
-          unit:      '/ heure',
-          desc:      'Analyse de votre situation, conseils pratiques, réponses à vos questions urgentes.',
-          features:   ['Rendez-vous 1h en cabinet ou visio', 'Compte-rendu écrit inclus', 'Sans engagement'],
-          cta:        'Réserver',
+          name:      '[OFFRE 1]',
+          price:     '[PRIX]',
+          unit:      '/ [UNITÉ]',
+          desc:      '[Description courte de l\'offre 1.]',
+          features:   ['[Service inclus 1]', '[Service inclus 2]', '[Service inclus 3]'],
+          cta:        'Choisir',
           highlight:  false,
-          stripeLink: '',   // lien de paiement Stripe (https://buy.stripe.com/...)
+          stripeLink: '',
         },
         {
-          name:       'Mission ponctuelle',
-          price:      'Sur devis',
-          unit:       '',
-          desc:       'Rédaction de contrats, statuts, CGV, ou gestion d\'un dossier contentieux spécifique.',
-          features:   ['Devis fixe remis avant démarrage', 'Délai garanti contractuellement', 'Suivi dédié'],
-          cta:        'Demander un devis',
+          name:       '[OFFRE 2]',
+          price:      '[PRIX]',
+          unit:       '/ [UNITÉ]',
+          desc:       '[Description courte de l\'offre 2.]',
+          features:   ['[Service inclus 1]', '[Service inclus 2]', '[Service inclus 3]'],
+          cta:        'Choisir',
           highlight:  true,
           stripeLink: '',
         },
         {
-          name:       'Suivi annuel',
-          price:      '290',
-          unit:       '/ mois',
-          desc:       'Accompagnement récurrent pour les entreprises qui veulent un partenaire juridique de fond.',
-          features:   ['4h de conseil / mois incluses', 'Réponses sous 24h', 'Revue trimestrielle des risques'],
-          cta:        'En savoir plus',
+          name:       '[OFFRE 3]',
+          price:      '[PRIX]',
+          unit:       '/ [UNITÉ]',
+          desc:       '[Description courte de l\'offre 3.]',
+          features:   ['[Service inclus 1]', '[Service inclus 2]', '[Service inclus 3]'],
+          cta:        'Choisir',
           highlight:  false,
-          stripeLink: '',   // lien Stripe Billing (abonnement mensuel)
+          stripeLink: '',
         },
       ],
     },
 
     faq: {
       eyebrow: '— Questions fréquentes',
-      title:   'Tout ce que vous voulez savoir',
+      title:   '[TITRE FAQ]',
       items: [
-        { q: 'Comment se déroule le premier rendez-vous ?',        a: 'Le premier rendez-vous dure 1h. Nous analysons votre situation, répondons à vos questions et vous remettons un compte-rendu écrit. Ce rendez-vous est facturé au tarif horaire standard.' },
-        { q: 'Intervenez-vous pour des entreprises hors de Lyon ?', a: 'Oui. Nous intervenons sur toute la France. Les consultations peuvent se faire en visioconférence et les missions à distance sont notre quotidien.' },
-        { q: 'Quel est votre délai de réponse habituel ?',          a: 'Nous nous engageons à répondre à toute demande sous 24h ouvrées. En cas d\'urgence, merci de le préciser dans votre message.' },
-        { q: 'Proposez-vous des forfaits pour les startups ?',      a: 'Oui, nous avons des formules adaptées aux startups en phase d\'amorçage. Contactez-nous pour en discuter.' },
-        { q: 'Comment sont fixés vos honoraires ?',                 a: 'Avant chaque mission, nous vous remettons une convention d\'honoraires détaillant les montants et les modalités. Aucune surprise en cours de route.' },
+        { q: '[Question 1 ?]', a: '[Réponse détaillée à la question 1.]' },
+        { q: '[Question 2 ?]', a: '[Réponse détaillée à la question 2.]' },
+        { q: '[Question 3 ?]', a: '[Réponse détaillée à la question 3.]' },
+        { q: '[Question 4 ?]', a: '[Réponse détaillée à la question 4.]' },
+        { q: '[Question 5 ?]', a: '[Réponse détaillée à la question 5.]' },
       ],
     },
 
     cta: {
-      eyebrow:  'Passons à l\'action',
-      title:    'Prêt à sécuriser votre activité ?',
-      subtitle: 'Prenez rendez-vous en ligne. Premier échange sous 24h.',
-      cta1:     { label: 'Prendre rendez-vous', href: '#contact' },
-      cta2:     { label: 'Voir les honoraires',  href: '#tarifs' },
+      eyebrow:  '[APPEL À L\'ACTION]',
+      title:    '[PRÊT À DÉMARRER ?]',
+      subtitle: '[Dernière phrase d\'incitation pour contacter l\'entreprise.]',
+      cta1:     { label: '[CONTACT]', href: '#contact' },
+      cta2:     { label: '[DÉCOUVRIR]',  href: '#services' },
     },
 
     contact: {
       eyebrow:        '— Contact',
-      title:          'Parlons de votre projet',
-      subtitle:       'Décrivez votre situation en quelques mots. Nous vous répondons sous 24h.',
-      successMessage: 'Message bien reçu — nous vous répondons sous 24h.',
+      title:          '[TITRE CONTACT]',
+      subtitle:       '[Décrivez ce que le client doit faire pour vous contacter.]',
+      successMessage: 'Message bien reçu — nous vous répondons rapidement.',
     },
 
     footer: {
-      description: 'Cabinet d\'avocat spécialisé en droit des affaires pour entrepreneurs et TPE depuis 2012.',
+      description: '[Description courte de l\'entreprise pour le bas de page.]',
       links: [
         { label: 'Services',  href: '#services' },
         { label: 'À propos',  href: '#apropos' },
@@ -323,13 +320,13 @@ export const siteConfig = {
         { label: 'CGV',              href: '/cgv' },
         { label: 'RGPD',             href: '/rgpd' },
       ],
-      madeBy: 'Site conçu et réalisé à Lyon',
+      madeBy: 'Site réalisé avec [VOTRE NOM]',
     },
     portfolio: {
       items: [
-        { title: 'Rénovation Loft', category: 'Résidentiel' },
-        { title: 'Bureaux Tech', category: 'Tertiaire' },
-        { title: 'Restaurant bistronomique', category: 'Commerce' },
+        { title: '[PROJET 1]', category: '[CATÉGORIE]' },
+        { title: '[PROJET 2]', category: '[CATÉGORIE]' },
+        { title: '[PROJET 3]', category: '[CATÉGORIE]' },
       ]
     },
 
@@ -358,3 +355,4 @@ export const portfolio    = siteConfig.content.portfolio;
 // BtoB      → primary #1e3a5f  primaryDark #152b47  primarySoft #dbeafe
 // Restaurant→ primary #c1440e  primaryDark #a03809  primarySoft #fde8de
 // Santé     → primary #4a7c59  primaryDark #3a6347  primarySoft #dcf0e4
+// ABPM      → primary #0ea5e9  primaryDark #0284c7  primarySoft #e0f2fe (Outfit)

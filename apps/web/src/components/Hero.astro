@@ -212,6 +212,31 @@ const v = variants.hero;
     ))}
   </div>
 </section>
+ 
+{/* ── Variante H : Artisan — Style ABPM Richard ─────────────────────────── */}
+<section class="hero-h v-only-h" id="hero-h">
+  <div class="container hero-h-container">
+    <div class="hero-h-content">
+      <span class="hero-h-badge">Professionnel & Qualité Supérieure</span>
+      <h1>{hero.h1}</h1>
+      <p>{hero.subtitle}</p>
+      <div class="hero-h-actions">
+        <a href={hero.cta1.href} class="btn btn-primary">
+          {hero.cta1.label} <i class="ph ph-arrow-right"></i>
+        </a>
+        <a href={hero.cta2.href} class="btn btn-secondary">
+          {hero.cta2.label}
+        </a>
+      </div>
+      <div class="hero-h-features">
+        {hero.trust.map((t: string) => (
+          <div class="hero-h-feature"><i class="ph-fill ph-check-circle"></i> {t}</div>
+        ))}
+      </div>
+    </div>
+  </div>
+  <div class="hero-h-bg"></div>
+</section>
 
 <style>
 /* ─── Commun ────────────────────────────────────────────────────────────── */
@@ -699,4 +724,94 @@ const v = variants.hero;
 @media (max-width: 600px) {
   .hero-d-actions { flex-direction: column; }
 }
+ 
+/* ─── Variante H : Artisan ──────────────────────────────────────────── */
+.hero-h {
+  position: relative;
+  padding: 10rem 0 6rem;
+  background-color: #0f172a;
+  color: white;
+  overflow: hidden;
+}
+.hero-h-bg {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 100%;
+  background-image: linear-gradient(to right, #0f172a 40%, transparent 100%), url('/assets/images/hero.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;
+}
+.hero-h-container {
+  position: relative;
+  z-index: 10;
+}
+.hero-h-content {
+  max-width: 650px;
+}
+.hero-h-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+.hero-h h1 {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+.hero-h h1 span {
+  color: var(--primary);
+}
+.hero-h p {
+  font-size: 1.25rem;
+  color: #cbd5e1;
+  margin-bottom: 2.5rem;
+}
+.hero-h-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+.hero-h-actions .btn {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+.hero-h-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.hero-h-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #e2e8f0;
+}
+.hero-h-feature i {
+  color: var(--primary);
+  font-size: 1.25rem;
+}
+ 
+@media (max-width: 768px) {
+  .hero-h {
+    padding: 8rem 0 4rem;
+  }
+  .hero-h h1 {
+    font-size: 2.5rem;
+  }
+  .hero-h-actions {
+    flex-direction: column;
+  }
+  .hero-h-bg {
+    background-image: linear-gradient(to bottom, #0f172a 40%, transparent 100%), url('/assets/images/hero.png');
+  }
+}
+
 </style>

@@ -45,7 +45,7 @@ const v = variants.about;
 </section>
 
 {/* ── Variante B : stats éditoriales ────────────────────────────────── */}
-<section class="section v-only-b v-only-c v-only-d v-only-e v-only-f v-only-g" id="apropos-b">
+<section class="section v-only-b v-only-c v-only-d v-only-e v-only-f v-only-g v-only-h" id="apropos-b">
   <div class="container">
     <div class="abt-b-head">
       <p class="eyebrow">{about.eyebrow}</p>
@@ -183,5 +183,29 @@ body.v-d .abt-b-stat-val {
 body.v-d .abt-h2 {
   font-family: 'Archivo Black', sans-serif;
   text-transform: uppercase; letter-spacing: -0.03em;
+}
+ 
+/* ─── H : Artisan overrides ─────────────────────────────────────────── */
+body.v-h #apropos-b { background: #f8fafc; }
+body.v-h .abt-b-stat {
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+body.v-h .abt-b-stats {
+  border-top: 1px solid #e2e8f0;
+  border-left: 1px solid #e2e8f0;
+  gap: 1rem;
+}
+body.v-h .abt-b-stat-val {
+  font-family: 'Outfit', sans-serif;
+  color: #0ea5e9;
+  font-weight: 700;
+}
+body.v-h .abt-h2 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
 }
 </style>

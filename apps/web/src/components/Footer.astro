@@ -211,6 +211,39 @@ const year = new Date().getFullYear();
     </div>
   </div>
 </footer>
+ 
+{/* ── Variante H : Artisan — Style ABPM Richard ─────────────────────────── */}
+<footer class="ftr ftr-h v-only-h" id="footer-h">
+  <div class="container ftr-h-container">
+    <div class="ftr-h-main">
+      <div class="ftr-h-brand">
+        <div class="ftr-h-logo">
+          <i class="ph-fill ph-wrench"></i>
+          <span>{business.name}</span>
+        </div>
+        <p>{footer.description}</p>
+        <div class="ftr-h-contact">
+          <a href={`tel:${business.phone}`}><i class="ph ph-phone"></i> {business.phone}</a>
+          <a href={`mailto:${business.email}`}><i class="ph ph-envelope"></i> {business.email}</a>
+        </div>
+      </div>
+      <div class="ftr-h-nav">
+        <div class="ftr-h-col">
+          <h4>Navigation</h4>
+          {footer.links.map(l => <a href={l.href}>{l.label}</a>)}
+        </div>
+        <div class="ftr-h-col">
+          <h4>Légal</h4>
+          {footer.legal.map(l => <a href={l.href}>{l.label}</a>)}
+        </div>
+      </div>
+    </div>
+    <div class="ftr-h-bottom">
+      <p>© {year} {business.name}. Tous droits réservés.</p>
+      <p>{footer.madeBy}</p>
+    </div>
+  </div>
+</footer>
 
 <style>
 /* ─── Commun ─────────────────────────────────────────────────────────── */
@@ -395,4 +428,104 @@ const year = new Date().getFullYear();
 @media (max-width: 768px) {
   .ftr-d-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
+ 
+/* ─── Variante H : Artisan ──────────────────────────────────────────── */
+.ftr-h {
+  background-color: #0f172a;
+  color: #94a3b8;
+  padding: 5rem 0 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.ftr-h-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+.ftr-h-main {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 4rem;
+}
+.ftr-h-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.ftr-h-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
+.ftr-h-logo i {
+  color: var(--primary);
+}
+.ftr-h-brand p {
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 400px;
+}
+.ftr-h-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.ftr-h-contact a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.ftr-h-contact a:hover {
+  color: var(--primary);
+}
+.ftr-h-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.ftr-h-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.ftr-h-col h4 {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.ftr-h-col a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.ftr-h-col a:hover {
+  color: var(--primary);
+}
+.ftr-h-bottom {
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+ 
+@media (max-width: 768px) {
+  .ftr-h-main {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .ftr-h-bottom {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+</style>
 </style>

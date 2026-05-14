@@ -40,12 +40,16 @@
         <span class="ds-btn-mark">G</span>
         <span class="ds-btn-label">Verveine</span>
       </button>
+      <button class="ds-btn ds-btn-h" data-variant="H">
+        <span class="ds-btn-mark">H</span>
+        <span class="ds-btn-label">ABPM</span>
+      </button>
     </div>
   </div>
 </div>
 
 <script>
-  const ALL_VARIANTS = ['a','b','c','d','e','f','g'];
+  const ALL_VARIANTS = ['a','b','c','d','e','f','g','h'];
   const switcher = document.getElementById('design-switcher');
   const toggle = switcher?.querySelector('.ds-toggle');
   const btns = switcher?.querySelectorAll('.ds-btn');
@@ -165,6 +169,7 @@
   .ds-btn-e.active { background: #f4ede0; border-color: #b04324; color: #b04324; }
   .ds-btn-f.active { background: #dde6ff; border-color: #3a63ff; color: #3a63ff; }
   .ds-btn-g.active { background: #cfd6c5; border-color: #3e4a3a; color: #3e4a3a; }
+  .ds-btn-h.active { background: #e0f2fe; border-color: #0ea5e9; color: #0ea5e9; }
 
   .ds-btn-mark {
     font-size: 13px;

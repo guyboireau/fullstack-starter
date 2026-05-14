@@ -212,6 +212,32 @@ const icons: Record<string, string> = {
     </div>
   </div>
 </section>
+ 
+{/* ── Variante H : Artisan — Style ABPM Richard ─────────────────────────── */}
+<section class="section v-only-h srv-h" id="services-h">
+  <div class="container">
+    <div class="srv-h-head">
+      <h2>{services.title}</h2>
+      <p>{services.subtitle}</p>
+    </div>
+    <div class="srv-h-grid">
+      {services.items.map((item) => (
+        <div class="srv-h-card">
+          <div class="srv-h-image">
+            <img src="/assets/images/hero.png" alt={item.title} />
+          </div>
+          <div class="srv-h-content">
+            <div class="srv-h-icon">
+              <i class="ph ph-wrench"></i>
+            </div>
+            <h3 class="srv-h-title">{item.title}</h3>
+            <p class="srv-h-text">{item.text}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
 
 <style>
 .srv-h2 {
@@ -458,6 +484,73 @@ const icons: Record<string, string> = {
 @media (max-width: 768px) {
   .srv-d-row { grid-template-columns: 56px 1fr; gap: 16px; }
   .srv-d-tag, .srv-d-link { display: none; }
+}
+ 
+/* ─── Variante H : Artisan — Style ABPM Richard ─────────────────────────── */
+.srv-h { padding: 6rem 0; }
+.srv-h-head { text-align: center; margin-bottom: 4rem; }
+.srv-h-head h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--ink); }
+.srv-h-head p { font-size: 1.125rem; color: var(--inkSoft); }
+.srv-h-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+.srv-h-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bgCard);
+  transition: var(--transition);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.srv-h-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-light);
+}
+.srv-h-image {
+  height: 200px;
+  overflow: hidden;
+  background: var(--lineSoft);
+}
+.srv-h-image img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.srv-h-card:hover .srv-h-image img {
+  transform: scale(1.05);
+}
+.srv-h-content {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.srv-h-icon {
+  width: 48px; height: 48px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.srv-h-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--ink);
+}
+.srv-h-text {
+  font-size: 0.9375rem;
+  color: var(--inkSoft);
+  line-height: 1.6;
+  flex: 1;
+}
+@media (max-width: 768px) {
+  .srv-h-grid { grid-template-columns: 1fr; }
 }
 </style>
 

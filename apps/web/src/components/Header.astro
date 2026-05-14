@@ -135,6 +135,21 @@ const contactHref = nav.find(n => n.label === 'Contact')?.href || '#contact';
     <a href={contactHref} class="hdr-g-btn">Prendre rendez-vous</a>
   </div>
 </header>
+ 
+{/* ── Variante H : Artisan — Style ABPM Richard ─────────────────────────── */}
+<header class="hdr-h v-only-h" id="main-header-h">
+  <div class="hdr-h-inner">
+    <a href="/" class="hdr-h-logo">
+      {business.name}
+    </a>
+    <nav class="hdr-h-nav" aria-label="Navigation principale">
+      {nav.map(l => <a href={l.href} class="hdr-h-link">{l.label}</a>)}
+    </nav>
+    <a href={contactHref} class="hdr-h-cta">
+      Contactez-nous <i class="ph ph-arrow-right"></i>
+    </a>
+  </div>
+</header>
 
 {/* ── Variante D : Forge / Brutalist Warm ────────────────────────────── */}
 <header class="hdr-d v-only-d" id="main-header-d">
@@ -484,5 +499,45 @@ if (menuTrigger && overlayNav) {
 .hdr-d-btn:hover { background: #c08c3c; border-color: #241c12; color: #241c12; }
 @media (max-width: 900px) {
   .hdr-d-nav, .hdr-d-open { display: none; }
+}
+ 
+/* ─── Variante H : Artisan — Style ABPM Richard ─────────────────────────── */
+.hdr-h {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 0;
+}
+.hdr-h-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;
+}
+.hdr-h-logo {
+  font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700;
+  color: #0f172a; text-decoration: none;
+}
+.hdr-h-logo span { color: #0ea5e9; }
+.hdr-h-nav {
+  display: flex; gap: 2rem;
+}
+.hdr-h-nav a {
+  font-family: 'Outfit', sans-serif; font-size: 0.9375rem; font-weight: 500;
+  color: #64748b; text-decoration: none; transition: color 0.2s;
+}
+.hdr-h-nav a:hover { color: #0ea5e9; }
+.hdr-h-cta {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #0ea5e9; color: white;
+  border-radius: 9999px;
+  font-family: 'Outfit', sans-serif; font-size: 0.875rem; font-weight: 600;
+  text-decoration: none; transition: all 0.3s ease;
+}
+.hdr-h-cta:hover {
+  background: #0284c7; transform: translateY(-2px);
+}
+@media (max-width: 768px) {
+  .hdr-h-nav { display: none; }
 }
 </style>
