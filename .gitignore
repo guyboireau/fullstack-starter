@@ -34,3 +34,7 @@ npm-debug.log*
 
 # Coverage
 coverage/
+
+# Claude Code & local tools
+.claude/
+ruvector.db
