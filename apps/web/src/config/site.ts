@@ -120,6 +120,11 @@ export const siteConfig = {
       title:       'Blog',
       description: 'Conseils juridiques pour entrepreneurs.',
     },
+    realisations: {
+      slug:        '/realisations',
+      title:       'Réalisations',
+      description: 'Découvrez nos derniers projets et chantiers.',
+    },
     contact: {
       slug:        '/contact',
       title:       'Contact',
