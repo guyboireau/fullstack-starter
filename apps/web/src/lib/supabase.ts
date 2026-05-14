@@ -1,13 +1,24 @@
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient, parseCookieHeader } from '@supabase/ssr';
+import type { AstroCookies } from 'astro';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Missing Supabase environment variables. ' +
-    'Copy .env.example to .env and add your Supabase credentials.'
-  );
+  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY env vars.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export function createSupabaseServerClient(cookies: AstroCookies) {
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return parseCookieHeader(cookies.toString() ?? '');
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) =>
+          cookies.set(name, value, options),
+        );
+      },
+    },
+  });
+}

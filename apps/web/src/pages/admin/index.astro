@@ -1,0 +1,75 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { createSupabaseServerClient } from '@/lib/supabase';
+import { itemsService } from '@/services/items';
+
+const supabase = createSupabaseServerClient(Astro.cookies);
+const { data: { session } } = await supabase.auth.getSession();
+
+let items: Awaited<ReturnType<typeof itemsService.list>> = [];
+let fetchError = '';
+
+if (session?.access_token) {
+  try {
+    items = await itemsService.list(session.access_token);
+  } catch (e) {
+    fetchError = e instanceof Error ? e.message : 'Erreur de chargement';
+  }
+}
+
+const total    = items.length;
+const todo     = items.filter(i => i.status === 'todo').length;
+const progress = items.filter(i => i.status === 'in_progress').length;
+const done     = items.filter(i => i.status === 'done').length;
+---
+
+<AdminLayout title="Dashboard">
+  {fetchError && (
+    <div class="mb-6 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+      {fetchError}
+    </div>
+  )}
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    {[
+      { label: 'Total',      value: total,    color: 'text-indigo-400' },
+      { label: 'À faire',    value: todo,     color: 'text-yellow-400' },
+      { label: 'En cours',   value: progress, color: 'text-blue-400'   },
+      { label: 'Terminés',   value: done,     color: 'text-green-400'  },
+    ].map(stat => (
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-4">
+        <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">{stat.label}</p>
+        <p class:list={['text-3xl font-bold', stat.color]}>{stat.value}</p>
+      </div>
+    ))}
+  </div>
+
+  <!-- Recent items -->
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-sm font-medium text-gray-300">Derniers items</h2>
+    <a href="/admin/items" class="text-xs text-indigo-400 hover:text-indigo-300">Voir tout →</a>
+  </div>
+
+  {items.length === 0 ? (
+    <div class="bg-gray-900 border border-gray-800 rounded-xl p-10 text-center">
+      <p class="text-gray-500 text-sm">Aucun item. <a href="/admin/items" class="text-indigo-400 hover:text-indigo-300">Créer le premier</a></p>
+    </div>
+  ) : (
+    <div class="bg-gray-900 border border-gray-800 rounded-xl divide-y divide-gray-800">
+      {items.slice(0, 5).map(item => (
+        <div class="flex items-center justify-between px-4 py-3">
+          <span class="text-sm text-gray-200 truncate">{item.title}</span>
+          <span class:list={[
+            'ml-3 shrink-0 text-xs px-2 py-0.5 rounded-full font-medium',
+            item.status === 'done'        && 'bg-green-500/15 text-green-400',
+            item.status === 'in_progress' && 'bg-blue-500/15 text-blue-400',
+            item.status === 'todo'        && 'bg-yellow-500/15 text-yellow-400',
+          ]}>
+            {item.status === 'todo' ? 'À faire' : item.status === 'in_progress' ? 'En cours' : 'Terminé'}
+          </span>
+        </div>
+      ))}
+    </div>
+  )}
+</AdminLayout>
