@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { title, description, canonical } = Astro.props;
-const { branding, seo, features } = siteConfig;
+const { branding, seo, features, design } = siteConfig;
 const canonicalUrl = canonical ?? `${seo.siteUrl}${Astro.url.pathname}`;
 
 // Tokens neutrals warm-paper (invariants, indépendants de la couleur brand)

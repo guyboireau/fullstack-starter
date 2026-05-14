@@ -311,6 +311,13 @@ export const siteConfig = {
       ],
       madeBy: 'Site conçu et réalisé à Lyon',
     },
+    portfolio: {
+      items: [
+        { title: 'Rénovation Loft', category: 'Résidentiel' },
+        { title: 'Bureaux Tech', category: 'Tertiaire' },
+        { title: 'Restaurant bistronomique', category: 'Commerce' },
+      ]
+    },
 
   }, // fin content
 
@@ -330,6 +337,7 @@ export const faq          = siteConfig.content.faq;
 export const cta          = siteConfig.content.cta;
 export const contact      = siteConfig.content.contact;
 export const footer       = siteConfig.content.footer;
+export const portfolio    = siteConfig.content.portfolio;
 
 // ─── Palettes de départ (copier-coller les valeurs dans branding) ──────────
 // Artisan   → primary #b8763d  primaryDark #9a6128  primarySoft #f6e7d4
