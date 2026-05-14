@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npm run build -w apps/web",
+  "outputDirectory": "apps/web/.vercel/output",
+  "framework": "astro"
+}
