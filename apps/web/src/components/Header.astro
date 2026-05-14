@@ -3,16 +3,10 @@
 // A : Logo gauche · Nav centrée · CTA droite (classique)
 // B : Logo + nav inline gauche · dispo + CTA droite  (Linear / Vercel)
 // C : Identité forte (monogramme + tagline) · Menu bouton + CTA dominant
-import { variants, business } from '../config/site';
+import { variants, business, nav } from '../config/site';
 
 const v = variants.header;
-const nav = [
-  { label: 'Services',  href: '#services' },
-  { label: 'À propos',  href: '#apropos' },
-  { label: 'Tarifs',    href: '#tarifs' },
-  { label: 'FAQ',       href: '#faq' },
-  { label: 'Contact',   href: '#contact' },
-];
+const contactHref = nav.find(n => n.label === 'Contact')?.href || '#contact';
 ---
 
 {/* ── Variante A : classique ──────────────────────────────────────────── */}
@@ -27,8 +21,8 @@ const nav = [
         {nav.map(l => <a href={l.href} class="nav-link">{l.label}</a>)}
       </nav>
       <div class="hdr-actions-a">
-        <a href="#contact" class="btn btn-outline btn-sm">Connexion</a>
-        <a href="#contact" class="btn btn-primary btn-sm">Prendre RDV</a>
+        <a href={contactHref} class="btn btn-outline btn-sm">Connexion</a>
+        <a href={contactHref} class="btn btn-primary btn-sm">Prendre RDV</a>
       </div>
       <button class="burger" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span><span></span>
@@ -56,7 +50,7 @@ const nav = [
           <span class="dispo-dot" aria-hidden="true"></span>
           {business.availability}
         </span>
-        <a href="#contact" class="btn btn-primary btn-sm">Devis →</a>
+        <a href={contactHref} class="btn btn-primary btn-sm">Devis →</a>
       </div>
       <button class="burger" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span>
@@ -89,7 +83,7 @@ const nav = [
           </div>
           Menu
         </button>
-        <a href="#contact" class="btn btn-primary btn-sm">Réserver un appel</a>
+        <a href={contactHref} class="btn btn-primary btn-sm">Réserver un appel</a>
       </div>
     </div>
     {/* Full-screen overlay menu */}
@@ -98,7 +92,7 @@ const nav = [
       <nav class="overlay-nav" aria-label="Navigation principale">
         {nav.map(l => <a href={l.href} class="overlay-link">{l.label}</a>)}
       </nav>
-      <a href="#contact" class="btn btn-primary btn-lg overlay-cta">Réserver un appel</a>
+      <a href={contactHref} class="btn btn-primary btn-lg overlay-cta">Réserver un appel</a>
     </div>
   </header>
 )}
@@ -109,7 +103,7 @@ const nav = [
     <nav>
       {nav.map(l => <a href={l.href} class="mobile-link">{l.label}</a>)}
     </nav>
-    <a href="#contact" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;">
+    <a href={contactHref} class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;">
       Prendre RDV
     </a>
   </div>
