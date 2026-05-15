@@ -26,6 +26,14 @@ export class CsrfGuard implements CanActivate {
       return true;
     }
 
+    // Bearer-token authentication already prevents CSRF (browsers cannot
+    // forge the Authorization header cross-origin without a preflight).
+    // Skip CSRF validation in that case as defense-in-depth.
+    const authHeader = request.headers?.authorization ?? '';
+    if (authHeader.startsWith('Bearer ')) {
+      return true;
+    }
+
     const secret = request.cookies?.['csrf-secret'];
     const token = request.headers['x-csrf-token'];
 

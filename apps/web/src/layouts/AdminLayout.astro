@@ -1,5 +1,6 @@
 ---
 import { createSupabaseServerClient } from '@/lib/supabase';
+import { setupCsrf } from '@/lib/csrf';
 
 interface Props {
   title: string;
@@ -8,6 +9,7 @@ interface Props {
 const { title } = Astro.props;
 const supabase = createSupabaseServerClient(Astro.cookies);
 const { data: { user } } = await supabase.auth.getUser();
+const csrfToken = setupCsrf(Astro.cookies);
 
 const navItems = [
   { label: 'Dashboard', href: '/admin', icon: '▤' },
@@ -71,6 +73,7 @@ const navItems = [
       <div class="px-4 py-4 border-t border-[#d9d4c7]">
         <p class="text-xs text-[#8c887c] truncate mb-3">{user?.email}</p>
         <form method="POST" action="/api/auth/signout">
+          <input type="hidden" name="_csrf" value={csrfToken} />
           <button
             type="submit"
             class="w-full text-left text-xs text-[#8c887c] hover:text-[#c44a1e] transition-colors"

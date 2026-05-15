@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@/lib/supabase';
 import { itemsService } from '@/services/items';
 import { itemFormSchema } from '@/schemas/item';
 import type { Item } from '@/schemas/item';
+import { setupCsrf, validateCsrfToken } from '@/lib/csrf';
 import { z } from 'zod';
 
 const supabase = createSupabaseServerClient(Astro.cookies);
@@ -13,6 +14,8 @@ let items: Item[] = [];
 let formErrors: Record<string, string> = {};
 let actionError = '';
 let successMessage = '';
+let csrfError = '';
+const csrfToken = setupCsrf(Astro.cookies);
 
 // Load items
 if (session?.access_token) {
@@ -26,39 +29,48 @@ if (session?.access_token) {
 // Handle POST actions (create / update / delete)
 if (Astro.request.method === 'POST' && session?.access_token) {
   const form = await Astro.request.formData();
-  const action = form.get('_action') as string;
 
   try {
-    if (action === 'delete') {
-      const id = z.string().uuid().parse(form.get('id'));
-      await itemsService.remove(session.access_token, id);
-      successMessage = 'Item supprimé.';
-      items = await itemsService.list(session.access_token);
-    } else {
-      const parsed = itemFormSchema.safeParse({
-        title:       form.get('title'),
-        description: form.get('description') || undefined,
-        status:      form.get('status'),
-      });
+    validateCsrfToken(form, Astro.cookies);
+  } catch {
+    csrfError = 'Session invalide, veuillez rafraîchir la page.';
+  }
 
-      if (!parsed.success) {
-        parsed.error.issues.forEach(i => {
-          formErrors[i.path[0] as string] = i.message;
-        });
-      } else {
-        if (action === 'create') {
-          await itemsService.create(session.access_token, parsed.data);
-          successMessage = 'Item créé.';
-        } else if (action === 'update') {
-          const id = z.string().uuid().parse(form.get('id'));
-          await itemsService.update(session.access_token, id, parsed.data);
-          successMessage = 'Item mis à jour.';
-        }
+  if (!csrfError) {
+    const action = form.get('_action') as string;
+
+    try {
+      if (action === 'delete') {
+        const id = z.string().uuid().parse(form.get('id'));
+        await itemsService.remove(session.access_token, id);
+        successMessage = 'Item supprimé.';
         items = await itemsService.list(session.access_token);
+      } else {
+        const parsed = itemFormSchema.safeParse({
+          title:       form.get('title'),
+          description: form.get('description') || undefined,
+          status:      form.get('status'),
+        });
+
+        if (!parsed.success) {
+          parsed.error.issues.forEach(i => {
+            formErrors[i.path[0] as string] = i.message;
+          });
+        } else {
+          if (action === 'create') {
+            await itemsService.create(session.access_token, parsed.data);
+            successMessage = 'Item créé.';
+          } else if (action === 'update') {
+            const id = z.string().uuid().parse(form.get('id'));
+            await itemsService.update(session.access_token, id, parsed.data);
+            successMessage = 'Item mis à jour.';
+          }
+          items = await itemsService.list(session.access_token);
+        }
       }
+    } catch (e) {
+      actionError = e instanceof Error ? e.message : 'Une erreur est survenue';
     }
-  } catch (e) {
-    actionError = e instanceof Error ? e.message : 'Une erreur est survenue';
   }
 }
 
@@ -78,6 +90,9 @@ const STATUS_COLORS: Record<string, string> = {
   {actionError && (
     <div class="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{actionError}</div>
   )}
+  {csrfError && (
+    <div class="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{csrfError}</div>
+  )}
   {successMessage && (
     <div class="mb-4 px-4 py-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm">{successMessage}</div>
   )}
@@ -86,6 +101,7 @@ const STATUS_COLORS: Record<string, string> = {
   <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-6">
     <h2 class="text-sm font-medium text-gray-200 mb-4">Nouvel item</h2>
     <form method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <input type="hidden" name="_csrf" value={csrfToken} />
       <input type="hidden" name="_action" value="create" />
 
       <div>
@@ -139,6 +155,7 @@ const STATUS_COLORS: Record<string, string> = {
           <!-- Edit form (revealed on expand) -->
           <div class="px-4 pb-4 pt-2 bg-gray-950/50">
             <form method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <input type="hidden" name="_csrf" value={csrfToken} />
               <input type="hidden" name="_action" value="update" />
               <input type="hidden" name="id" value={item.id} />
 
@@ -168,6 +185,7 @@ const STATUS_COLORS: Record<string, string> = {
             </form>
 
             <form method="POST" class="mt-2">
+              <input type="hidden" name="_csrf" value={csrfToken} />
               <input type="hidden" name="_action" value="delete" />
               <input type="hidden" name="id" value={item.id} />
               <button

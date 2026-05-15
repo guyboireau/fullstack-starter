@@ -1,11 +1,10 @@
-import { randomBytes, createHash } from 'crypto';
+import { randomBytes } from 'crypto';
+import type { AstroCookies } from 'astro';
 
 const CSRF_COOKIE_NAME = 'astro-csrf-token';
 
 /**
- * Génère un token CSRF et le stocke dans un cookie signé (en pratique non-signé ici
- * car Astro ne fournit pas de signer automatiquement ; on utilise httpOnly + sameSite).
- *
+ * Génère un token CSRF et le stocke dans un cookie.
  * Utilisé pour protéger les formulaires HTML côté Astro contre les attaques CSRF.
  */
 export function generateCsrfToken(): string {

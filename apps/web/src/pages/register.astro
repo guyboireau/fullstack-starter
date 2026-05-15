@@ -1,5 +1,6 @@
 ---
 import { createSupabaseServerClient } from '@/lib/supabase';
+import { setupCsrf, validateCsrfToken } from '@/lib/csrf';
 import { z } from 'zod';
 
 const supabase = createSupabaseServerClient(Astro.cookies);
@@ -15,32 +16,43 @@ const registerSchema = z.object({
 let errors: Record<string, string> = {};
 let success = false;
 let registeredEmail = '';
+let csrfError = '';
+const csrfToken = setupCsrf(Astro.cookies);
 
 if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
-  const parsed = registerSchema.safeParse({
-    fullName: form.get('fullName'),
-    email:    form.get('email'),
-    password: form.get('password'),
-  });
 
-  if (!parsed.success) {
-    parsed.error.issues.forEach(i => {
-      errors[i.path[0] as string] = i.message;
+  try {
+    validateCsrfToken(form, Astro.cookies);
+  } catch {
+    csrfError = 'Session invalide, veuillez rafraîchir la page.';
+  }
+
+  if (!csrfError) {
+    const parsed = registerSchema.safeParse({
+      fullName: form.get('fullName'),
+      email:    form.get('email'),
+      password: form.get('password'),
     });
-  } else {
-    const { data, error } = await supabase.auth.signUp({
-      email:    parsed.data.email,
-      password: parsed.data.password,
-      options:  { data: { full_name: parsed.data.fullName } },
-    });
-    if (error) {
-      errors.root = error.message;
-    } else if (data.user && !data.session) {
-      success = true;
-      registeredEmail = parsed.data.email;
+
+    if (!parsed.success) {
+      parsed.error.issues.forEach(i => {
+        errors[i.path[0] as string] = i.message;
+      });
     } else {
-      return Astro.redirect('/admin');
+      const { data, error } = await supabase.auth.signUp({
+        email:    parsed.data.email,
+        password: parsed.data.password,
+        options:  { data: { full_name: parsed.data.fullName } },
+      });
+      if (error) {
+        errors.root = error.message;
+      } else if (data.user && !data.session) {
+        success = true;
+        registeredEmail = parsed.data.email;
+      } else {
+        return Astro.redirect('/admin');
+      }
     }
   }
 }
@@ -83,7 +95,14 @@ if (Astro.request.method === 'POST') {
             </div>
           )}
 
+          {csrfError && (
+            <div class="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+              {csrfError}
+            </div>
+          )}
+
           <form method="POST" class="space-y-4">
+            <input type="hidden" name="_csrf" value={csrfToken} />
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-1.5" for="fullName">Nom complet</label>
               <input
