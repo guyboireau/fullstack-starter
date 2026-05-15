@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { randomBytes } from 'crypto';
+import { Request, Response, NextFunction } from 'express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -14,7 +15,7 @@ async function bootstrap() {
   // Double-submit cookie CSRF protection:
   // set a random secret on every request if not present.
   // The frontend must read this cookie and echo it back in the X-CSRF-Token header.
-  app.use((req, res, next) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     if (!req.cookies || !req.cookies['csrf-secret']) {
       const secret = randomBytes(32).toString('hex');
       res.cookie('csrf-secret', secret, {

@@ -1,4 +1,5 @@
 import { Controller, Get, UseGuards, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { SupabaseAuthGuard } from './guards/supabase-auth.guard';
 import { AuthenticatedRequest } from './guards/supabase-auth.guard';
 
