@@ -1,12 +1,33 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
+import { randomBytes } from 'crypto';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
+  app.use(cookieParser());
+
+  // Double-submit cookie CSRF protection:
+  // set a random secret on every request if not present.
+  // The frontend must read this cookie and echo it back in the X-CSRF-Token header.
+  app.use((req, res, next) => {
+    if (!req.cookies || !req.cookies['csrf-secret']) {
+      const secret = randomBytes(32).toString('hex');
+      res.cookie('csrf-secret', secret, {
+        httpOnly: false,
+        sameSite: 'strict',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000, // 24h
+      });
+      req.cookies = req.cookies || {};
+      req.cookies['csrf-secret'] = secret;
+    }
+    next();
+  });
 
   // Enable CORS for the frontend
   app.enableCors({
@@ -18,7 +39,6 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      // whitelist: true silently removes unknown fields; forbidNonWhitelisted: true returns a 400 if fields not declared in the DTO are sent. Together they ensure strict validation.
       forbidNonWhitelisted: true,
       transform: true,
     }),

@@ -1,17 +1,25 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ItemsModule } from './items/items.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { CsrfGuard } from './common/guards/csrf.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Rend le module global pour éviter d'importer ConfigModule dans chaque module enfant
-      envFilePath: '../../.env', // nest start s'exécute depuis apps/api, donc ../../ remonte à la racine du monorepo
+      isGlobal: true,
+      envFilePath: '../../.env',
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 10000,
+        limit: 10,
+      },
+    ]),
     AuthModule,
     UsersModule,
     ItemsModule,
@@ -20,6 +28,14 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: CsrfGuard,
     },
   ],
 })

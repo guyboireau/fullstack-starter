@@ -38,3 +38,4 @@ coverage/
 # Claude Code & local tools
 .claude/
 ruvector.db
+*.db
