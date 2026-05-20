@@ -338,7 +338,7 @@ export const siteConfig = {
 export type Variant = 'A' | 'B' | 'C';
 
 export const { business, branding, seo, design, features, pages, nav } = siteConfig;
-export const variants  = siteConfig.design.variants;
+export const variants = siteConfig.design.variants as Record<keyof typeof siteConfig.design.variants, Variant>;
 export const hero         = siteConfig.content.hero;
 export const services     = siteConfig.content.services;
 export const about        = siteConfig.content.about;
