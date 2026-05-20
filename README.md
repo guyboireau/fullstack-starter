@@ -5,11 +5,11 @@
 <h1 align="center">⚡ Fullstack Starter</h1>
 
 <p align="center">
-  <strong>Production-ready fullstack starter — React + NestJS + Supabase + PostgreSQL + Auth + CRUD. TypeScript everywhere.</strong>
+  <strong>Production-ready fullstack starter — Astro SSR + NestJS + Supabase + PostgreSQL + Auth + CRUD + CSRF. TypeScript everywhere.</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/Astro-6-FF5D01?style=flat-square&logo=astro&logoColor=white" alt="Astro" />
   <img src="https://img.shields.io/badge/NestJS-11-E0234E?style=flat-square&logo=nestjs&logoColor=white" alt="NestJS" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Supabase-2.x-3FCF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase" />
@@ -36,7 +36,7 @@ cp .env.example .env   # Then fill in your Supabase credentials
 npm run dev
 ```
 
-> **Frontend** → [http://localhost:5173](http://localhost:5173) &nbsp;|&nbsp; **API** → [http://localhost:3000](http://localhost:3000)
+> **Frontend** → [http://localhost:4321](http://localhost:4321) &nbsp;|&nbsp; **API** → [http://localhost:3000](http://localhost:3000)
 
 ---
 
@@ -45,7 +45,7 @@ npm run dev
 ```
 fullstack-starter/
 ├── apps/
-│   ├── web/          → React 19 + Vite 6 + React Router 7
+│   ├── web/          → Astro 6 SSR + Vercel adapter (landing + admin panel)
 │   └── api/          → NestJS 11 (REST API)
 ├── supabase/
 │   ├── migrations/   → SQL migrations (profiles, items)
@@ -54,7 +54,7 @@ fullstack-starter/
 └── .github/workflows/ci.yml
 ```
 
-**How it works:** The React frontend authenticates users via **Supabase Auth** (email/password). Authenticated requests hit the **NestJS API**, which validates JWTs using a custom `SupabaseAuthGuard`. All database operations go through Supabase's client library with **Row Level Security (RLS)** — each user can only access their own data. The API uses a user-scoped Supabase client that respects RLS policies automatically.
+**How it works:** The Astro SSR frontend authenticates users via **Supabase Auth** (email/password). Authenticated requests hit the **NestJS API**, which validates JWTs with a custom `SupabaseAuthGuard`. Session-changing forms (login, register, signout, items) are protected by a **CSRF guard** (double-submit cookie pattern) — Bearer-token requests bypass it automatically. All database operations use Supabase's client library with **Row Level Security (RLS)** — each user can only access their own data.
 
 ---
 
@@ -66,8 +66,9 @@ fullstack-starter/
 | 📝 **CRUD** | Full Create, Read, Update, Delete on Items |
 | 🛡️ **Auth Guard** | NestJS guard validates Supabase JWTs |
 | 🔒 **Row Level Security** | PostgreSQL RLS — users only see their own data |
-| 🎨 **Modern UI** | Dark mode, glassmorphism, gradient accents |
-| 📊 **Dashboard** | Stats overview + item management |
+| 🔑 **CSRF Protection** | Double-submit cookie on all session-mutating forms; Bearer bypasses |
+| 🎨 **Design System** | 8-variant design switcher (A→H) — demo multiple client styles |
+| 📊 **Admin Panel** | Astro SSR admin panel (items management, dashboard) |
 | ✅ **Validation** | DTOs with `class-validator` on the API |
 | 🐳 **Docker Compose** | One-command local dev environment |
 | 🔄 **CI/CD** | GitHub Actions: lint + typecheck on every PR |
@@ -120,8 +121,9 @@ All endpoints under auth require a `Bearer` token in the `Authorization` header.
 
 1. Import the `apps/web` directory on [Vercel](https://vercel.com)
 2. Set the **Root Directory** to `apps/web`
-3. Add environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
-4. Deploy 🚀
+3. Add environment variables: `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`
+4. The `@astrojs/vercel` adapter handles SSR automatically — output targets `.vercel/output`
+5. Deploy 🚀
 
 ### Backend → Railway / Render
 
