@@ -63,7 +63,7 @@ const year = new Date().getFullYear();
       <a href={`tel:${business.phone.replace(/\s/g, '')}`} class="ftr-link">{business.phone}</a>
       <address class="ftr-address">
         {business.address.street}<br />
-        {business.address.zip} {business.address.city}
+        {business.address.postalCode} {business.address.city}
       </address>
     </div>
   </div>
