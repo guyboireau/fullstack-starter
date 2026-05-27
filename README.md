@@ -115,6 +115,20 @@ All endpoints under auth require a `Bearer` token in the `Authorization` header.
 
 ---
 
+## 🔒 Security
+
+### CSRF Protection
+
+The API includes CSRF middleware to protect state-mutating endpoints (`POST`, `PUT`, `PATCH`, `DELETE`).
+
+- CSRF tokens are generated server-side and verified on every non-safe request
+- The token is expected in the `X-CSRF-Token` header (set automatically by the frontend)
+- **Bearer token bypass**: requests from machine clients (CI, scripts, mobile) that include a valid `Authorization: Bearer <token>` header skip CSRF verification
+
+All required TypeScript types for the CSRF middleware are defined in `apps/api/src/middleware/csrf.types.ts`.
+
+---
+
 ## ☁️ Deploy
 
 ### Frontend → Vercel
