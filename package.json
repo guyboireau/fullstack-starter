@@ -27,7 +27,8 @@
     "lint": "npm run lint -w apps/web && npm run lint -w apps/api",
     "typecheck": "npm run typecheck -w apps/web && npm run typecheck -w apps/api",
     "dev:web": "npm run dev -w apps/web",
-    "dev:api": "npm run dev -w apps/api"
+    "dev:api": "npm run dev -w apps/api",
+    "test": "npm run test -w apps/api && npm run test -w apps/web"
   },
   "overrides": {
     "devalue": "^5.8.1",
