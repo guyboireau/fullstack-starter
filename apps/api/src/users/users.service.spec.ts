@@ -72,12 +72,6 @@ describe('UsersService', () => {
 
     it('queries the profiles table with the correct user id', async () => {
       const profile = { id: USER_ID };
-      const singleMock = vi.fn().mockResolvedValue({ data: profile, error: null });
-      const eqMock = vi.fn().mockReturnThis();
-      eqMock.single = singleMock;
-      const selectMock = vi.fn().mockReturnValue({ eq: eqMock });
-      const fromMock = vi.fn().mockReturnValue({ select: selectMock });
-      const client = { from: fromMock };
 
       // Use a fresh builder so we can inspect calls
       const chainBuilder = {

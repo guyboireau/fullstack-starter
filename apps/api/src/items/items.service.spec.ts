@@ -32,14 +32,6 @@ function makeQueryBuilder(result: { data?: unknown; error?: unknown }) {
   return builder;
 }
 
-function makeFrom(result: { data?: unknown; error?: unknown }) {
-  const builder = makeQueryBuilder(result);
-  // Wrap in a Supabase-like client
-  return {
-    from: vi.fn().mockReturnValue(builder),
-  };
-}
-
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
