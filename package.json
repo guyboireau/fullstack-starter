@@ -29,6 +29,14 @@
     "dev:web": "npm run dev -w apps/web",
     "dev:api": "npm run dev -w apps/api"
   },
+  "overrides": {
+    "devalue": "^5.8.1",
+    "fast-uri": "^3.1.2",
+    "path-to-regexp": "^6.3.0",
+    "@vercel/routing-utils": {
+      "path-to-regexp": "^6.3.0"
+    }
+  },
   "devDependencies": {
     "concurrently": "^9.1.0"
   }
