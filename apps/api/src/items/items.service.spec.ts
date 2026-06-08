@@ -6,33 +6,6 @@ import type { CreateItemDto } from './dto/create-item.dto';
 import type { UpdateItemDto } from './dto/update-item.dto';
 
 // ---------------------------------------------------------------------------
-// Helpers to build fake Supabase query builders
-// ---------------------------------------------------------------------------
-
-function makeQueryBuilder(result: { data?: unknown; error?: unknown }) {
-  // Each chained call returns `this` so the chain resolves to `result`.
-  const builder: Record<string, unknown> = {};
-  const chainable = () => builder;
-
-  builder.select = chainable;
-  builder.insert = chainable;
-  builder.update = chainable;
-  builder.delete = chainable;
-  builder.eq = chainable;
-  builder.order = chainable;
-  builder.single = vi.fn().mockResolvedValue(result);
-
-  // For calls that resolve without `.single()` (e.g. remove)
-  // we make the builder itself a thenable.
-  builder.then = (resolve: (v: unknown) => void) => {
-    resolve(result);
-    return Promise.resolve(result);
-  };
-
-  return builder;
-}
-
-// ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
