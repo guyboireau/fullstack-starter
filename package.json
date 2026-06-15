@@ -30,6 +30,6 @@
     "dev:api": "npm run dev -w apps/api"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.2"
   }
 }
