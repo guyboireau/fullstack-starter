@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20]
+        node-version: [22]
 
     steps:
       - name: Checkout repository
@@ -39,6 +39,9 @@ jobs:
 
       - name: Type check (api)
         run: npm run typecheck -w apps/api
+
+      - name: Test (api)
+        run: npm run test -w apps/api
 
       - name: Build (web)
         run: npm run build -w apps/web
