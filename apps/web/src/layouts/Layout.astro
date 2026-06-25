@@ -63,6 +63,7 @@ const tokens = {
     {features.analytics && seo.googleAnalyticsId && (
       <script is:inline define:vars={{ gid: seo.googleAnalyticsId }}>
         window.dataLayer = window.dataLayer || [];
+        // eslint-disable-next-line prefer-rest-params
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date()); gtag('config', gid);
       </script>
@@ -139,6 +140,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+h1, h2, h3, h4, h5, h6 { font-family: var(--fontHeading), serif; }
+code, pre, kbd, samp { font-family: var(--fontMono), monospace; }
+a:hover { color: var(--primaryDark); }
+:focus-visible { outline-color: var(--primarySoft); }
+.text-accent { color: var(--accent); }
 
 /* ─── Variantes Globales (Show/Hide) ────────────────────────────────── */
 .v-only-a, .v-only-b, .v-only-c, .v-only-d,

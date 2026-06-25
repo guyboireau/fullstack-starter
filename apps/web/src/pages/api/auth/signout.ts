@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { createSupabaseServerClient } from '@/lib/supabase';
+import { createAuthService } from '@/services/auth';
 import { validateCsrfToken } from '@/lib/csrf';
 
 export const POST: APIRoute = async ({ cookies, redirect, request }) => {
@@ -10,7 +10,7 @@ export const POST: APIRoute = async ({ cookies, redirect, request }) => {
     return new Response('Token CSRF invalide', { status: 403 });
   }
 
-  const supabase = createSupabaseServerClient(cookies);
-  await supabase.auth.signOut();
+  const auth = createAuthService(cookies);
+  await auth.signOut();
   return redirect('/login', 302);
 };
