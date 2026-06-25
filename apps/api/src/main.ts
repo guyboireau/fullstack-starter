@@ -21,7 +21,7 @@ async function bootstrap() {
       res.cookie('csrf-secret', secret, {
         httpOnly: false,
         sameSite: 'strict',
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env['NODE_ENV'] === 'production',
         maxAge: 24 * 60 * 60 * 1000, // 24h
       });
       req.cookies = req.cookies || {};
@@ -32,7 +32,7 @@ async function bootstrap() {
 
   // Enable CORS for the frontend
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: process.env['CORS_ORIGIN'] || 'http://localhost:5173',
     credentials: true,
   });
 
@@ -45,7 +45,7 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.API_PORT || 3000;
+  const port = process.env['API_PORT'] || 3000;
   await app.listen(port);
   console.log(`🚀 API running on http://localhost:${port}`);
 }
