@@ -13,7 +13,7 @@ Projet interne : **template / starter fullstack production-ready**, organisé en
 - **Auteur** : Guy Boireau — Licence MIT.
 - Deux applications : `apps/web` (front Astro SSR) et `apps/api` (API NestJS), + `supabase/` (migrations SQL + seed).
 
-> ⚠️ **Le `README.md` et `docker-compose.yml` mentionnent « React + Vite » pour le front.** C'est obsolète : le code réel de `apps/web` est **Astro 6 en SSR** (adapter Vercel). Se fier au code, pas au README.
+> **Front = Astro 6 en SSR** (adapter Vercel), pas React/Vite (héritage retiré). Certains textes du `README.md` peuvent encore évoquer React — se fier au code.
 
 ---
 
@@ -44,7 +44,7 @@ fullstack-starter/
 ├── package.json                # workspaces + scripts orchestrés (dev/build/lint/typecheck)
 ├── tsconfig.base.json          # base TS strict étendu (héritée par apps/api)
 ├── vercel.json                 # build apps/web, framework astro
-├── docker-compose.yml          # Postgres 15 + api + web (⚠️ web décrit comme React/Vite)
+├── docker-compose.yml          # Postgres 15 + api + web (Astro SSR)
 ├── .env.example
 ├── .github/workflows/ci.yml    # lint + typecheck + build (web & api), Node 22
 ├── supabase/
@@ -160,7 +160,7 @@ NODE_ENV=                     # main.ts (cookie secure en production)
 POSTGRES_USER= POSTGRES_PASSWORD= POSTGRES_DB= POSTGRES_PORT= DATABASE_URL=
 ```
 
-> ⚠️ Le `.env.example` liste `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (héritage React/Vite), mais le front Astro lit **`SUPABASE_URL` / `SUPABASE_ANON_KEY`** (sans préfixe `VITE_`). La CI construit d'ailleurs avec les variables `VITE_*` — incohérence à garder à l'esprit. `.env.example` ne liste pas `API_URL`.
+> Le front Astro et l'API lisent **`SUPABASE_URL` / `SUPABASE_ANON_KEY`** (sans préfixe `VITE_`). Le `.env.example` et la CI ont été alignés dessus (les anciens `VITE_*` ont été retirés) ; `API_URL` figure désormais dans `.env.example`.
 
 ---
 
@@ -174,7 +174,7 @@ Docker : `docker-compose.yml` lance Postgres 15 (healthcheck), l'API et le web (
 
 ## État du projet
 
-Starter fonctionnel : auth Supabase SSR, API NestJS sécurisée (JWT + CSRF + throttling + helmet), CRUD `items` complet avec RLS, pages admin, design switcher. Points de vigilance : README/docker-compose/.env.example décrivent encore « React + Vite » (le front est Astro) ; pas de tests exécutés en CI ; préfixe `VITE_` incohérent dans `.env.example`/CI.
+Starter fonctionnel : auth Supabase SSR, API NestJS sécurisée (JWT + CSRF + throttling + helmet), CRUD `items` complet avec RLS, pages admin, design switcher. Points de vigilance : le `README.md` peut encore évoquer « React + Vite » (le front est Astro) ; pas de tests exécutés en CI.
 
 ---
 
@@ -189,7 +189,7 @@ Starter fonctionnel : auth Supabase SSR, API NestJS sécurisée (JWT + CSRF + th
 7. **Auth Bearer** : les endpoints protégés attendent `Authorization: Bearer <jwt Supabase>` ; sans lui → 401 (et le CSRF s'active pour les cookies-only).
 8. **Validation** : DTOs API via class-validator (`ValidationPipe` global, `forbidNonWhitelisted`) ; front via Zod (`src/schemas/`). Valider des deux côtés.
 9. **Migrations** : ajouter les changements de schéma dans `supabase/migrations/` (numérotées) ; ne pas oublier RLS + policies + index.
-10. **Env** : le front lit `SUPABASE_URL`/`SUPABASE_ANON_KEY` (pas `VITE_*`) ; corriger `.env.example`/CI plutôt que de suivre le préfixe erroné.
+10. **Env** : le front lit `SUPABASE_URL`/`SUPABASE_ANON_KEY` (pas `VITE_*`). `.env.example` et la CI sont alignés ; ne pas réintroduire de préfixe `VITE_`.
 
 ---
 

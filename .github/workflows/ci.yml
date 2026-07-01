@@ -43,8 +43,8 @@ jobs:
       - name: Build (web)
         run: npm run build -w apps/web
         env:
-          VITE_SUPABASE_URL: https://mock-url.supabase.co
-          VITE_SUPABASE_ANON_KEY: mock-anon-key
+          SUPABASE_URL: https://mock-url.supabase.co
+          SUPABASE_ANON_KEY: mock-anon-key
 
       - name: Build (api)
         run: npm run build -w apps/api
