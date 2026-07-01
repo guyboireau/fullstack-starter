@@ -22,6 +22,8 @@
 
 ## 🚀 Getting Started
 
+> **Prerequisites:** Node.js **≥ 22.12** (required by Astro 6) and npm.
+
 ```bash
 # 1. Clone the repo
 git clone https://github.com/guyboireau/fullstack-starter.git && cd fullstack-starter
@@ -46,6 +48,8 @@ npm run dev
 fullstack-starter/
 ├── apps/
 │   ├── web/          → Astro 6 SSR + Vercel adapter (landing + admin panel)
+│   │   ├── eslint.config.js  → flat config + service-layer rule
+│   │   └── src/services/     → sole entry point for DB/auth access
 │   └── api/          → NestJS 11 (REST API)
 ├── supabase/
 │   ├── migrations/   → SQL migrations (profiles, items)
@@ -70,8 +74,10 @@ fullstack-starter/
 | 🎨 **Design System** | 8-variant design switcher (A→H) — demo multiple client styles |
 | 📊 **Admin Panel** | Astro SSR admin panel (items management, dashboard) |
 | ✅ **Validation** | DTOs with `class-validator` on the API |
+| 🧹 **Service-Layer Rule** | ESLint `no-restricted-imports` forbids direct Supabase imports in pages/components — all DB access goes through `src/services/` |
+| 🧭 **Strict TypeScript** | `strict` + `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noPropertyAccessFromIndexSignature` |
 | 🐳 **Docker Compose** | One-command local dev environment |
-| 🔄 **CI/CD** | GitHub Actions: lint + typecheck on every PR |
+| 🔄 **CI/CD** | GitHub Actions (Node 22): lint + typecheck on every PR |
 | 📦 **Monorepo** | npm workspaces — single `npm install` |
 
 ---
@@ -126,6 +132,26 @@ The API includes CSRF middleware to protect state-mutating endpoints (`POST`, `P
 - **Bearer token bypass**: requests from machine clients (CI, scripts, mobile) that include a valid `Authorization: Bearer <token>` header skip CSRF verification
 
 All required TypeScript types for the CSRF middleware are defined in `apps/api/src/middleware/csrf.types.ts`.
+
+---
+
+## 🧹 Code Quality
+
+### Service-Layer Rule (ESLint)
+
+`apps/web/eslint.config.js` (flat config: `@eslint/js` + `typescript-eslint` + `eslint-plugin-astro`) enforces a `no-restricted-imports` rule that **blocks direct Supabase imports in pages and components**. All database and auth access must go through `src/services/` (e.g. `@/services/auth`). This keeps data access centralized and typed — the same pattern eliminated 142 TypeScript errors on a downstream client project.
+
+```bash
+npm run lint   # astro check && eslint src (in apps/web)
+```
+
+### Strict TypeScript
+
+Beyond `strict: true`, `apps/web/tsconfig.json` enables three extra guards to catch silent errors at compile time:
+
+- `noUncheckedIndexedAccess` — array/record access returns `T | undefined`
+- `exactOptionalPropertyTypes` — `undefined` is not assignable to optional props implicitly
+- `noPropertyAccessFromIndexSignature` — index-signature access requires bracket notation (e.g. `process.env['KEY']`)
 
 ---
 
