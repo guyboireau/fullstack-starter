@@ -1,10 +1,10 @@
 ---
-import { createSupabaseServerClient } from '@/lib/supabase';
+import { createAuthService } from '@/services/auth';
 import { setupCsrf, validateCsrfToken } from '@/lib/csrf';
 import { z } from 'zod';
 
-const supabase = createSupabaseServerClient(Astro.cookies);
-const { data: { user } } = await supabase.auth.getUser();
+const auth = createAuthService(Astro.cookies);
+const { data: { user } } = await auth.getUser();
 if (user) return Astro.redirect('/admin');
 
 const registerSchema = z.object({
@@ -40,7 +40,7 @@ if (Astro.request.method === 'POST') {
         errors[i.path[0] as string] = i.message;
       });
     } else {
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error } = await auth.signUp({
         email:    parsed.data.email,
         password: parsed.data.password,
         options:  { data: { full_name: parsed.data.fullName } },
