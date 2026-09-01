@@ -2,9 +2,13 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    environment: 'node',
     globals: true,
-    setupFiles: ['./src/test/setup.ts'],
+    environment: 'node',
     include: ['src/**/*.spec.ts', 'src/**/*.test.ts'],
+  },
+  resolve: {
+    alias: {
+      '@': '/home/user/fullstack-starter/apps/web/src',
+    },
   },
 });

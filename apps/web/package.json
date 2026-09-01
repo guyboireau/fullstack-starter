@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "astro check && eslint src",
-    "typecheck": "astro check"
+    "typecheck": "astro check",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
@@ -19,7 +20,8 @@
     "eslint": "^9.0.0",
     "eslint-plugin-astro": "^1.0.0",
     "typescript": "^5.7.0",
-    "typescript-eslint": "^8.0.0"
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^4.1.8"
   },
   "overrides": {
     "devalue": "^5.8.1",

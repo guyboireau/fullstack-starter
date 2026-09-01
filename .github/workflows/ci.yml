@@ -55,3 +55,9 @@ jobs:
           SUPABASE_URL: https://mock-url.supabase.co
           SUPABASE_ANON_KEY: mock-anon-key
           DATABASE_URL: postgresql://mock:mock@localhost:5432/mock
+
+      - name: Test (api)
+        run: npm run test -w apps/api
+
+      - name: Test (web)
+        run: npm run test -w apps/web
