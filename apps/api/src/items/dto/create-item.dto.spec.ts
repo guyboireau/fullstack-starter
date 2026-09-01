@@ -17,7 +17,7 @@ describe('CreateItemDto', () => {
   it('fails when title is empty', async () => {
     const errors = await validateDto({ title: '' });
     expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].property).toBe('title');
+    expect(errors[0]?.property).toBe('title');
   });
 
   it('fails when title is missing', async () => {

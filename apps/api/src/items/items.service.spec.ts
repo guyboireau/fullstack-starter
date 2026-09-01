@@ -36,7 +36,7 @@ describe('ItemsService', () => {
       const items = [{ id: '1', title: 'Test item', user_id: 'u1' }];
       const chain = buildChain({ data: items, error: null });
       mockSupabase.from.mockReturnValue(chain);
-      chain.order = vi.fn().mockResolvedValue({ data: items, error: null });
+      chain['order'] = vi.fn().mockResolvedValue({ data: items, error: null });
 
       const result = await service.findAll('token', 'u1');
       expect(result).toEqual(items);
@@ -45,7 +45,7 @@ describe('ItemsService', () => {
 
     it('throws when Supabase returns an error', async () => {
       const chain = buildChain({});
-      chain.order = vi.fn().mockResolvedValue({ data: null, error: new Error('db error') });
+      chain['order'] = vi.fn().mockResolvedValue({ data: null, error: new Error('db error') });
       mockSupabase.from.mockReturnValue(chain);
 
       await expect(service.findAll('token', 'u1')).rejects.toThrow('db error');
