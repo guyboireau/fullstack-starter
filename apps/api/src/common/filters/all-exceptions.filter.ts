@@ -25,9 +25,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
         error = exceptionResponse;
       } else {
         const responseObj = exceptionResponse as Record<string, unknown>;
-        const msg = responseObj.message;
+        const msg = responseObj['message'];
         message = Array.isArray(msg) ? msg.join(', ') : typeof msg === 'string' ? msg : exception.message;
-        const err = responseObj.error;
+        const err = responseObj['error'];
         error = typeof err === 'string' ? err : exception.name;
       }
 
