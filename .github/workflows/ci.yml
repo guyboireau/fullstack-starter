@@ -43,11 +43,17 @@ jobs:
       - name: Test (api)
         run: npm run test -w apps/api
 
-      - name: Build (web)
-        run: npm run build -w apps/web
-        env:
-          VITE_SUPABASE_URL: https://mock-url.supabase.co
-          VITE_SUPABASE_ANON_KEY: mock-anon-key
+      - name: Test (web)
+        run: npm run test -w apps/web
+
+      # Construit via le même script que Vercel et vérifie que la Build Output
+      # API atterrit bien à la racine du dépôt. Sans cette assertion, une
+      # régression sur le chemin de sortie ne se verrait qu'au déploiement.
+      - name: Build (web, Vercel output)
+        run: |
+          npm run build:vercel
+          test -d .vercel/output/functions \
+            || { echo "::error::.vercel/output/functions absent à la racine"; exit 1; }
 
       - name: Build (api)
         run: npm run build -w apps/api
@@ -55,9 +61,3 @@ jobs:
           SUPABASE_URL: https://mock-url.supabase.co
           SUPABASE_ANON_KEY: mock-anon-key
           DATABASE_URL: postgresql://mock:mock@localhost:5432/mock
-
-      - name: Test (api)
-        run: npm run test -w apps/api
-
-      - name: Test (web)
-        run: npm run test -w apps/web

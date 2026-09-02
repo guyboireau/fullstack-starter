@@ -1,6 +1,14 @@
 import type { Item, ItemFormValues } from '@/schemas/item';
+import { getEnv } from '@/lib/env';
 
-const API_BASE = import.meta.env.API_URL ?? 'http://localhost:3000';
+/**
+ * Résolu à chaque appel (et non au niveau module) : `import.meta.env.API_URL`
+ * était substitué au build et figeait `http://localhost:3000` dans le bundle
+ * de production, rendant l'admin inutilisable une fois déployé.
+ */
+function apiBase(): string {
+  return getEnv('API_URL') ?? 'http://localhost:3000';
+}
 
 async function apiFetch<T>(
   path: string,
@@ -16,7 +24,7 @@ async function apiFetch<T>(
     headers['X-CSRF-Token'] = csrfToken;
   }
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(`${apiBase()}${path}`, {
     ...init,
     headers: {
       ...headers,

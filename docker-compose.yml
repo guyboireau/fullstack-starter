@@ -1,9 +1,10 @@
-version: '3.8'
-
 services:
   # ─────────────────────────────────────
   # PostgreSQL Database
   # ─────────────────────────────────────
+  # Base locale optionnelle : l'application parle à Supabase, pas directement à
+  # ce Postgres. Utile pour rejouer les migrations de supabase/migrations/ hors
+  # ligne ou brancher un client SQL.
   db:
     image: postgres:15-alpine
     container_name: fullstack-db
@@ -17,7 +18,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres}']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -35,14 +36,20 @@ services:
       - '${API_PORT:-3000}:3000'
     env_file:
       - .env
+    environment:
+      # Le front tourne dans un autre conteneur : l'origine autorisée est celle
+      # vue depuis le navigateur de l'hôte.
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:4321}
     volumes:
       - ./apps/api/src:/app/apps/api/src
+      # Empêche le node_modules de l'hôte d'écraser celui de l'image.
+      - /app/node_modules
     depends_on:
       db:
         condition: service_healthy
 
   # ─────────────────────────────────────
-  # React Frontend (Vite)
+  # Astro SSR Frontend
   # ─────────────────────────────────────
   web:
     build:
@@ -51,11 +58,19 @@ services:
     container_name: fullstack-web
     restart: unless-stopped
     ports:
-      - '5173:5173'
+      # 4321 = port du serveur de dev Astro (l'ancien 5173 datait du front Vite).
+      - '4321:4321'
     env_file:
       - .env
+    environment:
+      # Depuis le conteneur web, l'API est joignable par son nom de service.
+      API_URL: http://api:3000
     volumes:
       - ./apps/web/src:/app/apps/web/src
+      # Empêche le node_modules de l'hôte d'écraser celui de l'image.
+      - /app/node_modules
+    depends_on:
+      - api
 
 volumes:
   postgres_data:
