@@ -1,5 +1,4 @@
 {
-  "buildCommand": "npm run build -w apps/web",
-  "outputDirectory": "apps/web/.vercel/output",
-  "framework": "astro"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build:vercel"
 }

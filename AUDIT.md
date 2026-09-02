@@ -1,151 +1,136 @@
 # Audit — Fullstack Starter
 
-> Date : 2026-04-29
-> Projet : `/Users/guyboireau/Dev/fullstack-starter`
-> Stack : React 19 + Vite 7 + NestJS 11 + Supabase + PostgreSQL + TypeScript
+> Date : 2026-09-02
+> Stack réelle : Astro 7 (SSR, adapter Vercel) + NestJS 11 + Supabase + TypeScript
+>
+> ⚠️ La version précédente de ce document (2026-04-29) décrivait un frontend
+> **React 19 + Vite 7 + React Router** avec des fichiers (`Dashboard.tsx`,
+> `Login.tsx`, `hooks/useAuth.ts`) qui n'existent plus : le front a été migré
+> vers Astro sans que l'audit soit resynchronisé. Il induisait donc en erreur
+> toute personne — ou tout agent — s'y fiant comme référence.
 
 ---
 
 ## 1. Vue d'ensemble
 
-Template monorepo fullstack visant la production, utilisant les npm workspaces.
+Template monorepo (npm workspaces) visant la production.
 
 | Couche | Technologie | Rôle |
 |--------|-------------|------|
-| Frontend | React 19 + Vite 7 + React Router 7 | SPA authentifiée (login, register, dashboard CRUD) |
+| Frontend | Astro 7 SSR + adapter Vercel + Tailwind 4 | Landing publique + panneau d'administration |
 | Backend | NestJS 11 + Express | API REST protégée par JWT Supabase |
-| Auth / DB | Supabase (Postgres 15) | Auth email/password + Row Level Security (RLS) |
-| DevOps | Docker Compose + GitHub Actions | Base de données locale, CI lint + typecheck |
+| Auth / DB | Supabase (Postgres 15) | Auth email/mot de passe + Row Level Security |
+| DevOps | Docker Compose + GitHub Actions | Environnement local, CI lint + typecheck + tests |
 
-**Architecture retenue**
-- Le frontend s'authentifie directement via Supabase Auth.
-- Le token JWT est ensuite relayé au backend NestJS via le header `Authorization`.
-- Le backend valide le token auprès de Supabase (`getUser`) puis effectue les requêtes SQL en respectant les RLS grâce à un client Supabase scopé par user.
-
-**Points positifs**
-- TypeScript strict activé côté web (`noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`).
-- Validation DTO via `class-validator` / `class-transformer` sur l'API.
-- RLS activé sur toutes les tables (`profiles`, `items`).
-- CORS configuré explicitement.
-- CI GitHub Actions fonctionnelle (lint + typecheck + build API).
+**Architecture**
+- Astro s'authentifie auprès de Supabase côté serveur (`@supabase/ssr`, session en cookies).
+- Le JWT est relayé à l'API NestJS via l'en-tête `Authorization: Bearer`.
+- `SupabaseAuthGuard` valide le token, puis les requêtes SQL s'exécutent sous RLS.
+- Les formulaires modifiant la session sont protégés par CSRF (double-submit cookie).
 
 ---
 
-## 2. Dépendances
+## 2. Corrigé lors de cet audit — le starter ne fonctionnait pas en production
 
-### Versions installées (depuis `package-lock.json`)
+Ces quatre défauts se cumulaient : l'application était déployable mais
+inutilisable, ce qui rendait toute démonstration impossible.
 
-| Package | Version installée | Déclarée | Statut |
-|---------|-------------------|----------|--------|
-| `react` | 19.2.4 | `^19.0.0` | À jour |
-| `react-dom` | 19.2.4 | `^19.0.0` | À jour |
-| `react-router-dom` | 7.14.0 | `^7.12.0` | À jour |
-| `vite` | 7.3.2 | `^7.3.2` | À jour |
-| `@nestjs/*` | 11.1.18 | `^11.0.0` | À jour |
-| `typescript` | 5.9.3 | `^5.7.0` | À jour (lockfile plus récent) |
-| `@supabase/supabase-js` | 2.105.0 | `^2.103.0` | Légèrement en retard — **mettre à jour** |
-| `vitest` | 4.1.5 | `^4.1.5` | Très récent (écosystème encore majoritairement sur v3) — **surveiller la compatibilité** |
-| `class-validator` | 0.14.4 | `^0.14.1` | À jour |
-| `class-transformer` | 0.5.1 | `^0.5.1` | À jour |
+### 2.1. Variables d'environnement figées à `undefined` au build — bloquant
 
-### Observations
-- `@supabase/supabase-js` : la v2.120+ apporte des améliorations de stabilité sur la gestion de session. Recommandé de monter la contrainte semver.
-- `vitest` v4.x est sorti récemment ; la plupart des plugins et presets tiers ne sont pas encore testés dessus. Aucun problème détecté dans le starter, mais à surveiller si des tests sont ajoutés.
-- Pas de `package.json` obsolète critique à signaler.
+`src/lib/supabase.ts` lisait `import.meta.env.SUPABASE_URL` au niveau module.
+Vite substitue ces expressions **au moment du build** : la variable étant absente
+de l'environnement de build, le bundle déployé contenait littéralement
 
----
+```js
+var supabaseUrl = void 0;
+var supabaseAnonKey = void 0;
+throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY env vars.");
+```
 
-## 3. Dette technique
+Le `throw` devenait **inconditionnel** : toute requête touchant Supabase
+(login, register, admin) échouait en production, quelle que soit la
+configuration Vercel. Même mécanisme pour `import.meta.env.API_URL`, qui figeait
+`http://localhost:3000` dans le bundle de production.
 
-### 3.1. TODO / FIXME / HACK
-- **Aucun marqueur trouvé** dans le code source. Bien.
+**Correction** : `src/lib/env.ts` expose `getEnv()` / `requireEnv()` lisant
+`process.env` **à l'exécution**, appelés à l'intérieur des fonctions et non au
+niveau module. `astro.config.mjs` recopie les fichiers `.env` dans `process.env`
+au démarrage pour que le développement lise à la même source que la production.
 
-### 3.2. Usage de `any` en TypeScript
-- **Pas d'`any` explicite** dans le source (`src/`).
-- **Retours implicites `any`** : les services NestJS (`items.service.ts`, `users.service.ts`) et les controllers n'ont pas de types de retour explicites. Les fichiers `.d.ts` générés exposent donc des `Promise<any>` et `Promise<any[]>`, ce qui casse le typage transverse web ↔ API.
+### 2.2. Sortie de build introuvable par Vercel — bloquant
 
-### 3.3. Absence de tests
-- **Zéro fichier de test** (aucun `*.test.*` ni `*.spec.*` dans `apps/web/src` ni `apps/api/src`).
-- Les configs `vitest.config.ts` existent des deux côtés mais ne servent à rien.
-- **Priorité haute** : au minimum des tests unitaires pour `useAuth`, `SupabaseAuthGuard`, `ItemsService`, et des tests de composant pour `Login` / `Dashboard`.
+`@astrojs/vercel` écrit dans `apps/web/.vercel/output`, alors que Vercel ne lit
+la Build Output API qu'à la racine du Root Directory. `vercel.json` déclarait de
+surcroît `outputDirectory` + `framework`, incompatibles avec cette API.
 
-### 3.4. Fonctions / composants trop longs
-- `apps/web/src/pages/Dashboard.tsx` : **342 lignes**. Gère la liste, les statistiques, le modal création/édition, les appels API + fallback Supabase. C'est un "god component".
-- `apps/web/src/pages/Login.tsx` et `Register.tsx` : ~125 lignes chacun, dont ~80 % de markup/CSS dupliqué.
+**Correction** : `scripts/collect-vercel-output.mjs` remonte la sortie à la
+racine, appelé par `npm run build:vercel` que `vercel.json` utilise désormais.
 
-### 3.5. Duplication de code
-- **UI d'authentification** : `Login.tsx` et `Register.tsx` dupliquent la structure `.auth-page`, `.auth-card`, `.auth-header`, les champs `form-group`, etc. Doit être extrait en `AuthLayout` et `AuthForm`.
-- **Fallback Supabase** dans `Dashboard.tsx` : le pattern `try { fetch('/api/...') } catch { supabase.from(...) }` est dupliqué 3 fois (fetch, save, delete). C'est une antipattern d'architecture.
-- **Gestion d'état de chargement / erreur** : reproduite à l'identique dans `Login`, `Register` et `Dashboard`.
+### 2.3. Documentation de déploiement contradictoire — bloquant
 
-### 3.6. Imports non utilisés
-- Pas d'import non utilisé visible dans le source. Néanmoins, `apps/api/tsconfig.json` a `noUnusedLocals: false` et `noUnusedParameters: false`, ce qui désactive la détection.
+Le README demandait de configurer `PUBLIC_SUPABASE_URL` / `PUBLIC_SUPABASE_ANON_KEY`
+sur Vercel, alors que le code lit `SUPABASE_URL` / `SUPABASE_ANON_KEY`. En
+suivant la documentation, les variables n'étaient jamais trouvées.
 
-### 3.7. Mauvaises pratiques de sécurité
-1. **Parser d'Authorization header fragile** (`apps/api/src/auth/guards/supabase-auth.guard.ts`) :
-   ```ts
-   const [type, token] = authHeader.split(' ');
-   ```
-   Si le header contient plusieurs espaces, le `token` inclut le reste de la chaîne. Utiliser `authHeader.split(' ')[1]` ou `authHeader.substring(7)` après vérification.
+**Correction** : section « Deploy » réécrite avec les noms exacts et l'avertissement
+sur le préfixe `PUBLIC_`.
 
-2. **Fallback direct Supabase dans le frontend** (`Dashboard.tsx`) :
-   Si l'API NestJS est indisponible, le frontend parle directement à Supabase. Cela contourne toute la logique métier / validation du backend et crée une architecture hybride non maîtrisée. Le fallback doit être supprimé ; en cas d'indisponibilité API, afficher une erreur.
+### 2.4. Landing page inaccessible aux visiteurs
 
-3. **Pas de rate limiting** sur l'API (login, register, CRUD).
+Le middleware raisonnait par liste de routes *publiques*
+(`['/login', '/register']`) : la page d'accueil, pourtant vitrine publique,
+redirigeait les visiteurs anonymes vers `/login`.
 
-4. **Pas de Helmet / en-têtes de sécurité HTTP** configurés dans NestJS (`main.ts`).
+**Correction** : raisonnement inversé — seuls les préfixes de
+`PROTECTED_PREFIXES` (`/admin`) exigent une session.
 
-5. **Dockerfiles manquants** : `docker-compose.yml` référence `apps/api/Dockerfile` et `apps/web/Dockerfile`, mais ces fichiers n'existent pas. Le build Docker est donc cassé.
+### 2.5. Autres correctifs
 
-6. **`tsconfig.base.json` inutilisé** : à la racine du monorepo mais ni `apps/web/tsconfig.json` ni `apps/api/tsconfig.json` ne l'étendent. C'est un fichier mort.
+- `docker-compose.yml` référençait `apps/api/Dockerfile` et `apps/web/Dockerfile`
+  **inexistants** : `docker compose up` échouait. Les deux images sont créées,
+  le port du front passe de 5173 (héritage Vite) à 4321.
+- `apps/web/vitest.config.ts` contenait un **chemin absolu en dur**
+  (`/home/user/...`) : l'alias `@` n'était résolvable que sur la machine où le
+  fichier avait été écrit. Résolu relativement au fichier.
+- CORS de l'API : origine par défaut alignée sur 4321 (au lieu de 5173).
+- `.env.example` racine : variables `VITE_*` de l'ancien front React remplacées
+  par les variables réellement lues.
 
----
+### 2.6. Non-régression
 
-## 4. Améliorations suggérées
-
-### Performance
-- Remplacer le state local de `Dashboard.tsx` par **TanStack Query (React Query)** pour le cache serveur, les re-fetchs automatiques et la gestion des mutations.
-- Ajouter la **pagination** côté API (`skip` / `take` ou cursor) et côté UI pour la liste des items.
-- Extraire la liste d'items en un composant `ItemList` mémoïsé (`React.memo`) pour éviter les re-rendus inutiles du modal.
-
-### Accessibilité (a11y)
-- Le modal de création/édition n'a pas de `role="dialog"`, `aria-modal="true"`, ni de **focus trap**. Il ne se ferme pas avec la touche `Escape`.
-- Les emojis utilisés comme icônes (`📦`, `✏️`, `🗑️`, `⚡`) n'ont pas de texte alternatif (`aria-label` ou `role="img"` avec `aria-label`).
-- Les badges de statut devraient utiliser des couleurs accompagnées d'indicateurs textuels explicites pour les daltoniens.
-
-### SEO
-- SPA sans SSR : le SEO est inexistant. Le `index.html` a un title et une description statiques, mais aucune page n'a de balises `<title>` ou `<meta>` dynamiques.
-- Recommandation : utiliser `react-helmet-async` ou migrer vers Next.js si le SEO devient un besoin.
-
-### Typage strict
-- Ajouter des **return types explicites** sur tous les services et controllers NestJS.
-- Créer des interfaces partagées (ou un package `shared/types`) pour les DTOs API afin de les réutiliser côté frontend.
-- Étendre `tsconfig.base.json` dans les `tsconfig.json` des apps pour centraliser la configuration.
-- Aligner `noUnusedLocals` et `noUnusedParameters` sur `true` dans l'API.
+`apps/web/src/lib/env.spec.ts` teste `getEnv`/`requireEnv` et **scanne les
+sources** pour interdire tout nouvel accès `import.meta.env.MA_VARIABLE` en
+dehors des clés intégrées à Vite et des variables `PUBLIC_*`. C'est ce garde-fou
+qui manquait : la suite de tests était verte pendant que la production était
+cassée, parce qu'aucun test ne couvrait la plomberie d'environnement.
 
 ---
 
-## 5. Fichiers critiques à refactorer
+## 3. Dette restante (non bloquante)
 
-### 1. `apps/web/src/pages/Dashboard.tsx`
-- **Problèmes** : 342 lignes, god component, fallback Supabase dupliqué 3 fois, modal non accessible, pas de tests.
-- **Action** : découper en `DashboardLayout`, `StatsPanel`, `ItemList`, `ItemModal`. Supprimer le fallback Supabase. Utiliser React Query.
+| Sujet | Détail |
+|-------|--------|
+| Couverture de tests | `auth.service.ts` et les trois contrôleurs NestJS restent sans test unitaire. |
+| Types de retour | Les services NestJS n'ont pas de types de retour explicites : les `.d.ts` générés exposent `Promise<any>`. |
+| `tsconfig.base.json` | Présent à la racine mais étendu par aucune app — fichier mort. |
+| Postgres local | Le service `db` de Docker Compose n'est utilisé par aucune application (tout passe par Supabase) ; conservé pour rejouer les migrations hors ligne. |
+| Warnings de lint | 11 avertissements `no-unused-vars` (variables `v` des variantes de design, `_id`/`_uid` de tests). |
+| `z.string().uuid()` | Déprécié en Zod 4 au profit de `z.uuid()` — 16 hints au typecheck. |
 
-### 2. `apps/web/src/pages/Login.tsx` + `apps/web/src/pages/Register.tsx`
-- **Problèmes** : ~80 % de duplication de markup et de logique de formulaire.
-- **Action** : extraire un composant `AuthLayout` et un `AuthForm` générique. Laisser `Login` et `Register` comme de simples pages orchestre.
+---
 
-### 3. `apps/api/src/items/items.service.ts`
-- **Problèmes** : pas de return types, pas de gestion fine des erreurs Supabase, pas de tests unitaires.
-- **Action** : typer les retours (`Promise<ItemEntity>`), ajouter un intercepteur d'erreur, écrire des tests avec un mock Supabase.
+## 4. Vérifications passées
 
-### 4. `apps/web/src/hooks/useAuth.ts`
-- **Problèmes** : pas de gestion d'erreur réseau (timeout), pas de retry, pas de rafraîchissement explicite du token, pas de tests.
-- **Action** : wrapper dans React Query ou ajouter une logique de retry + gestion de `onAuthStateChange` plus robuste.
+```
+npm run lint       → 0 erreur (11 warnings préexistants)
+npm run typecheck  → 0 erreur
+npm test           → 53 tests (23 API + 30 web)
+npm run build      → OK (web + api)
+npm run build:vercel → .vercel/output généré à la racine
+```
 
-### 5. `apps/api/src/auth/guards/supabase-auth.guard.ts`
-- **Problèmes** : parser d'Authorization header naïf, pas de tests.
-- **Action** : corriger le split du Bearer token, ajouter des tests unitaires avec des requêtes mockées.
+Test de bout en bout avec un unique `.env` à la racine (la procédure du README) :
+`/` → 200, `/login` → 200, `/admin` → 302 vers `/login`, aucune erreur d'environnement.
 
 ---
 

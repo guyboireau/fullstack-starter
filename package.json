@@ -24,6 +24,7 @@
   "scripts": {
     "dev": "concurrently -n web,api -c cyan,green \"npm run dev -w apps/web\" \"npm run dev -w apps/api\"",
     "build": "npm run build -w apps/web && npm run build -w apps/api",
+    "build:vercel": "npm run build -w apps/web && node scripts/collect-vercel-output.mjs",
     "lint": "npm run lint -w apps/web && npm run lint -w apps/api",
     "typecheck": "npm run typecheck -w apps/web && npm run typecheck -w apps/api",
     "dev:web": "npm run dev -w apps/web",

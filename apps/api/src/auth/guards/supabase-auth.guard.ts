@@ -49,7 +49,13 @@ export class SupabaseAuthGuard implements CanActivate {
     if (!authHeader) return null;
 
     const [type, ...rest] = authHeader.split(' ');
-    const token = rest.join(' '); // join au lieu de [0] pour gérer les tokens contenant des espaces (même si rare, évite une troncature silencieuse)
-    return type === 'Bearer' && token ? token : null;
+    if (type !== 'Bearer') return null;
+
+    // join au lieu de [0] : évite une troncature silencieuse si le token
+    // contenait un espace. trim() car la RFC 7235 autorise plusieurs espaces
+    // entre le schéma et le token — sans lui, « Bearer  <jwt> » produisait un
+    // token préfixé d'une espace, rejeté par Supabase.
+    const token = rest.join(' ').trim();
+    return token || null;
   }
 }

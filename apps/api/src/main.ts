@@ -32,7 +32,8 @@ async function bootstrap() {
 
   // Enable CORS for the frontend
   app.enableCors({
-    origin: process.env['CORS_ORIGIN'] || 'http://localhost:5173',
+    // 4321 = port du serveur de dev Astro (l'ancien 5173 datait du front Vite).
+    origin: process.env['CORS_ORIGIN'] || 'http://localhost:4321',
     credentials: true,
   });
 

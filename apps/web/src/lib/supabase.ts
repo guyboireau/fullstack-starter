@@ -1,14 +1,13 @@
 import { createServerClient, parseCookieHeader } from '@supabase/ssr';
 import type { AstroCookies } from 'astro';
-
-const supabaseUrl = import.meta.env.SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY env vars.');
-}
+import { requireEnv } from '@/lib/env';
 
 export function createSupabaseServerClient(cookies: AstroCookies) {
+  // Résolu à chaque appel (donc au runtime) : lire ces variables au niveau
+  // module les figerait à `undefined` dans le bundle de production.
+  const supabaseUrl = requireEnv('SUPABASE_URL');
+  const supabaseAnonKey = requireEnv('SUPABASE_ANON_KEY');
+
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {

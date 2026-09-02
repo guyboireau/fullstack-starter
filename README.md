@@ -131,7 +131,8 @@ The API includes CSRF middleware to protect state-mutating endpoints (`POST`, `P
 - The token is expected in the `X-CSRF-Token` header (set automatically by the frontend)
 - **Bearer token bypass**: requests from machine clients (CI, scripts, mobile) that include a valid `Authorization: Bearer <token>` header skip CSRF verification
 
-All required TypeScript types for the CSRF middleware are defined in `apps/api/src/middleware/csrf.types.ts`.
+The guard lives in `apps/api/src/common/guards/csrf.guard.ts`; the Astro side
+(token generation and form validation) is in `apps/web/src/lib/csrf.ts`.
 
 ---
 
@@ -159,10 +160,24 @@ Beyond `strict: true`, `apps/web/tsconfig.json` enables three extra guards to ca
 
 ### Frontend → Vercel
 
-1. Import the `apps/web` directory on [Vercel](https://vercel.com)
-2. Set the **Root Directory** to `apps/web`
-3. Add environment variables: `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`
-4. The `@astrojs/vercel` adapter handles SSR automatically — output targets `.vercel/output`
+1. Import the repository on [Vercel](https://vercel.com)
+2. Leave the **Root Directory** at the repository root (the default)
+3. Add these environment variables — the names must match exactly, they are read
+   at runtime by the SSR function:
+
+   | Variable | Example |
+   |----------|---------|
+   | `SUPABASE_URL` | `https://your-project.supabase.co` |
+   | `SUPABASE_ANON_KEY` | `eyJhbGciOi…` |
+   | `API_URL` | public URL of the deployed NestJS API |
+
+   > These are **server-side** variables and must **not** be prefixed with
+   > `PUBLIC_`. A `PUBLIC_` prefix would expose them to the browser *and* they
+   > would no longer match what the code reads.
+
+4. `vercel.json` runs `npm run build:vercel`, which builds the Astro app and
+   moves the Build Output API directory to `.vercel/output` at the repository
+   root — where Vercel expects it in a monorepo
 5. Deploy 🚀
 
 ### Backend → Railway / Render
