@@ -1,19 +1,20 @@
 ---
-import { createSupabaseServerClient } from '@/lib/supabase';
-import { setupCsrf } from '@/lib/csrf';
-
 interface Props {
   title: string;
 }
 
 const { title } = Astro.props;
-const supabase = createSupabaseServerClient(Astro.cookies);
-const { data: { user } } = await supabase.auth.getUser();
-const csrfToken = setupCsrf(Astro.cookies);
+// L'utilisateur a déjà été résolu et vérifié par le middleware : inutile de
+// refaire un aller-retour vers Supabase à chaque rendu de page admin.
+const user = Astro.locals.user;
+const csrfToken = Astro.locals.csrfToken;
 
 const navItems = [
-  { label: 'Dashboard', href: '/admin', icon: '▤' },
-  { label: 'Items',     href: '/admin/items', icon: '☰' },
+  { label: 'Dashboard',    href: '/admin',              icon: '▤' },
+  { label: 'Services',     href: '/admin/services',     icon: '◆' },
+  { label: 'Réalisations', href: '/admin/realisations', icon: '▣' },
+  { label: 'Actualités',   href: '/admin/actualites',   icon: '✎' },
+  { label: 'Items',        href: '/admin/items',        icon: '☰' },
 ];
 ---
 

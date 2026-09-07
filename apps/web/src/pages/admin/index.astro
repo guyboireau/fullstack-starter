@@ -1,75 +1,71 @@
 ---
 import AdminLayout from '@/layouts/AdminLayout.astro';
 import { createSupabaseServerClient } from '@/lib/supabase';
-import { itemsService } from '@/services/items';
+import { listMemberSites, listAllServices, listAllAchievements, listAllNews } from '@/services/admin-content';
 
-const supabase = createSupabaseServerClient(Astro.cookies);
-const { data: { session } } = await supabase.auth.getSession();
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
+const memberships = await listMemberSites(supabase);
+const site = memberships[0]?.sites ?? null;
 
-let items: Awaited<ReturnType<typeof itemsService.list>> = [];
 let fetchError = '';
+let services: unknown[] = [];
+let achievements: unknown[] = [];
+let news: { published: boolean }[] = [];
 
-if (session?.access_token) {
+if (site) {
   try {
-    items = await itemsService.list(session.access_token);
+    [services, achievements, news] = await Promise.all([
+      listAllServices(supabase, site.id),
+      listAllAchievements(supabase, site.id),
+      listAllNews(supabase, site.id),
+    ]);
   } catch (e) {
     fetchError = e instanceof Error ? e.message : 'Erreur de chargement';
   }
 }
 
-const total    = items.length;
-const todo     = items.filter(i => i.status === 'todo').length;
-const progress = items.filter(i => i.status === 'in_progress').length;
-const done     = items.filter(i => i.status === 'done').length;
+const drafts = news.filter(n => !n.published).length;
+
+const stats = [
+  { label: 'Services',      value: services.length,     href: '/admin/services' },
+  { label: 'Réalisations',  value: achievements.length, href: '/admin/realisations' },
+  { label: 'Actualités',    value: news.length,         href: '/admin/actualites' },
+  { label: 'Brouillons',    value: drafts,              href: '/admin/actualites' },
+];
 ---
 
 <AdminLayout title="Dashboard">
-  {fetchError && (
-    <div class="mb-6 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-      {fetchError}
+  {!site && (
+    <div class="mb-6 px-4 py-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm">
+      Votre compte n’est rattaché à aucun site. Ajoutez une ligne dans <code>site_members</code> pour lui donner accès.
     </div>
   )}
+  {fetchError && (
+    <div class="mb-6 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{fetchError}</div>
+  )}
 
-  <!-- Stats -->
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-    {[
-      { label: 'Total',      value: total,    color: 'text-[#1a1916]' },
-      { label: 'À faire',    value: todo,     color: 'text-[#8c887c]' },
-      { label: 'En cours',   value: progress, color: 'text-[#c44a1e]'   },
-      { label: 'Terminés',   value: done,     color: 'text-[#3f9c5a]'  },
-    ].map(stat => (
-      <div class="bg-[#ffffff] border border-[#d9d4c7] rounded-xl p-4">
-        <p class="text-[10px] text-[#8c887c] font-mono uppercase tracking-wider mb-1">{stat.label}</p>
-        <p class:list={['text-3xl font-bold', stat.color]}>{stat.value}</p>
+  {site && (
+    <>
+      <p class="text-sm text-gray-400 mb-6">
+        Contenu du site <span class="text-gray-200 font-medium">{site.name}</span>.
+      </p>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {stats.map(stat => (
+          <a href={stat.href} class="block bg-gray-900 border border-gray-800 hover:border-gray-700 rounded-xl p-5 transition-colors">
+            <p class="text-3xl font-semibold text-white">{stat.value}</p>
+            <p class="text-sm text-gray-400 mt-1">{stat.label}</p>
+          </a>
+        ))}
       </div>
-    ))}
-  </div>
 
-  <!-- Recent items -->
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-xs font-semibold text-[#1a1916] uppercase tracking-wide">Derniers items</h2>
-    <a href="/admin/items" class="text-xs text-[#1a1916] font-medium border-b border-[#1a1916]/30 hover:border-[#1a1916]">Voir tout →</a>
-  </div>
-
-  {items.length === 0 ? (
-    <div class="bg-[#ffffff] border border-[#d9d4c7] rounded-xl p-10 text-center">
-      <p class="text-[#8c887c] text-sm">Aucun item. <a href="/admin/items" class="text-[#c44a1e] hover:underline">Créer le premier</a></p>
-    </div>
-  ) : (
-    <div class="bg-[#ffffff] border border-[#d9d4c7] rounded-xl divide-y divide-[#ebe7dc]">
-      {items.slice(0, 5).map(item => (
-        <div class="flex items-center justify-between px-4 py-3">
-          <span class="text-sm text-[#1a1916] truncate font-medium">{item.title}</span>
-          <span class:list={[
-            'ml-3 shrink-0 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider',
-            item.status === 'done'        && 'bg-[#3f9c5a]/10 text-[#3f9c5a]',
-            item.status === 'in_progress' && 'bg-[#c44a1e]/10 text-[#c44a1e]',
-            item.status === 'todo'        && 'bg-[#d9d4c7]/30 text-[#8c887c]',
-          ]}>
-            {item.status === 'todo' ? 'À faire' : item.status === 'in_progress' ? 'En cours' : 'Terminé'}
-          </span>
-        </div>
-      ))}
-    </div>
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+        <h2 class="text-sm font-medium text-gray-200 mb-2">Le site public lit directement ces tables</h2>
+        <p class="text-sm text-gray-400">
+          Toute publication est visible immédiatement sur <a href="/" class="text-indigo-400 hover:text-indigo-300">le site</a>.
+          Un contenu non publié reste visible ici, mais pas des visiteurs.
+        </p>
+      </div>
+    </>
   )}
 </AdminLayout>

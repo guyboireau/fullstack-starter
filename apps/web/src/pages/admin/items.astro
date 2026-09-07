@@ -4,10 +4,10 @@ import { createSupabaseServerClient } from '@/lib/supabase';
 import { itemsService } from '@/services/items';
 import { itemFormSchema } from '@/schemas/item';
 import type { Item } from '@/schemas/item';
-import { setupCsrf, validateCsrfToken } from '@/lib/csrf';
+import { validateCsrfToken } from '@/lib/csrf';
 import { z } from 'zod';
 
-const supabase = createSupabaseServerClient(Astro.cookies);
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
 const { data: { session } } = await supabase.auth.getSession();
 
 let items: Item[] = [];
@@ -15,7 +15,6 @@ let formErrors: Record<string, string> = {};
 let actionError = '';
 let successMessage = '';
 let csrfError = '';
-const csrfToken = setupCsrf(Astro.cookies);
 
 // Load items
 if (session?.access_token) {
@@ -41,7 +40,7 @@ if (Astro.request.method === 'POST' && session?.access_token) {
 
     try {
       if (action === 'delete') {
-        const id = z.string().uuid().parse(form.get('id'));
+        const id = z.uuid().parse(form.get('id'));
         await itemsService.remove(session.access_token, id);
         successMessage = 'Item supprimé.';
         items = await itemsService.list(session.access_token);
@@ -61,7 +60,7 @@ if (Astro.request.method === 'POST' && session?.access_token) {
             await itemsService.create(session.access_token, parsed.data);
             successMessage = 'Item créé.';
           } else if (action === 'update') {
-            const id = z.string().uuid().parse(form.get('id'));
+            const id = z.uuid().parse(form.get('id'));
             await itemsService.update(session.access_token, id, parsed.data);
             successMessage = 'Item mis à jour.';
           }
@@ -73,6 +72,8 @@ if (Astro.request.method === 'POST' && session?.access_token) {
     }
   }
 }
+
+const csrfToken = Astro.locals.csrfToken;
 
 const STATUS_LABELS: Record<string, string> = {
   todo:        'À faire',

@@ -1,0 +1,153 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import EntityFields, { type FieldDef } from '@/components/admin/EntityFields.astro';
+import { createSupabaseServerClient } from '@/lib/supabase';
+import { listMemberSites, listAllAchievements, listAllServices, createRow, updateRow, deleteRow } from '@/services/admin-content';
+import { achievementFormSchema } from '@/schemas/content';
+import type { Achievement, Service } from '@/schemas/content';
+import { validateCsrfToken } from '@/lib/csrf';
+import { z } from 'zod';
+
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
+const csrfToken = Astro.locals.csrfToken;
+
+const memberships = await listMemberSites(supabase);
+const site = memberships[0]?.sites ?? null;
+
+let rows: Achievement[] = [];
+let services: Service[] = [];
+let formErrors: Record<string, string> = {};
+let actionError = '';
+let successMessage = '';
+let csrfError = '';
+
+if (Astro.request.method === 'POST' && site) {
+  const form = await Astro.request.formData();
+  try { validateCsrfToken(form, Astro.cookies); }
+  catch { csrfError = 'Session invalide, veuillez rafraîchir la page.'; }
+
+  if (!csrfError) {
+    const action = form.get('_action');
+    try {
+      if (action === 'delete') {
+        await deleteRow(supabase, 'achievements', z.uuid().parse(form.get('id')));
+        successMessage = 'Réalisation supprimée.';
+      } else {
+        const parsed = achievementFormSchema.safeParse({
+          legacy_id:   form.get('legacy_id'),
+          slug:        form.get('slug'),
+          title:       form.get('title'),
+          subtitle:    form.get('subtitle') ?? '',
+          body:        form.get('body') ?? '',
+          service_id:  form.get('service_id') ?? '',
+          realized_at: form.get('realized_at') ?? '',
+          position:    form.get('position') ?? 0,
+          published:   form.get('published') === 'true',
+        });
+        if (!parsed.success) {
+          parsed.error.issues.forEach(i => { formErrors[String(i.path[0])] = i.message; });
+        } else if (action === 'create') {
+          await createRow(supabase, 'achievements', site.id, parsed.data);
+          successMessage = 'Réalisation créée.';
+        } else if (action === 'update') {
+          await updateRow(supabase, 'achievements', z.uuid().parse(form.get('id')), parsed.data);
+          successMessage = 'Réalisation mise à jour.';
+        }
+      }
+    } catch (e) {
+      actionError = e instanceof Error ? e.message : 'Une erreur est survenue';
+    }
+  }
+}
+
+if (site) {
+  try {
+    [rows, services] = await Promise.all([
+      listAllAchievements(supabase, site.id),
+      listAllServices(supabase, site.id),
+    ]);
+  }
+  catch (e) { actionError ||= e instanceof Error ? e.message : 'Erreur de chargement'; }
+}
+
+const fields: FieldDef[] = [
+  { name: 'title',       label: 'Titre',       type: 'text',   required: true },
+  { name: 'slug',        label: 'Slug',        type: 'text',   required: true, hint: 'Apparaît dans l’URL.' },
+  { name: 'legacy_id',   label: 'Id d’URL',    type: 'number', required: true, hint: 'Identifiant repris du site d’origine.' },
+  { name: 'service_id',  label: 'Service',     type: 'select',
+    options: [{ value: '', label: '— Aucun —' }, ...services.map(s => ({ value: s.id, label: s.title }))],
+    hint: 'Détermine le filtre sur la page Réalisations.' },
+  { name: 'realized_at', label: 'Date',        type: 'date' },
+  { name: 'position',    label: 'Ordre',       type: 'number' },
+  { name: 'published',   label: 'Statut',      type: 'checkbox' },
+  { name: 'subtitle',    label: 'Sous-titre',  type: 'text', full: true },
+  { name: 'body',        label: 'Description', type: 'textarea', full: true, hint: 'Paragraphes séparés par une ligne vide. Listes avec « - ».' },
+];
+---
+
+<AdminLayout title="Réalisations">
+  {!site && (
+    <div class="mb-4 px-4 py-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm">
+      Votre compte n’est rattaché à aucun site. Ajoutez une ligne dans <code>site_members</code> pour lui donner accès.
+    </div>
+  )}
+  {actionError && <div class="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{actionError}</div>}
+  {csrfError && <div class="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{csrfError}</div>}
+  {successMessage && <div class="mb-4 px-4 py-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm">{successMessage}</div>}
+
+  {site && (
+    <>
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-6">
+        <h2 class="text-sm font-medium text-gray-200 mb-4">Nouvelle réalisation</h2>
+        <form method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <input type="hidden" name="_csrf" value={csrfToken} />
+          <input type="hidden" name="_action" value="create" />
+          <EntityFields fields={fields} errors={formErrors} idPrefix="new" />
+          <div class="sm:col-span-3">
+            <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-colors">Créer</button>
+          </div>
+        </form>
+      </div>
+
+      {rows.length === 0 ? (
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-10 text-center">
+          <p class="text-gray-500 text-sm">Aucune réalisation pour l’instant.</p>
+        </div>
+      ) : (
+        <div class="bg-gray-900 border border-gray-800 rounded-xl divide-y divide-gray-800">
+          {rows.map(row => (
+            <details class="group">
+              <summary class="flex items-center justify-between px-4 py-3 cursor-pointer list-none">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${row.published ? 'bg-green-500/15 text-green-400' : 'bg-gray-500/15 text-gray-400'}`}>
+                    {row.published ? 'Publié' : 'Brouillon'}
+                  </span>
+                  <span class="text-sm text-gray-200 truncate">{row.title}</span>
+                  <span class="text-xs text-gray-600 shrink-0">/realisation/{row.legacy_id}/{row.slug}</span>
+                </div>
+                <span class="text-gray-600 text-xs ml-3 group-open:rotate-90 transition-transform">▶</span>
+              </summary>
+              <div class="px-4 pb-4 pt-2 bg-gray-950/50">
+                <form method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <input type="hidden" name="_csrf" value={csrfToken} />
+                  <input type="hidden" name="_action" value="update" />
+                  <input type="hidden" name="id" value={row.id} />
+                  <EntityFields fields={fields} values={row} idPrefix={row.id} />
+                  <div class="sm:col-span-3">
+                    <button type="submit" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition-colors">Sauvegarder</button>
+                  </div>
+                </form>
+                <form method="POST" class="mt-2">
+                  <input type="hidden" name="_csrf" value={csrfToken} />
+                  <input type="hidden" name="_action" value="delete" />
+                  <input type="hidden" name="id" value={row.id} />
+                  <button type="submit" class="text-xs text-red-500 hover:text-red-400 transition-colors" onclick="return confirm('Supprimer cette réalisation ?')">Supprimer</button>
+                </form>
+              </div>
+            </details>
+          ))}
+        </div>
+      )}
+    </>
+  )}
+</AdminLayout>

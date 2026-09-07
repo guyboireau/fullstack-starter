@@ -1,0 +1,68 @@
+---
+// Champs de formulaire décrits par données, pour que les trois écrans
+// d'administration partagent la même mise en forme sans la dupliquer.
+export interface FieldDef {
+  name: string;
+  label: string;
+  type: 'text' | 'textarea' | 'number' | 'date' | 'select' | 'checkbox';
+  required?: boolean;
+  placeholder?: string;
+  options?: { value: string; label: string }[];
+  hint?: string;
+  full?: boolean;
+}
+
+interface Props {
+  fields: FieldDef[];
+  values?: Record<string, unknown>;
+  errors?: Record<string, string>;
+  idPrefix: string;
+}
+
+const { fields, values = {}, errors = {}, idPrefix } = Astro.props;
+
+const base =
+  'w-full px-3 py-2 rounded-lg bg-gray-800 border text-sm text-white placeholder-gray-500 ' +
+  'focus:outline-none focus:ring-2 focus:ring-indigo-500';
+const str = (v: unknown) => (v === null || v === undefined ? '' : String(v));
+---
+
+{fields.map(f => (
+  <div class:list={[f.full && 'sm:col-span-3']}>
+    <label class="block text-xs font-medium text-gray-400 mb-1.5" for={`${idPrefix}-${f.name}`}>
+      {f.label}{f.required && <span class="text-red-400"> *</span>}
+    </label>
+
+    {f.type === 'textarea' ? (
+      <textarea
+        id={`${idPrefix}-${f.name}`} name={f.name} rows="8"
+        placeholder={f.placeholder} required={f.required}
+        class:list={[base, 'font-mono leading-relaxed', errors[f.name] ? 'border-red-500' : 'border-gray-700']}
+      >{str(values[f.name])}</textarea>
+    ) : f.type === 'select' ? (
+      <select id={`${idPrefix}-${f.name}`} name={f.name} class:list={[base, 'border-gray-700']}>
+        {(f.options ?? []).map(o => (
+          <option value={o.value} selected={str(values[f.name]) === o.value}>{o.label}</option>
+        ))}
+      </select>
+    ) : f.type === 'checkbox' ? (
+      <label class="flex items-center gap-2 h-[38px] text-sm text-gray-300">
+        <input
+          id={`${idPrefix}-${f.name}`} type="checkbox" name={f.name} value="true"
+          checked={values[f.name] === true}
+          class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-indigo-500 focus:ring-indigo-500"
+        />
+        Publié
+      </label>
+    ) : (
+      <input
+        id={`${idPrefix}-${f.name}`} type={f.type} name={f.name}
+        value={str(values[f.name])} placeholder={f.placeholder} required={f.required}
+        class:list={[base, errors[f.name] ? 'border-red-500' : 'border-gray-700']}
+      />
+    )}
+
+    {errors[f.name] && <p class="mt-1 text-xs text-red-400">{errors[f.name]}</p>}
+    {!errors[f.name] && f.hint && <p class="mt-1 text-xs text-gray-600">{f.hint}</p>}
+  </div>
+))}
