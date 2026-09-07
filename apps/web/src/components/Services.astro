@@ -3,7 +3,15 @@
 // A : Grille 3 colonnes avec cards icône
 // B : Liste verticale avec gros numéros + tags
 // C : Accordéon (expand)
-import { variants, services } from '../config/site';
+import { variants, services as servicesFallback } from '../config/site';
+import { withFallback } from '@/lib/content';
+
+interface Props {
+  services?: Record<string, unknown>;
+}
+
+// Contenu piloté par le back-office ; la configuration statique sert de repli.
+const services = withFallback(servicesFallback, Astro.props.services);
 
 const v = variants.services;
 

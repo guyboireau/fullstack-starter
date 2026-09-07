@@ -1,0 +1,58 @@
+---
+// En-tête de page intérieure : fil d'Ariane et titre.
+// Reprend strictement les tokens définis dans Layout.astro.
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  breadcrumb?: { label: string; href?: string }[];
+}
+const { eyebrow, title, subtitle, breadcrumb = [] } = Astro.props;
+---
+
+<section class="page-header">
+  <div class="wrap">
+    {breadcrumb.length > 0 && (
+      <nav class="crumbs" aria-label="Fil d'Ariane">
+        {breadcrumb.map((c, i) => (
+          <>
+            {c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+            {i < breadcrumb.length - 1 && <span class="sep" aria-hidden="true">/</span>}
+          </>
+        ))}
+      </nav>
+    )}
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1>{title}</h1>
+    {subtitle && <p class="lead">{subtitle}</p>}
+  </div>
+</section>
+
+<style>
+  .page-header {
+    background: var(--paper);
+    border-bottom: 1px solid var(--lineSoft, var(--line));
+    padding: 6rem 1.5rem 3.5rem;
+  }
+  .wrap { max-width: 1140px; margin: 0 auto; }
+  .crumbs {
+    display: flex; flex-wrap: wrap; gap: .5rem; align-items: center;
+    font-size: .8125rem; color: var(--inkFaint); margin-bottom: 1.25rem;
+  }
+  .crumbs a { color: var(--inkFaint); text-decoration: none; }
+  .crumbs a:hover { color: var(--primary); }
+  .crumbs .sep { opacity: .5; }
+  .eyebrow {
+    margin: 0 0 .75rem; font-size: .8125rem; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--primary);
+  }
+  h1 {
+    margin: 0; font-family: var(--fontHeading), serif;
+    font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.1; color: var(--ink);
+  }
+  .lead {
+    margin: 1rem 0 0; max-width: 62ch;
+    font-size: 1.0625rem; color: var(--inkSoft);
+  }
+  @media (max-width: 640px) { .page-header { padding: 4.5rem 1.25rem 2.5rem; } }
+</style>

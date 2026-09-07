@@ -1,0 +1,65 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import CTA from '../../../components/CTA.astro';
+import Footer from '../../../components/Footer.astro';
+
+import { createSupabaseServerClient } from '@/lib/supabase';
+import { getPageSections, getNewsByLegacyId } from '@/services/content';
+import { siteToBusiness, renderBody } from '@/lib/content';
+
+const site = Astro.locals.site;
+if (!site) return new Response(null, { status: 404 });
+
+const legacyId = Number(Astro.params.legacyId);
+if (!Number.isInteger(legacyId)) return new Response(null, { status: 404 });
+
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
+const article = await getNewsByLegacyId(supabase, site.id, legacyId);
+if (!article) return new Response(null, { status: 404 });
+
+if (Astro.params.slug !== article.slug) {
+  return Astro.redirect(`/news/${article.legacy_id}/${article.slug}`, 301);
+}
+
+const home = await getPageSections(supabase, site.id, 'home');
+const business = siteToBusiness(site);
+const publishedAt = article.published_at
+  ? new Date(article.published_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+  : null;
+---
+
+<Layout title={`${article.title} — ${site.name}`} description={article.excerpt ?? site.seo.defaultDescription}>
+  <Header business={business} />
+  <main>
+    <PageHeader
+      eyebrow={publishedAt ?? '— Actualité'}
+      title={article.title}
+      subtitle={article.excerpt ?? undefined}
+      breadcrumb={[
+        { label: 'Accueil', href: '/' },
+        { label: 'Actualités', href: '/news' },
+        { label: article.title },
+      ]}
+    />
+
+    <section class="detail">
+      <article class="body" set:html={renderBody(article.body)} />
+      <p class="back"><a href="/news">← Toutes les actualités</a></p>
+    </section>
+
+    <CTA cta={home.cta} />
+  </main>
+  <Footer footer={home.footer} business={business} />
+</Layout>
+
+<style>
+  .detail { padding: 4rem 1.5rem; background: var(--bg); max-width: 760px; margin: 0 auto; }
+  .body { color: var(--inkSoft); font-size: 1.0625rem; line-height: 1.75; }
+  .body :global(p) { margin: 0 0 1.25rem; }
+  .body :global(ul) { margin: 0 0 1.5rem; padding-left: 1.25rem; }
+  .body :global(strong) { color: var(--ink); }
+  .back { margin: 2.5rem 0 0; }
+  .back a { color: var(--primary); text-decoration: none; font-weight: 600; font-size: .9375rem; }
+</style>

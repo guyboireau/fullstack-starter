@@ -3,7 +3,17 @@
 // A : Centré · eyebrow → H1 → sous-titre → 2 CTAs → trust strip
 // B : Asymétrique · texte gauche (55%) + image droite + badge flottant
 // C : Full-bleed éditorial · image plein cadre + H1 overlay + infos dessous
-import { variants, hero, business } from '../config/site';
+import { variants, hero as heroFallback, business as businessFallback } from '../config/site';
+import { withFallback } from '@/lib/content';
+
+interface Props {
+  hero?: Record<string, unknown>;
+  business?: Record<string, unknown>;
+}
+
+// Contenu piloté par le back-office ; la configuration statique sert de repli.
+const hero = withFallback(heroFallback, Astro.props.hero);
+const business = withFallback(businessFallback, Astro.props.business);
 
 const v = variants.hero;
 ---

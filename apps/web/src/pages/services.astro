@@ -1,0 +1,81 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageHeader from '../components/PageHeader.astro';
+import CTA from '../components/CTA.astro';
+import Footer from '../components/Footer.astro';
+
+import { createSupabaseServerClient } from '@/lib/supabase';
+import { getPageSections, listServices } from '@/services/content';
+import { siteToBusiness } from '@/lib/content';
+
+const site = Astro.locals.site;
+if (!site) return new Response(null, { status: 404 });
+
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
+const [home, services] = await Promise.all([
+  getPageSections(supabase, site.id, 'home'),
+  listServices(supabase, site.id),
+]);
+const business = siteToBusiness(site);
+const head = (home.services ?? {}) as { eyebrow?: string; title?: string; subtitle?: string };
+---
+
+<Layout title={`Nos services — ${site.name}`} description={site.seo.defaultDescription}>
+  <Header business={business} />
+  <main>
+    <PageHeader
+      eyebrow={head.eyebrow}
+      title={head.title ?? 'Nos services'}
+      subtitle={head.subtitle}
+      breadcrumb={[{ label: 'Accueil', href: '/' }, { label: 'Nos services' }]}
+    />
+
+    <section class="listing">
+      <div class="wrap">
+        {services.length === 0 ? (
+          <p class="empty">Aucun service publié pour le moment.</p>
+        ) : (
+          <ul class="grid">
+            {services.map(s => (
+              <li class="card">
+                <a href={`/service/${s.legacy_id}/${s.slug}`}>
+                  <h2>{s.title}</h2>
+                  {s.excerpt && <p>{s.excerpt}</p>}
+                  <span class="more">En savoir plus →</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+
+    <CTA cta={home.cta} />
+  </main>
+  <Footer footer={home.footer} business={business} />
+</Layout>
+
+<style>
+  .listing { padding: 4rem 1.5rem; background: var(--bg); }
+  .wrap { max-width: 1140px; margin: 0 auto; }
+  .empty { color: var(--inkFaint); text-align: center; padding: 3rem 0; }
+  .grid {
+    list-style: none; margin: 0; padding: 0; display: grid; gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  .card {
+    background: var(--bgCard, var(--paper));
+    border: 1px solid var(--lineSoft, var(--line));
+    border-radius: var(--radius-lg, 12px);
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .card:hover { border-color: var(--primary); transform: translateY(-2px); }
+  .card a { display: block; padding: 1.75rem; text-decoration: none; color: inherit; height: 100%; }
+  .card h2 {
+    margin: 0 0 .75rem; font-family: var(--fontHeading), serif;
+    font-size: 1.375rem; line-height: 1.25; color: var(--ink);
+  }
+  .card p { margin: 0 0 1.25rem; color: var(--inkSoft); font-size: .9375rem; line-height: 1.6; }
+  .more { font-size: .875rem; font-weight: 600; color: var(--primary); }
+</style>

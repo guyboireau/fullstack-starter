@@ -5,7 +5,15 @@
 // E : Le Salon fond encré sérifé
 // G : Verveine card peach
 // D : Forge fond ocre
-import { variants, cta } from '../config/site';
+import { variants, cta as ctaFallback } from '../config/site';
+import { withFallback } from '@/lib/content';
+
+interface Props {
+  cta?: Record<string, unknown>;
+}
+
+// Contenu piloté par le back-office ; la configuration statique sert de repli.
+const cta = withFallback(ctaFallback, Astro.props.cta);
 
 const v = variants.cta;
 ---

@@ -5,27 +5,63 @@ import Hero from '../components/Hero.astro';
 import Services from '../components/Services.astro';
 import About from '../components/About.astro';
 import Testimonials from '../components/Testimonials.astro';
-import FAQ from '../components/FAQ.astro';
 import CTA from '../components/CTA.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 
-import { business, seo, features } from '../config/site';
+import { createSupabaseServerClient } from '@/lib/supabase';
+import { getPageSections, listServices, listTestimonials } from '@/services/content';
+import { siteToBusiness } from '@/lib/content';
+
+const site = Astro.locals.site;
+if (!site) return new Response(null, { status: 404 });
+
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
+const [sections, services, testimonials] = await Promise.all([
+  getPageSections(supabase, site.id, 'home'),
+  listServices(supabase, site.id),
+  listTestimonials(supabase, site.id),
+]);
+
+const business = siteToBusiness(site);
+
+// Les en-têtes de section viennent de page_sections, les listes de leur table.
+const servicesContent = {
+  ...sections.services,
+  items: services.map(s => ({
+    icon:     s.icon ?? 'star',
+    title:    s.title,
+    text:     s.excerpt ?? '',
+    link:     'En savoir plus →',
+    href:     `/service/${s.legacy_id}/${s.slug}`,
+    tag:      '',
+    features: [],
+  })),
+};
+
+const testimonialsContent = {
+  ...sections.testimonials,
+  items: testimonials.map(t => ({
+    quote:   t.quote,
+    name:    t.author,
+    role:    t.company ?? '',
+    initial: t.author.charAt(0).toUpperCase(),
+  })),
+};
 ---
 
 <Layout
-  title={`${business.name} — ${business.tagline}`}
-  description={seo.defaultDescription}
+  title={`${site.name} — ${site.tagline ?? ''}`}
+  description={site.seo.defaultDescription}
 >
-  <Header />
+  <Header business={business} />
   <main>
-    <Hero />
-    <Services />
-    <About />
-    {features.testimonials && <Testimonials />}
-    <FAQ />
-    <CTA />
-    <Contact />
+    <Hero hero={sections.hero} business={business} />
+    <Services services={servicesContent} />
+    <About about={sections.about} />
+    {testimonials.length > 0 && <Testimonials testimonials={testimonialsContent} />}
+    <CTA cta={sections.cta} />
+    <Contact contact={sections.contact} business={business} />
   </main>
-  <Footer />
+  <Footer footer={sections.footer} business={business} />
 </Layout>

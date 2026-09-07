@@ -1,6 +1,16 @@
 ---
 // Contact — formulaire propre avec validation client + infos business
-import { contact, business } from '../config/site';
+import { contact as contactFallback, business as businessFallback } from '../config/site';
+import { withFallback } from '@/lib/content';
+
+interface Props {
+  contact?: Record<string, unknown>;
+  business?: Record<string, unknown>;
+}
+
+// Contenu piloté par le back-office ; la configuration statique sert de repli.
+const contact = withFallback(contactFallback, Astro.props.contact);
+const business = withFallback(businessFallback, Astro.props.business);
 ---
 
 <section class="section" id="contact">
@@ -39,7 +49,7 @@ import { contact, business } from '../config/site';
                 <circle cx="12" cy="10" r="3"/>
               </svg>
             </span>
-            <span>{business.address.street}, {business.address.zip} {business.address.city}</span>
+            <span>{business.address.street}, {business.address.postalCode} {business.address.city}</span>
           </div>
         )}
       </div>

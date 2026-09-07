@@ -10,14 +10,36 @@
 //    siteConfig.content   → contenus sections (hero, services, etc.)
 // ═════════════════════════════════════════════════════════════════════════════
 
+/** Variante de mise en page proposée par chaque section. */
+export type DesignVariant = 'A' | 'B' | 'C';
+
+/** Sections dont la mise en page est déclinable. */
+export type DesignSection =
+  | 'header' | 'hero' | 'services' | 'about' | 'testimonials'
+  | 'pricing' | 'faq' | 'cta' | 'footer';
+
+const designVariants: Record<DesignSection, DesignVariant> = {
+  header:       'A',
+  hero:         'A',
+  services:     'A',
+  about:        'A',
+  testimonials: 'A',
+  pricing:      'A',
+  faq:          'A',
+  cta:          'A',
+  footer:       'A',
+};
+
 export const siteConfig = {
   // Navigation (landing 1 page)
+  // Navigation multipage. Les libellés restent en configuration : ils relèvent
+  // de la structure du site, pas du contenu éditorial administré.
   nav: [
-    { label: 'Services',  href: '#services' },
-    { label: 'À propos',  href: '#apropos' },
-    { label: 'Tarifs',    href: '#tarifs' },
-    { label: 'FAQ',       href: '#faq' },
-    { label: 'Contact',   href: '#contact' },
+    { label: 'Services',      href: '/services' },
+    { label: 'Réalisations',  href: '/realisation' },
+    { label: 'Actualités',    href: '/news' },
+    { label: 'À propos',      href: '/a-propos' },
+    { label: 'Contact',       href: '/contact' },
   ],
 
   // ── 1. INFORMATIONS BUSINESS ───────────────────────────────────────────────
@@ -90,17 +112,7 @@ export const siteConfig = {
   // ── 4. DESIGN VARIANTS ─────────────────────────────────────────────────────
   design: {
     isSketchy: false,
-    variants: {
-      header:       'A',
-      hero:         'A',
-      services:     'A',
-      about:        'A',
-      testimonials: 'A',
-      pricing:      'A',
-      faq:          'A',
-      cta:          'A',
-      footer:       'A',
-    },
+    variants: designVariants,
   },
 
   // ── 5. PAGES (multipage) ──────────────────────────────────────────────────
@@ -309,11 +321,11 @@ export const siteConfig = {
     footer: {
       description: '[Description courte de l\'entreprise pour le bas de page.]',
       links: [
-        { label: 'Services',  href: '#services' },
-        { label: 'À propos',  href: '#apropos' },
-        { label: 'Tarifs',    href: '#tarifs' },
-        { label: 'FAQ',       href: '#faq' },
-        { label: 'Contact',   href: '#contact' },
+        { label: 'Services',      href: '/services' },
+        { label: 'Réalisations',  href: '/realisation' },
+        { label: 'Actualités',    href: '/news' },
+        { label: 'À propos',      href: '/a-propos' },
+        { label: 'Contact',       href: '/contact' },
       ],
       legal: [
         { label: 'Mentions légales', href: '/mentions-legales' },

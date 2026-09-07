@@ -3,7 +3,17 @@
 // A : 4 colonnes classique (brand + liens + légal + contact)
 // B : Gros logo + minimal (brand seul + liens horizontal + baseline)
 // C : Colonne unique éditoriale
-import { variants, footer, business } from '../config/site';
+import { variants, footer as footerFallback, business as businessFallback } from '../config/site';
+import { withFallback } from '@/lib/content';
+
+interface Props {
+  footer?: Record<string, unknown>;
+  business?: Record<string, unknown>;
+}
+
+// Contenu piloté par le back-office ; la configuration statique sert de repli.
+const footer = withFallback(footerFallback, Astro.props.footer);
+const business = withFallback(businessFallback, Astro.props.business);
 
 const v = variants.footer;
 const year = new Date().getFullYear();
@@ -63,7 +73,7 @@ const year = new Date().getFullYear();
       <a href={`tel:${business.phone.replace(/\s/g, '')}`} class="ftr-link">{business.phone}</a>
       <address class="ftr-address">
         {business.address.street}<br />
-        {business.address.zip} {business.address.city}
+        {business.address.postalCode} {business.address.city}
       </address>
     </div>
   </div>

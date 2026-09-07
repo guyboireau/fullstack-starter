@@ -1,0 +1,117 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageHeader from '../components/PageHeader.astro';
+import CTA from '../components/CTA.astro';
+import Footer from '../components/Footer.astro';
+
+import { createSupabaseServerClient } from '@/lib/supabase';
+import { getPageSections, listAchievements, listServices } from '@/services/content';
+import { siteToBusiness } from '@/lib/content';
+
+const site = Astro.locals.site;
+if (!site) return new Response(null, { status: 404 });
+
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
+const [home, achievements, services] = await Promise.all([
+  getPageSections(supabase, site.id, 'home'),
+  listAchievements(supabase, site.id),
+  listServices(supabase, site.id),
+]);
+const business = siteToBusiness(site);
+
+// Le filtre passe par l'URL plutôt que par du JavaScript : chaque sélection est
+// une adresse partageable et indexable, et la page fonctionne sans script.
+const activeSlug = Astro.url.searchParams.get('service');
+const activeService = services.find(s => s.slug === activeSlug) ?? null;
+const visible = activeService
+  ? achievements.filter(a => a.service_id === activeService.id)
+  : achievements;
+
+const serviceById = new Map(services.map(s => [s.id, s]));
+---
+
+<Layout title={`Nos réalisations — ${site.name}`} description={site.seo.defaultDescription}>
+  <Header business={business} />
+  <main>
+    <PageHeader
+      eyebrow="— Nos réalisations"
+      title="Nos réalisations"
+      subtitle="Quelques pièces et ensembles sortis de nos ateliers."
+      breadcrumb={[{ label: 'Accueil', href: '/' }, { label: 'Réalisations' }]}
+    />
+
+    <section class="listing">
+      <div class="wrap">
+        <nav class="filters" aria-label="Filtrer par service">
+          <a href="/realisation" class:list={['chip', !activeService && 'is-active']}>Tout</a>
+          {services.map(s => (
+            <a
+              href={`/realisation?service=${s.slug}`}
+              class:list={['chip', activeService?.id === s.id && 'is-active']}
+            >{s.title}</a>
+          ))}
+        </nav>
+
+        {visible.length === 0 ? (
+          <p class="empty">Aucune réalisation dans cette catégorie.</p>
+        ) : (
+          <ul class="grid">
+            {visible.map(a => {
+              const related = a.service_id ? serviceById.get(a.service_id) : undefined;
+              return (
+              <li class="card">
+                <a href={`/realisation/${a.legacy_id}/${a.slug}`}>
+                  {related && <span class="tag">{related.title}</span>}
+                  <h2>{a.title}</h2>
+                  {a.subtitle && <p>{a.subtitle}</p>}
+                </a>
+              </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </section>
+
+    <CTA cta={home.cta} />
+  </main>
+  <Footer footer={home.footer} business={business} />
+</Layout>
+
+<style>
+  .listing { padding: 4rem 1.5rem; background: var(--bg); }
+  .wrap { max-width: 1140px; margin: 0 auto; }
+  .filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2.5rem; }
+  .chip {
+    padding: .5rem 1rem; border-radius: var(--radius-pill, 9999px);
+    border: 1px solid var(--lineSoft, var(--line));
+    font-size: .875rem; color: var(--inkSoft); text-decoration: none;
+    transition: all .18s ease;
+  }
+  .chip:hover { border-color: var(--primary); color: var(--primary); }
+  .chip.is-active { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  .empty { color: var(--inkFaint); text-align: center; padding: 3rem 0; }
+  .grid {
+    list-style: none; margin: 0; padding: 0; display: grid; gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  .card {
+    background: var(--bgCard, var(--paper));
+    border: 1px solid var(--lineSoft, var(--line));
+    border-radius: var(--radius-lg, 12px);
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .card:hover { border-color: var(--primary); transform: translateY(-2px); }
+  .card a { display: block; padding: 1.75rem; text-decoration: none; color: inherit; }
+  .tag {
+    display: inline-block; margin-bottom: .875rem; padding: .25rem .625rem;
+    border-radius: var(--radius-pill, 9999px); background: var(--primarySoft, var(--paper));
+    font-size: .75rem; font-weight: 600; color: var(--primaryDark, var(--primary));
+  }
+  .card h2 {
+    margin: 0 0 .5rem; font-family: var(--fontHeading), serif;
+    font-size: 1.25rem; line-height: 1.3; color: var(--ink);
+  }
+  .card p { margin: 0; color: var(--inkSoft); font-size: .9375rem; line-height: 1.6; }
+</style>

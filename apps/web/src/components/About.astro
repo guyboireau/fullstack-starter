@@ -2,7 +2,15 @@
 // About — 2 variantes
 // A : 2 colonnes — texte+stats gauche, image droite avec carte auteur
 // B : Stats éditoriales pleine largeur + paragraphe
-import { variants, about } from '../config/site';
+import { variants, about as aboutFallback } from '../config/site';
+import { withFallback } from '@/lib/content';
+
+interface Props {
+  about?: Record<string, unknown>;
+}
+
+// Contenu piloté par le back-office ; la configuration statique sert de repli.
+const about = withFallback(aboutFallback, Astro.props.about);
 
 const v = variants.about;
 ---

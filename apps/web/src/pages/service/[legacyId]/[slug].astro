@@ -1,0 +1,95 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import CTA from '../../../components/CTA.astro';
+import Footer from '../../../components/Footer.astro';
+
+import { createSupabaseServerClient } from '@/lib/supabase';
+import { getPageSections, getServiceByLegacyId, listServices } from '@/services/content';
+import { siteToBusiness, renderBody } from '@/lib/content';
+
+const site = Astro.locals.site;
+if (!site) return new Response(null, { status: 404 });
+
+// L'URL historique porte l'identifiant du CMS d'origine ; c'est lui qui résout
+// la fiche. Le slug n'est là que pour la lisibilité et le référencement.
+const legacyId = Number(Astro.params.legacyId);
+if (!Number.isInteger(legacyId)) return new Response(null, { status: 404 });
+
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
+const service = await getServiceByLegacyId(supabase, site.id, legacyId);
+if (!service) return new Response(null, { status: 404 });
+
+// Slug absent ou périmé : on redirige vers l'URL canonique plutôt que de servir
+// le même contenu sous deux adresses.
+if (Astro.params.slug !== service.slug) {
+  return Astro.redirect(`/service/${service.legacy_id}/${service.slug}`, 301);
+}
+
+const [home, services] = await Promise.all([
+  getPageSections(supabase, site.id, 'home'),
+  listServices(supabase, site.id),
+]);
+const business = siteToBusiness(site);
+---
+
+<Layout title={`${service.title} — ${site.name}`} description={service.excerpt ?? site.seo.defaultDescription}>
+  <Header business={business} />
+  <main>
+    <PageHeader
+      eyebrow="Nos services"
+      title={service.title}
+      subtitle={service.excerpt ?? undefined}
+      breadcrumb={[
+        { label: 'Accueil', href: '/' },
+        { label: 'Nos services', href: '/services' },
+        { label: service.title },
+      ]}
+    />
+
+    <section class="detail">
+      <div class="wrap">
+        <article class="body" set:html={renderBody(service.body)} />
+        <aside class="side">
+          <h2>Nos autres services</h2>
+          <ul>
+            {services.filter(s => s.id !== service.id).map(s => (
+              <li><a href={`/service/${s.legacy_id}/${s.slug}`}>{s.title}</a></li>
+            ))}
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <CTA cta={home.cta} />
+  </main>
+  <Footer footer={home.footer} business={business} />
+</Layout>
+
+<style>
+  .detail { padding: 4rem 1.5rem; background: var(--bg); }
+  .wrap {
+    max-width: 1140px; margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 3rem;
+  }
+  .body { color: var(--inkSoft); font-size: 1.0625rem; line-height: 1.75; }
+  .body :global(p) { margin: 0 0 1.25rem; }
+  .body :global(ul) { margin: 0 0 1.5rem; padding-left: 1.25rem; }
+  .body :global(li) { margin-bottom: .5rem; }
+  .body :global(strong) { color: var(--ink); }
+  .side {
+    align-self: start; padding: 1.5rem;
+    background: var(--paper); border: 1px solid var(--lineSoft, var(--line));
+    border-radius: var(--radius-lg, 12px);
+  }
+  .side h2 {
+    margin: 0 0 1rem; font-size: .8125rem; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--inkFaint);
+  }
+  .side ul { list-style: none; margin: 0; padding: 0; }
+  .side li + li { margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--lineSoft, var(--line)); }
+  .side a { color: var(--ink); text-decoration: none; font-weight: 500; }
+  .side a:hover { color: var(--primary); }
+  @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } }
+</style>

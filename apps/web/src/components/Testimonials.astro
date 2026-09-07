@@ -3,7 +3,15 @@
 // A : 3 cards (safe classique)
 // B : Citation pleine page — 1 citation grande + navigation
 // C : Mur d'avis compact — grille dense
-import { variants, testimonials } from '../config/site';
+import { variants, testimonials as testimonialsFallback } from '../config/site';
+import { withFallback } from '@/lib/content';
+
+interface Props {
+  testimonials?: Record<string, unknown>;
+}
+
+// Contenu piloté par le back-office ; la configuration statique sert de repli.
+const testimonials = withFallback(testimonialsFallback, Astro.props.testimonials);
 
 const v = variants.testimonials;
 ---

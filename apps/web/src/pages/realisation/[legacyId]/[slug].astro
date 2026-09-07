@@ -1,0 +1,98 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import CTA from '../../../components/CTA.astro';
+import Footer from '../../../components/Footer.astro';
+
+import { createSupabaseServerClient } from '@/lib/supabase';
+import { getPageSections, getAchievementByLegacyId, getServiceByLegacyId, listServices } from '@/services/content';
+import { siteToBusiness, renderBody } from '@/lib/content';
+
+const site = Astro.locals.site;
+if (!site) return new Response(null, { status: 404 });
+
+const legacyId = Number(Astro.params.legacyId);
+if (!Number.isInteger(legacyId)) return new Response(null, { status: 404 });
+
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
+const achievement = await getAchievementByLegacyId(supabase, site.id, legacyId);
+if (!achievement) return new Response(null, { status: 404 });
+
+if (Astro.params.slug !== achievement.slug) {
+  return Astro.redirect(`/realisation/${achievement.legacy_id}/${achievement.slug}`, 301);
+}
+
+const [home, services] = await Promise.all([
+  getPageSections(supabase, site.id, 'home'),
+  listServices(supabase, site.id),
+]);
+const business = siteToBusiness(site);
+const service = services.find(s => s.id === achievement.service_id) ?? null;
+
+const realizedAt = achievement.realized_at
+  ? new Date(achievement.realized_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+  : null;
+---
+
+<Layout title={`${achievement.title} — ${site.name}`} description={achievement.subtitle ?? site.seo.defaultDescription}>
+  <Header business={business} />
+  <main>
+    <PageHeader
+      eyebrow="— Réalisation"
+      title={achievement.title}
+      subtitle={achievement.subtitle ?? undefined}
+      breadcrumb={[
+        { label: 'Accueil', href: '/' },
+        { label: 'Réalisations', href: '/realisation' },
+        { label: achievement.title },
+      ]}
+    />
+
+    <section class="detail">
+      <div class="wrap">
+        <article class="body" set:html={renderBody(achievement.body)} />
+        <aside class="side">
+          <h2>Informations</h2>
+          <dl>
+            {realizedAt && (<><dt>Date</dt><dd>{realizedAt}</dd></>)}
+            {service && (
+              <><dt>Service</dt>
+              <dd><a href={`/service/${service.legacy_id}/${service.slug}`}>{service.title}</a></dd></>
+            )}
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <CTA cta={home.cta} />
+  </main>
+  <Footer footer={home.footer} business={business} />
+</Layout>
+
+<style>
+  .detail { padding: 4rem 1.5rem; background: var(--bg); }
+  .wrap {
+    max-width: 1140px; margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 3rem;
+  }
+  .body { color: var(--inkSoft); font-size: 1.0625rem; line-height: 1.75; }
+  .body :global(p) { margin: 0 0 1.25rem; }
+  .body :global(ul) { margin: 0 0 1.5rem; padding-left: 1.25rem; }
+  .body :global(strong) { color: var(--ink); }
+  .side {
+    align-self: start; padding: 1.5rem;
+    background: var(--paper); border: 1px solid var(--lineSoft, var(--line));
+    border-radius: var(--radius-lg, 12px);
+  }
+  .side h2 {
+    margin: 0 0 1rem; font-size: .8125rem; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--inkFaint);
+  }
+  .side dl { margin: 0; }
+  .side dt { font-size: .8125rem; color: var(--inkFaint); margin-top: 1rem; }
+  .side dt:first-child { margin-top: 0; }
+  .side dd { margin: .25rem 0 0; color: var(--ink); font-weight: 500; }
+  .side a { color: var(--primary); text-decoration: none; }
+  @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } }
+</style>

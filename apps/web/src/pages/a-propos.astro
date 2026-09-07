@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageHeader from '../components/PageHeader.astro';
+import About from '../components/About.astro';
+import CTA from '../components/CTA.astro';
+import Footer from '../components/Footer.astro';
+
+import { createSupabaseServerClient } from '@/lib/supabase';
+import { getPageSections } from '@/services/content';
+import { siteToBusiness } from '@/lib/content';
+
+const site = Astro.locals.site;
+if (!site) return new Response(null, { status: 404 });
+
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
+const [home, about] = await Promise.all([
+  getPageSections(supabase, site.id, 'home'),
+  getPageSections(supabase, site.id, 'about'),
+]);
+
+const business = siteToBusiness(site);
+const intro = (about.intro ?? {}) as { eyebrow?: string; title?: string; text?: string[] };
+---
+
+<Layout title={`À propos — ${site.name}`} description={site.seo.defaultDescription}>
+  <Header business={business} />
+  <main>
+    <PageHeader
+      eyebrow={intro.eyebrow}
+      title={intro.title ?? 'À propos'}
+      breadcrumb={[{ label: 'Accueil', href: '/' }, { label: 'À propos' }]}
+    />
+    {intro.text && (
+      <section class="intro">
+        <div class="wrap">
+          {intro.text.map(p => <p>{p}</p>)}
+        </div>
+      </section>
+    )}
+    <About about={home.about} />
+    <CTA cta={home.cta} />
+  </main>
+  <Footer footer={home.footer} business={business} />
+</Layout>
+
+<style>
+  .intro { padding: 4rem 1.5rem; background: var(--bg); }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .wrap p { margin: 0 0 1.25rem; font-size: 1.0625rem; line-height: 1.75; color: var(--inkSoft); }
+  .wrap p:last-child { margin-bottom: 0; }
+</style>
