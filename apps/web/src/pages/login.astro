@@ -1,11 +1,16 @@
 ---
 import { createSupabaseServerClient } from '@/lib/supabase';
-import { setupCsrf, validateCsrfToken } from '@/lib/csrf';
+import { validateCsrfToken } from '@/lib/csrf';
+import { safeRedirectPath } from '@/lib/redirect';
 import { z } from 'zod';
 
-const supabase = createSupabaseServerClient(Astro.cookies);
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
 const { data: { user } } = await supabase.auth.getUser();
-if (user) return Astro.redirect('/admin');
+
+// Destination d'origine, transmise par le middleware sur `/login?redirect=…`.
+const redirectTo = safeRedirectPath(Astro.url.searchParams.get('redirect'));
+
+if (user) return Astro.redirect(redirectTo);
 
 const loginSchema = z.object({
   email:    z.string().email(),
@@ -15,7 +20,6 @@ const loginSchema = z.object({
 let errors: Record<string, string> = {};
 let formError = '';
 let csrfError = '';
-const csrfToken = setupCsrf(Astro.cookies);
 
 if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
@@ -41,11 +45,13 @@ if (Astro.request.method === 'POST') {
       if (error) {
         formError = error.message;
       } else {
-        return Astro.redirect('/admin');
+        return Astro.redirect(redirectTo);
       }
     }
   }
 }
+
+const csrfToken = Astro.locals.csrfToken;
 ---
 
 <!doctype html>

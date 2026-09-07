@@ -1,9 +1,9 @@
 ---
 import { createSupabaseServerClient } from '@/lib/supabase';
-import { setupCsrf, validateCsrfToken } from '@/lib/csrf';
+import { validateCsrfToken } from '@/lib/csrf';
 import { z } from 'zod';
 
-const supabase = createSupabaseServerClient(Astro.cookies);
+const supabase = createSupabaseServerClient(Astro.cookies, Astro.request);
 const { data: { user } } = await supabase.auth.getUser();
 if (user) return Astro.redirect('/admin');
 
@@ -17,7 +17,6 @@ let errors: Record<string, string> = {};
 let success = false;
 let registeredEmail = '';
 let csrfError = '';
-const csrfToken = setupCsrf(Astro.cookies);
 
 if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
@@ -56,6 +55,8 @@ if (Astro.request.method === 'POST') {
     }
   }
 }
+
+const csrfToken = Astro.locals.csrfToken;
 ---
 
 <!doctype html>
