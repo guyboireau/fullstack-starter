@@ -13,7 +13,11 @@
     "experimentalDecorators": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "incremental": true
+    "incremental": true,
+    // Doit vivre dans dist : nest-cli supprime outDir à chaque build
+    // (deleteOutDir), et un .tsbuildinfo laissé à côté ferait croire à tsc
+    // que tout est à jour — le build sortirait vide, sans la moindre erreur.
+    "tsBuildInfoFile": "./dist/.tsbuildinfo"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

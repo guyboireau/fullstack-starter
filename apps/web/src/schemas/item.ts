@@ -11,8 +11,8 @@ export const itemFormSchema = z.object({
 export type ItemFormValues = z.infer<typeof itemFormSchema>;
 
 export const itemSchema = itemFormSchema.extend({
-  id:         z.string().uuid(),
-  user_id:    z.string().uuid(),
+  id:         z.uuid(),
+  user_id:    z.uuid(),
   created_at: z.string(),
   updated_at: z.string().nullable(),
 });

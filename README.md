@@ -5,11 +5,11 @@
 <h1 align="center">⚡ Fullstack Starter</h1>
 
 <p align="center">
-  <strong>Production-ready fullstack starter — React + NestJS + Supabase + PostgreSQL + Auth + CRUD. TypeScript everywhere.</strong>
+  <strong>Production-ready fullstack starter — Astro + NestJS + Supabase + PostgreSQL + Auth + CRUD. TypeScript everywhere.</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/Astro-6-FF5D01?style=flat-square&logo=astro&logoColor=white" alt="Astro" />
   <img src="https://img.shields.io/badge/NestJS-11-E0234E?style=flat-square&logo=nestjs&logoColor=white" alt="NestJS" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Supabase-2.x-3FCF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase" />
@@ -36,7 +36,9 @@ cp .env.example .env   # Then fill in your Supabase credentials
 npm run dev
 ```
 
-> **Frontend** → [http://localhost:5173](http://localhost:5173) &nbsp;|&nbsp; **API** → [http://localhost:3000](http://localhost:3000)
+> **Frontend** → [http://localhost:4321](http://localhost:4321) &nbsp;|&nbsp; **API** → [http://localhost:3000](http://localhost:3000)
+
+> ℹ️ `.env.example` still ships `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`, left over from the former React frontend — nothing reads them anymore. The variables actually in use are `SUPABASE_URL` and `SUPABASE_ANON_KEY` (web + api), plus `API_URL` (web, defaults to `http://localhost:3000`).
 
 ---
 
@@ -45,7 +47,7 @@ npm run dev
 ```
 fullstack-starter/
 ├── apps/
-│   ├── web/          → React 19 + Vite 6 + React Router 7
+│   ├── web/          → Astro 6 (SSR, output: 'server') + Tailwind 4 + Supabase SSR
 │   └── api/          → NestJS 11 (REST API)
 ├── supabase/
 │   ├── migrations/   → SQL migrations (profiles, items)
@@ -54,7 +56,7 @@ fullstack-starter/
 └── .github/workflows/ci.yml
 ```
 
-**How it works:** The React frontend authenticates users via **Supabase Auth** (email/password). Authenticated requests hit the **NestJS API**, which validates JWTs using a custom `SupabaseAuthGuard`. All database operations go through Supabase's client library with **Row Level Security (RLS)** — each user can only access their own data. The API uses a user-scoped Supabase client that respects RLS policies automatically.
+**How it works:** The Astro frontend authenticates users via **Supabase Auth** (email/password), server-side through `@supabase/ssr`. API calls are issued from the Astro server (page frontmatter), not from the browser. Authenticated requests hit the **NestJS API**, which validates JWTs using a custom `SupabaseAuthGuard`. All database operations go through Supabase's client library with **Row Level Security (RLS)** — each user can only access their own data. The API uses a user-scoped Supabase client that respects RLS policies automatically.
 
 ---
 
@@ -68,9 +70,9 @@ fullstack-starter/
 | 🔒 **Row Level Security** | PostgreSQL RLS — users only see their own data |
 | 🎨 **Modern UI** | Dark mode, glassmorphism, gradient accents |
 | 📊 **Dashboard** | Stats overview + item management |
-| ✅ **Validation** | DTOs with `class-validator` on the API |
-| 🐳 **Docker Compose** | One-command local dev environment |
-| 🔄 **CI/CD** | GitHub Actions: lint + typecheck on every PR |
+| ✅ **Validation** | DTOs with `class-validator` on the API, Zod on the web side |
+| 🐳 **Docker Compose** | ⚠️ **Not functional** — see [Docker](#-docker-current-state) |
+| 🔄 **CI/CD** | ⚠️ **Broken on `apps/web`** — see [CI/CD](#-cicd-current-state) |
 | 📦 **Monorepo** | npm workspaces — single `npm install` |
 
 ---
@@ -104,6 +106,7 @@ All endpoints under auth require a `Bearer` token in the `Authorization` header.
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
+| `GET` | `/auth/csrf` | ❌ | Issues a CSRF token (send it back as an `X-CSRF-Token` header on mutations — see `csrf.guard.ts`) |
 | `GET` | `/auth/profile` | ✅ | Current user profile |
 | `GET` | `/users/me` | ✅ | User profile from DB |
 | `GET` | `/items` | ✅ | List all items |
@@ -120,8 +123,10 @@ All endpoints under auth require a `Bearer` token in the `Authorization` header.
 
 1. Import the `apps/web` directory on [Vercel](https://vercel.com)
 2. Set the **Root Directory** to `apps/web`
-3. Add environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+3. Add environment variables: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `API_URL` (public URL of the deployed NestJS API)
 4. Deploy 🚀
+
+> ⚠️ These are `SUPABASE_URL` / `SUPABASE_ANON_KEY` **without the `VITE_` prefix**: `apps/web/src/lib/supabase.ts` reads `import.meta.env.SUPABASE_URL`. A deployment configured with `VITE_*` variables crashes at boot (`supabaseUrl is required`).
 
 ### Backend → Railway / Render
 
@@ -144,28 +149,29 @@ All endpoints under auth require a `Bearer` token in the `Authorization` header.
 
 ---
 
-## 🐳 Docker (optional)
+## 🐳 Docker (current state)
 
-```bash
-# Start all services (PostgreSQL + API + Web)
-docker compose up -d
-
-# View logs
-docker compose logs -f
-
-# Stop everything
-docker compose down
-```
+> ⚠️ **`docker compose up` does not work as-is.** `docker-compose.yml` declares `apps/api/Dockerfile` and `apps/web/Dockerfile` — **neither exists in the repo**. Building the `api` and `web` services fails immediately.
+>
+> The `db` service is the only one that doesn't depend on a Dockerfile (it pulls the `postgres:15-alpine` image directly), so it's the only one this blocker doesn't affect:
+>
+> ```bash
+> docker compose up -d db
+> ```
+>
+> Restoring the full stack requires writing the two missing Dockerfiles. Note also that the `web` service still maps port `5173` (a Vite leftover) while Astro serves on `4321`.
 
 ---
 
-## 🏆 Built with this stack
+## 🔄 CI/CD (current state)
 
-This isn't a tutorial copy-paste — it's the production stack I use for real client projects:
-
-- **[Niido](https://niido.fr)** — Rental management platform
-- **[La Lucarne](https://lalucarne.fr)** — Real estate agency
-- **[Les Cours de Clara](https://lescoursdeclara.fr)** — Online tutoring platform
+> ⚠️ **The `.github/workflows/ci.yml` workflow breaks at its first step.**
+>
+> It runs `npm run lint -w apps/web`, but `apps/web/package.json` defines **neither `lint` nor `typecheck`** (its only scripts are `dev`, `build`, `preview`, `astro`) → `Missing script: "lint"`. The `Lint (web)` and `Type check (web)` steps both fail.
+>
+> The workflow also injects `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` into the `apps/web` build — variables the code no longer reads (see [Deploy](#frontend--vercel)).
+>
+> On the `apps/api` side, `lint` and `typecheck` do exist and work.
 
 ---
 
