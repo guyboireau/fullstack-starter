@@ -1,43 +1,23 @@
-# Astro Starter Kit: Minimal
+# web — Astro frontend
 
-```sh
-npm create astro@latest -- --template minimal
-```
+The Astro 7 SSR app of the [Fullstack Starter](../../README.md) monorepo: the public landing page, the login and register pages, and the admin panel (`/admin`).
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- **Rendering**: `output: 'server'` with the `@astrojs/vercel` adapter (`astro.config.mjs`). Tailwind CSS 4 is loaded through its Vite plugin.
+- **Auth**: Supabase Auth through `@supabase/ssr`, with the session kept in cookies. `src/middleware/index.ts` only protects `/admin` and its sub-routes; every other page is public.
+- **Data access**: pages and components go through `src/services/` (`auth.ts`, `items.ts`). ESLint (`eslint.config.js`) forbids them from importing `lib/supabase` directly. Items are read and written through the NestJS API.
+- **CSRF**: the login, register, items and sign-out forms carry a double-submit token (`src/lib/csrf.ts`).
+- **Environment**: `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `API_URL` are read at runtime from `process.env` (`src/lib/env.ts`), never inlined at build time. In development, `astro.config.mjs` loads `apps/web/.env` first, then the root `.env`.
 
-## 🚀 Project Structure
+## Commands
 
-Inside of your Astro project, you'll see the following folders and files:
+From this folder, or from the repository root with `-w apps/web`:
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+| Command | Action |
+| :-- | :-- |
+| `npm run dev` | Dev server on `localhost:4321` |
+| `npm run build` | Production build (Vercel Build Output in `apps/web/.vercel/output`) |
+| `npm run lint` | `astro check` + ESLint |
+| `npm run typecheck` | `astro check` |
+| `npm run test` | Vitest |
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Deploying to Vercel goes through `npm run build:vercel` at the repository root: see the root README.

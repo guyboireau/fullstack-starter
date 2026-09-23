@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Astro-6-FF5D01?style=flat-square&logo=astro&logoColor=white" alt="Astro" />
+  <img src="https://img.shields.io/badge/Astro-7-FF5D01?style=flat-square&logo=astro&logoColor=white" alt="Astro" />
   <img src="https://img.shields.io/badge/NestJS-11-E0234E?style=flat-square&logo=nestjs&logoColor=white" alt="NestJS" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Supabase-2.x-3FCF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase" />
@@ -22,7 +22,7 @@
 
 ## 🚀 Getting Started
 
-> **Prerequisites:** Node.js **≥ 22.12** (required by Astro 6) and npm.
+> **Prerequisites:** Node.js **≥ 22.12** (required by Astro 7) and npm.
 
 ```bash
 # 1. Clone the repo
@@ -47,7 +47,7 @@ npm run dev
 ```
 fullstack-starter/
 ├── apps/
-│   ├── web/          → Astro 6 SSR + Vercel adapter (landing + admin panel)
+│   ├── web/          → Astro 7 SSR + Vercel adapter (landing + admin panel)
 │   │   ├── eslint.config.js  → flat config + service-layer rule
 │   │   └── src/services/     → sole entry point for DB/auth access
 │   └── api/          → NestJS 11 (REST API)
@@ -213,16 +213,6 @@ docker compose logs -f
 # Stop everything
 docker compose down
 ```
-
----
-
-## 🏆 Built with this stack
-
-This isn't a tutorial copy-paste — it's the production stack I use for real client projects:
-
-- **[Niido](https://niido.fr)** — Rental management platform
-- **[La Lucarne](https://lalucarne.fr)** — Real estate agency
-- **[Les Cours de Clara](https://lescoursdeclara.fr)** — Online tutoring platform
 
 ---
 

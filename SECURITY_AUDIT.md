@@ -6,6 +6,29 @@
 **Auditor:** Security Agent (Claude Code)  
 **Scope:** API (`apps/api`), Web (`apps/web`), Infrastructure (`docker-compose.yml`, `.github/workflows`, Supabase migrations)
 
+> **Status on 2026-09-23.** This report is kept for history: the summary and the counts below describe the code as it was on 2026-05-15. Five findings are now fixed on `main`, one is partly fixed, and ten are still open.
+>
+> | Finding | Status on `main` | Evidence |
+> |---------|------------------|----------|
+> | CRIT-001 Rate limiting | Fixed | `ThrottlerModule` (10 requests per 10 s) and a global `ThrottlerGuard` in `apps/api/src/app.module.ts` |
+> | CRIT-002 CSRF | Fixed | `apps/web/src/lib/csrf.ts`; the token is checked by `login.astro`, `register.astro`, `admin/items.astro` and `api/auth/signout.ts` |
+> | CRIT-003 `ruvector.db` | Fixed | Not tracked, and absent from every commit (`git rev-list --all --objects`); `*.db` is ignored in `.gitignore` |
+> | HIGH-001 CSP | Open (frontend) | The API uses Helmet's defaults, which include a CSP; the Astro app sends none (`vercel.json` only sets the build command) |
+> | HIGH-002 SRI | Open | `apps/web/src/layouts/Layout.astro` still loads `unpkg.com/@phosphor-icons/web` without `integrity` |
+> | HIGH-003 Frontend headers | Open | No headers in `vercel.json` or in the Astro middleware |
+> | HIGH-004 Cookie options | Open | `apps/web/src/lib/supabase.ts` passes the `@supabase/ssr` options unchanged |
+> | HIGH-005 Middleware | Fixed | Only `/admin` and its sub-routes require a session (`apps/web/src/middleware/index.ts`) |
+> | HIGH-006 Error messages | Open | `HttpException` messages are still returned as is (`all-exceptions.filter.ts`) |
+> | MED-001 Password policy | Open | `z.string().min(6)` in `register.astro` |
+> | MED-002 Compose credentials | Open | `postgres` fallbacks in `docker-compose.yml` |
+> | MED-003 Guard messages | Open | Two distinct messages in `supabase-auth.guard.ts` |
+> | MED-004 `@MaxLength` | Open | None in `update-item.dto.ts` |
+> | LOW-001 `console.log` | Fixed | Removed from `apps/api/src/main.ts` (#12) |
+> | LOW-002 `user_metadata` | Open | Still returned by `GET /auth/profile` |
+> | LOW-003 Tests | Partly fixed | Specs for the auth guard, `AuthService`, `ItemsService`, `UsersService` and `CreateItemDto`; none for `AllExceptionsFilter` |
+>
+> Dependencies (roadmap items 16-17): `npm audit` was run in #17 (2026-09-23). Three high entries remain, all in `multer`, pulled in by `@nestjs/platform-express`. No fix is published, and no route handles uploads.
+
 ---
 
 ## 1. Executive Summary
