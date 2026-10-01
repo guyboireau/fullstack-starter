@@ -13,11 +13,11 @@
 export const siteConfig = {
   // Navigation (landing 1 page)
   nav: [
-    { label: 'Services',  href: '#services' },
-    { label: 'À propos',  href: '#apropos' },
-    { label: 'Tarifs',    href: '#tarifs' },
-    { label: 'FAQ',       href: '#faq' },
-    { label: 'Contact',   href: '#contact' },
+    { label: 'Services',  href: '/#services' },
+    { label: 'À propos',  href: '/#apropos' },
+    { label: 'Tarifs',    href: '/#tarifs' },
+    { label: 'FAQ',       href: '/#faq' },
+    { label: 'Contact',   href: '/#contact' },
   ],
 
   // ── 1. INFORMATIONS BUSINESS ───────────────────────────────────────────────
@@ -48,8 +48,39 @@ export const siteConfig = {
       facebook:  '',
       twitter:   '',
     },
-    siret:        '000 000 000 00000',
+    siret:        '[SIRET]',
     availability: 'Disponible',
+  },
+
+  // ── 1-bis. MENTIONS LÉGALES (page /mentions-legales) ─────────────────────────
+  // Obligatoires pour tout site professionnel (LCEN, art. 6-III). Chaque champ
+  // entre crochets fait échouer `npm run check:ia` tant qu'il n'est pas rempli.
+  legal: {
+    formeJuridique:       '[À COMPLÉTER : SARL, SAS, EI, micro-entreprise…]',
+    capital:              '',   // ex. '5 000 €' pour une société ; vide pour une EI
+    registre:             '[À COMPLÉTER : RCS Ville 000 000 000, ou RM pour un artisan]',
+    tva:                  '[À COMPLÉTER : FR00 000000000, ou TVA non applicable, art. 293 B du CGI]',
+    directeurPublication: '[À COMPLÉTER : prénom et nom]',
+    hebergeur: {
+      nom:       '[À COMPLÉTER : nom de l\'hébergeur]',
+      adresse:   '[À COMPLÉTER : adresse postale de l\'hébergeur]',
+      telephone: '[À COMPLÉTER : téléphone de l\'hébergeur]',
+    },
+    // Clients particuliers : médiateur de la consommation obligatoire
+    // (Code de la consommation, L612-1). Clientèle uniquement pro : vider nom et site.
+    mediateur: {
+      nom:  '[À COMPLÉTER : nom du médiateur]',
+      site: '[À COMPLÉTER : adresse de son site]',
+    },
+    // Durée de conservation des messages reçus par le formulaire.
+    conservation: '3 ans après notre dernier échange',
+    // Services tiers qui reçoivent des données des visiteurs. Tenir à jour :
+    // un service ajouté au site doit apparaître ici.
+    prestataires: [
+      // Ajouter ici le service d'envoi du formulaire de contact (Resend…).
+      { nom: 'Google Fonts', role: 'polices de caractères, reçoit l\'adresse IP des visiteurs', pays: 'États-Unis' },
+      { nom: 'unpkg',        role: 'icônes Phosphor, reçoit l\'adresse IP des visiteurs', pays: 'États-Unis' },
+    ],
   },
 
   // ── 2. BRANDING ────────────────────────────────────────────────────────────
@@ -159,8 +190,8 @@ export const siteConfig = {
       h1:       '[TITRE PRINCIPAL CAPTIVANT]',
       subtitle: '[Description détaillée de ce que vous faites et pourquoi vous êtes le meilleur choix pour vos clients.]',
       image:    '/assets/images/placeholder-hero.png',
-      cta1:     { label: '[BOUTON PRINCIPAL]', href: '#contact' },
-      cta2:     { label: '[BOUTON SECONDAIRE]', href: '#services' },
+      cta1:     { label: '[BOUTON PRINCIPAL]', href: '/#contact' },
+      cta2:     { label: '[BOUTON SECONDAIRE]', href: '/#services' },
       trust:    ['[Argument 1]', '[Argument 2]', '[Argument 3]'],
       // note : note Google RÉELLE (ex. 4.8). Sans note, aucune étoile ne s'affiche.
       badge:    { label: '[LABEL]', value: '[VALEUR]', sub: '[DÉTAIL]', note: undefined as number | undefined },
@@ -211,7 +242,7 @@ export const siteConfig = {
         { value: '[XX]+',  label: '[Label 2]' },
         { value: '[X.X]',  label: '[Label 3]' },
       ],
-      cta:    { label: '[EN SAVOIR PLUS]', href: '#contact' },
+      cta:    { label: '[EN SAVOIR PLUS]', href: '/#contact' },
       image:  '/assets/images/placeholder-about.png',
       author: { name: '[NOM]', role: '[RÔLE]', image: '/assets/images/placeholder-portrait.png' },
     },
@@ -306,8 +337,8 @@ export const siteConfig = {
       eyebrow:  '[APPEL À L\'ACTION]',
       title:    '[PRÊT À DÉMARRER ?]',
       subtitle: '[Dernière phrase d\'incitation pour contacter l\'entreprise.]',
-      cta1:     { label: '[CONTACT]', href: '#contact' },
-      cta2:     { label: '[DÉCOUVRIR]',  href: '#services' },
+      cta1:     { label: '[CONTACT]', href: '/#contact' },
+      cta2:     { label: '[DÉCOUVRIR]',  href: '/#services' },
     },
 
     contact: {
@@ -320,16 +351,17 @@ export const siteConfig = {
     footer: {
       description: '[Description courte de l\'entreprise pour le bas de page.]',
       links: [
-        { label: 'Services',  href: '#services' },
-        { label: 'À propos',  href: '#apropos' },
-        { label: 'Tarifs',    href: '#tarifs' },
-        { label: 'FAQ',       href: '#faq' },
-        { label: 'Contact',   href: '#contact' },
+        { label: 'Services',  href: '/#services' },
+        { label: 'À propos',  href: '/#apropos' },
+        { label: 'Tarifs',    href: '/#tarifs' },
+        { label: 'FAQ',       href: '/#faq' },
+        { label: 'Contact',   href: '/#contact' },
       ],
       legal: [
-        { label: 'Mentions légales', href: '/mentions-legales' },
-        { label: 'CGV',              href: '/cgv' },
-        { label: 'RGPD',             href: '/rgpd' },
+        { label: 'Mentions légales',     href: '/mentions-legales' },
+        { label: 'Données personnelles', href: '/mentions-legales#donnees' },
+        // CGV : seulement si le client vend en ligne ou affiche ses conditions.
+        // Créer alors src/pages/cgv.astro AVANT d'ajouter le lien ici.
       ],
       madeBy: 'Site réalisé avec [VOTRE NOM]',
     },
@@ -348,6 +380,7 @@ export const siteConfig = {
 // ─── Re-exports nommés (compat avec les composants existants) ──────────────
 export type Variant = 'A' | 'B' | 'C';
 
+export const legal = siteConfig.legal;
 export const { business, branding, seo, design, features, pages, nav } = siteConfig;
 export const variants = siteConfig.design.variants as Record<keyof typeof siteConfig.design.variants, Variant>;
 export const hero         = siteConfig.content.hero;
