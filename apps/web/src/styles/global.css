@@ -3,4 +3,12 @@
 @theme {
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  /* Couleur de marque de l'espace d'administration (login, inscription, items).
+     Une seule source : remplacer ces quatre teintes par celles du DESIGN.md du
+     client, en gardant primary-600 lisible en texte blanc (contraste 4,5:1). */
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
 }

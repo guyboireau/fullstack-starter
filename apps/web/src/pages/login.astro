@@ -54,14 +54,13 @@ if (Astro.request.method === 'POST') {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Connexion — Admin</title>
-    <style>@import "tailwindcss";</style>
+    <title>Connexion | Admin</title>
+    <style>@import "../styles/global.css";</style>
   </head>
   <body class="min-h-screen bg-gray-950 flex items-center justify-center p-4">
     <div class="w-full max-w-sm">
 
       <div class="text-center mb-8">
-        <div class="text-3xl mb-3">⚡</div>
         <h1 class="text-xl font-semibold text-white">Connexion</h1>
         <p class="text-sm text-gray-400 mt-1">Accès à l'espace d'administration</p>
       </div>
@@ -89,7 +88,7 @@ if (Astro.request.method === 'POST') {
             autocomplete="email"
             required
             class:list={[
-              'w-full px-3.5 py-2.5 rounded-lg bg-gray-900 border text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500',
+              'w-full px-3.5 py-2.5 rounded-lg bg-gray-900 border text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500',
               errors.email ? 'border-red-500' : 'border-gray-700'
             ]}
             placeholder="vous@exemple.com"
@@ -106,7 +105,7 @@ if (Astro.request.method === 'POST') {
             autocomplete="current-password"
             required
             class:list={[
-              'w-full px-3.5 py-2.5 rounded-lg bg-gray-900 border text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500',
+              'w-full px-3.5 py-2.5 rounded-lg bg-gray-900 border text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500',
               errors.password ? 'border-red-500' : 'border-gray-700'
             ]}
             placeholder="••••••••"
@@ -116,14 +115,14 @@ if (Astro.request.method === 'POST') {
 
         <button
           type="submit"
-          class="w-full py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-950"
+          class="w-full py-2.5 px-4 rounded-lg bg-primary-600 hover:bg-primary-500 text-white text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-950"
         >
           Se connecter
         </button>
       </form>
 
       <p class="mt-6 text-center text-sm text-gray-500">
-        Pas encore de compte ? <a href="/register" class="text-indigo-400 hover:text-indigo-300">Créer un compte</a>
+        Pas encore de compte ? <a href="/register" class="text-primary-400 hover:text-primary-300">Créer un compte</a>
       </p>
     </div>
   </body>

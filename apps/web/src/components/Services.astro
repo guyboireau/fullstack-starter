@@ -175,7 +175,7 @@ const icons: Record<string, string> = {
       {services.items.map((item, i) => (
         <article class="srv-g-card">
           <div class={`srv-g-icon ${i === 1 ? 'srv-g-icon-peach' : 'srv-g-icon-sage'}`}>
-            {['◯','✿','✦'][i]}
+            {String(i + 1).padStart(2, '0')}
           </div>
           <h3 class="srv-g-title">{item.title}</h3>
           <p class="srv-g-text">{item.text}</p>
@@ -224,7 +224,7 @@ const icons: Record<string, string> = {
       {services.items.map((item) => (
         <div class="srv-h-card">
           <div class="srv-h-image">
-            <img src="/assets/images/hero.png" alt={item.title} />
+            <img src="/assets/images/placeholder-hero.png" alt="" />
           </div>
           <div class="srv-h-content">
             <div class="srv-h-icon">

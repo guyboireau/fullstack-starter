@@ -1,0 +1,24 @@
+---
+/**
+ * Note d'un avis, en étoiles. N'affiche RIEN sans note réelle : un avis sans
+ * note ne reçoit pas cinq étoiles par défaut (elles étaient écrites en dur
+ * « ★★★★★ » avant le 2026-10-01, quelle que soit la vraie note).
+ */
+interface Props {
+  /** Note réelle de l'avis, de 1 à 5. */
+  note?: number | undefined;
+  classeConteneur?: string;
+  classeEtoile?: string;
+  style?: string | undefined;
+}
+const { note, classeConteneur = 'stars', classeEtoile = 'star', style } = Astro.props;
+const valide = typeof note === 'number' && note >= 1 && note <= 5;
+const pleines = valide ? Math.round(note) : 0;
+---
+{valide && (
+  <div class={classeConteneur} role="img" aria-label={`Note : ${note} sur 5`} style={style}>
+    {[1, 2, 3, 4, 5].map((i) => (
+      <i class={`${classeEtoile} ph${i <= pleines ? '-fill' : ''} ph-star`} aria-hidden="true"></i>
+    ))}
+  </div>
+)}

@@ -1,0 +1,111 @@
+---
+// Mentions légales et données personnelles. Tout le contenu vient de
+// src/config/site.ts (business + legal) : rien à modifier ici.
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { business, features, seo, legal } from '../config/site';
+
+const adresse = `${business.address.street}, ${business.address.postalCode} ${business.address.city}`;
+const mesureGA = features.analytics && Boolean(seo.googleAnalyticsId);
+const mesurePlausible = features.plausible && Boolean(seo.plausibleDomain);
+const tiers = [
+  ...legal.prestataires,
+  ...(mesureGA ? [{ nom: 'Google Analytics', role: 'mesure d\'audience, seulement si vous l\'acceptez', pays: 'États-Unis' }] : []),
+  ...(mesurePlausible ? [{ nom: 'Plausible', role: 'mesure d\'audience sans cookie', pays: 'Union européenne' }] : []),
+];
+---
+
+<Layout
+  title={`Mentions légales | ${business.name}`}
+  description={`Mentions légales, hébergement et données personnelles du site ${business.name}.`}
+>
+  <Header />
+  <main id="main-content" class="legal">
+    <div class="container legal-inner">
+      <h1>Mentions légales</h1>
+
+      <section>
+        <h2>Éditeur du site</h2>
+        <p>
+          {business.name}, {legal.formeJuridique}{legal.capital && `, au capital de ${legal.capital}`}<br />
+          {adresse}<br />
+          SIRET {business.siret} · {legal.registre}<br />
+          TVA : {legal.tva}<br />
+          <a href={`tel:${business.phone.replace(/\s/g, '')}`}>{business.phone}</a> · <a href={`mailto:${business.email}`}>{business.email}</a>
+        </p>
+        <p>Directeur ou directrice de la publication : {legal.directeurPublication}.</p>
+      </section>
+
+      <section>
+        <h2>Hébergement</h2>
+        <p>{legal.hebergeur.nom}, {legal.hebergeur.adresse}, {legal.hebergeur.telephone}.</p>
+      </section>
+
+      <section id="donnees">
+        <h2>Données personnelles</h2>
+        <p>
+          Le responsable du traitement est {business.name}. Quand vous nous écrivez par le
+          formulaire de contact, nous recevons votre nom, votre adresse e-mail, votre numéro
+          de téléphone si vous le donnez, et votre message. Ils servent uniquement à vous
+          répondre, et nous les gardons {legal.conservation}.
+        </p>
+        <p>Ils ne sont ni vendus ni utilisés pour de la prospection. Les services suivants reçoivent des données des visiteurs du site :</p>
+        <ul>
+          {tiers.map((t) => <li><strong>{t.nom}</strong> : {t.role} ({t.pays}).</li>)}
+        </ul>
+        <p>
+          Vous pouvez demander à consulter, corriger ou effacer vos données, ou vous opposer
+          à leur utilisation, en écrivant à <a href={`mailto:${business.email}`}>{business.email}</a>.
+          Si notre réponse ne vous satisfait pas, vous pouvez saisir la CNIL
+          (<a href="https://www.cnil.fr/fr/plaintes" rel="noopener">cnil.fr/fr/plaintes</a>).
+        </p>
+      </section>
+
+      <section id="cookies">
+        <h2>Cookies</h2>
+        {mesureGA ? (
+          <p>
+            Google Analytics mesure l'audience du site, seulement si vous l'acceptez dans le
+            bandeau affiché à votre première visite. Votre choix est gardé dans votre
+            navigateur ; vous pouvez le changer en effaçant les données du site.
+          </p>
+        ) : (
+          <p>Ce site ne dépose aucun cookie de mesure d'audience ni de publicité.</p>
+        )}
+      </section>
+
+      {legal.mediateur.nom && (
+        <section>
+          <h2>Médiation</h2>
+          <p>
+            En cas de litige avec un client particulier, vous pouvez recourir gratuitement au
+            médiateur de la consommation : {legal.mediateur.nom}, <a href={legal.mediateur.site} rel="noopener">{legal.mediateur.site}</a>.
+          </p>
+        </section>
+      )}
+
+      <section>
+        <h2>Propriété intellectuelle</h2>
+        <p>
+          Les textes, photos et logos de ce site appartiennent à {business.name} ou sont
+          utilisés avec l'accord de leurs auteurs. Leur reproduction demande une autorisation écrite.
+        </p>
+      </section>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .legal { padding: 140px 0 80px; color: var(--ink); }
+  .legal-inner { max-width: 720px; }
+  .legal h1 { margin-bottom: 40px; }
+  .legal section { margin-bottom: 36px; }
+  .legal h2 { font-size: 1.25rem; margin-bottom: 12px; }
+  .legal p, .legal li { line-height: 1.7; color: var(--inkSoft); }
+  .legal p + p { margin-top: 12px; }
+  .legal ul { margin: 12px 0; padding-left: 20px; list-style: disc; }
+  .legal a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  .legal section:target { scroll-margin-top: 120px; }
+</style>

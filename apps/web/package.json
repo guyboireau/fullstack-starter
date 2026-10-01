@@ -12,7 +12,8 @@
     "astro": "astro",
     "lint": "astro check && eslint src",
     "typecheck": "astro check",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:ia": "node scripts/check-ia.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
