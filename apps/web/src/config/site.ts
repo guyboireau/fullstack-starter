@@ -69,7 +69,7 @@ export const siteConfig = {
   // ── 3. SEO ─────────────────────────────────────────────────────────────────
   seo: {
     titleTemplate:      '%s | [NOM DE L\'ENTREPRISE]',
-    defaultTitle:       '[NOM DE L\'ENTREPRISE] — [ACTIVITÉ PRINCIPALE]',
+    defaultTitle:       '[NOM DE L\'ENTREPRISE] : [ACTIVITÉ PRINCIPALE]',
     defaultDescription: 'Description courte de vos services et de votre valeur ajoutée pour vos clients.',
     keywords: [
       'mot-clé 1',
@@ -143,7 +143,7 @@ export const siteConfig = {
     booking:       false,
     multilingual:  false,
     pricing:       true,
-    testimonials:  true,
+    testimonials:  false,   // true seulement avec des avis RÉELS (note + source), cf. npm run check:ia
     newsletter:    false,
     cookieBanner:  true,
     analytics:     false,
@@ -162,12 +162,13 @@ export const siteConfig = {
       cta1:     { label: '[BOUTON PRINCIPAL]', href: '#contact' },
       cta2:     { label: '[BOUTON SECONDAIRE]', href: '#services' },
       trust:    ['[Argument 1]', '[Argument 2]', '[Argument 3]'],
-      badge:    { label: '[LABEL]', value: '[VALEUR]', sub: '[DÉTAIL]' },
+      // note : note Google RÉELLE (ex. 4.8). Sans note, aucune étoile ne s'affiche.
+      badge:    { label: '[LABEL]', value: '[VALEUR]', sub: '[DÉTAIL]', note: undefined as number | undefined },
       infoCard: { status: 'Disponible', hours: 'Lun–Ven · 9h–18h', location: '[VOTRE ADRESSE]' },
     },
 
     services: {
-      eyebrow:  '— Nos prestations',
+      eyebrow: 'Nos prestations',
       title:    '[TITRE DE LA SECTION SERVICES]',
       subtitle: '[Introduction à vos services et votre savoir-faire.]',
       items: [
@@ -199,7 +200,7 @@ export const siteConfig = {
     },
 
     about: {
-      eyebrow: '— À propos',
+      eyebrow: 'À propos',
       title:   '[QUI SOMMES-NOUS ?]',
       text: [
         '[Paragraphe 1 : Présentez votre histoire et votre mission.]',
@@ -216,33 +217,43 @@ export const siteConfig = {
     },
 
     testimonials: {
-      eyebrow:   '— Témoignages',
+      eyebrow: 'Témoignages',
       title:     '[TITRE TÉMOIGNAGES]',
-      ratingStr: '[X.X] / 5 · [XX] avis clients',
+      // Note et nombre d'avis RÉELS, copiés de la fiche Google. Sinon, vider.
+      ratingStr: '[X.X] / 5 · [XX] avis Google',
       items: [
         {
           quote:   '[Citation du client 1 : Expliquez comment vous avez aidé ce client.]',
           name:    '[NOM CLIENT 1]',
           role:    '[RÔLE / ENTREPRISE]',
           initial: 'C',
+          // Avis RÉEL, recopié mot pour mot. note : 1 à 5. source : « Avis Google, mars 2026 ».
+          note:    undefined as number | undefined,
+          source:  '[SOURCE ET DATE DE L\'AVIS]',
         },
         {
           quote:   '[Citation du client 2 : Expliquez comment vous avez aidé ce client.]',
           name:    '[NOM CLIENT 2]',
           role:    '[RÔLE / ENTREPRISE]',
           initial: 'C',
+          // Avis RÉEL, recopié mot pour mot. note : 1 à 5. source : « Avis Google, mars 2026 ».
+          note:    undefined as number | undefined,
+          source:  '[SOURCE ET DATE DE L\'AVIS]',
         },
         {
           quote:   '[Citation du client 3 : Expliquez comment vous avez aidé ce client.]',
           name:    '[NOM CLIENT 3]',
           role:    '[RÔLE / ENTREPRISE]',
           initial: 'C',
+          // Avis RÉEL, recopié mot pour mot. note : 1 à 5. source : « Avis Google, mars 2026 ».
+          note:    undefined as number | undefined,
+          source:  '[SOURCE ET DATE DE L\'AVIS]',
         },
       ],
     },
 
     pricing: {
-      eyebrow:  '— Tarifs',
+      eyebrow: 'Tarifs',
       title:    '[TITRE TARIFS]',
       subtitle: '[Introduction à vos tarifs et vos différentes offres.]',
       plans: [
@@ -280,7 +291,7 @@ export const siteConfig = {
     },
 
     faq: {
-      eyebrow: '— Questions fréquentes',
+      eyebrow: 'Questions fréquentes',
       title:   '[TITRE FAQ]',
       items: [
         { q: '[Question 1 ?]', a: '[Réponse détaillée à la question 1.]' },
@@ -300,10 +311,10 @@ export const siteConfig = {
     },
 
     contact: {
-      eyebrow:        '— Contact',
+      eyebrow: 'Contact',
       title:          '[TITRE CONTACT]',
       subtitle:       '[Décrivez ce que le client doit faire pour vous contacter.]',
-      successMessage: 'Message bien reçu — nous vous répondons rapidement.',
+      successMessage: 'Message bien reçu. Nous vous répondons rapidement.',
     },
 
     footer: {
