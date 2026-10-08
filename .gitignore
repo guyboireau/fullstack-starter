@@ -28,6 +28,9 @@ npm-debug.log*
 
 # Supabase
 .supabase/
+# Fichiers locaux de la CLI Supabase (branche courante, version de la CLI)
+supabase/.branches/
+supabase/.temp/
 
 # TypeScript
 *.tsbuildinfo
