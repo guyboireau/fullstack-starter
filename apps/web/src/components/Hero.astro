@@ -1,4 +1,5 @@
 ---
+import Etoiles from './Etoiles.astro';
 // Hero — 3 variantes
 // A : Centré · eyebrow → H1 → sous-titre → 2 CTAs → trust strip
 // B : Asymétrique · texte gauche (55%) + image droite + badge flottant
@@ -56,9 +57,7 @@ const v = variants.hero;
       <div class="hero-b-badge">
         <p class="badge-label eyebrow">{hero.badge.label}</p>
         <p class="badge-value">{hero.badge.value}</p>
-        <div class="stars" aria-label="5 étoiles">
-          {'★★★★★'.split('').map(s => <span class="star">{s}</span>)}
-        </div>
+        <Etoiles note={hero.badge.note} />
       </div>
     </div>
   </div>
@@ -129,7 +128,7 @@ const v = variants.hero;
         <a href={hero.cta2.href} class="hero-f-btn-secondary">{hero.cta2.label}</a>
       </div>
       <div class="hero-f-trust">
-        {hero.trust.map((t: string) => <span class="hero-f-trust-item">✓ {t}</span>)}
+        {hero.trust.map((t: string) => <span class="hero-f-trust-item"><i class="ph ph-check" aria-hidden="true"></i> {t}</span>)}
       </div>
     </div>
     <div class="hero-f-visual">
@@ -189,7 +188,7 @@ const v = variants.hero;
   </div>
   <div class="container hero-d-main">
     <div class="hero-d-left">
-      <span class="hero-d-stamp-label">N°01 — L'ATELIER</span>
+      <span class="hero-d-stamp-label">N°01 · L'ATELIER</span>
       <h1 class="hero-d-h1">{hero.h1}</h1>
     </div>
     <div class="hero-d-infocard">
@@ -281,7 +280,7 @@ const v = variants.hero;
 .trust-item {
   font-size: 13px; color: var(--inkSoft); font-family: var(--fontMono);
 }
-.trust-item::before { content: '✓  '; color: var(--primary); }
+.trust-item::before { content: none; }
 
 /* ─── Variante B ─────────────────────────────────────────────────────────── */
 .hero-b { padding-top: calc(68px + clamp(40px, 8vw, 80px)); }
@@ -737,7 +736,7 @@ const v = variants.hero;
   position: absolute;
   top: 0; right: 0; bottom: 0;
   width: 100%;
-  background-image: linear-gradient(to right, #0f172a 40%, transparent 100%), url('/assets/images/hero.png');
+  background-image: linear-gradient(to right, #0f172a 40%, transparent 100%), url('/assets/images/placeholder-hero.png');
   background-size: cover;
   background-position: center;
   opacity: 0.6;
@@ -810,7 +809,7 @@ const v = variants.hero;
     flex-direction: column;
   }
   .hero-h-bg {
-    background-image: linear-gradient(to bottom, #0f172a 40%, transparent 100%), url('/assets/images/hero.png');
+    background-image: linear-gradient(to bottom, #0f172a 40%, transparent 100%), url('/assets/images/placeholder-hero.png');
   }
 }
 

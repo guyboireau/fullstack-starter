@@ -4,6 +4,7 @@
 // B : Citation pleine page — 1 citation grande + navigation
 // C : Mur d'avis compact — grille dense
 import { variants, testimonials } from '../config/site';
+import Etoiles from './Etoiles.astro';
 
 const v = variants.testimonials;
 ---
@@ -22,9 +23,7 @@ const v = variants.testimonials;
       <div class="tst-a-grid">
         {testimonials.items.map((t) => (
           <article class="card tst-a-card">
-            <div class="stars" aria-label="5 étoiles">
-              {'★★★★★'.split('').map(s => <span class="star">{s}</span>)}
-            </div>
+            <Etoiles note={t.note} classeConteneur="stars" classeEtoile="star" />
             <blockquote class="tst-a-quote">"{t.quote}"</blockquote>
             <div class="tst-a-divider"></div>
             <div class="tst-a-author">
@@ -52,9 +51,7 @@ const v = variants.testimonials;
       </div>
       <div class="tst-b-right">
         <div class="tst-b-featured">
-          <div class="stars" aria-label="5 étoiles" style="margin-bottom: 20px;">
-            {'★★★★★'.split('').map(s => <span class="star">{s}</span>)}
-          </div>
+          <Etoiles note={testimonials.items[0].note} classeConteneur="stars" classeEtoile="star" style="margin-bottom: 20px;" />
           <blockquote class="tst-b-quote">"{testimonials.items[0].quote}"</blockquote>
           <div class="tst-b-author">
             <span class="tst-avatar tst-avatar-lg" aria-hidden="true">{testimonials.items[0].initial}</span>
@@ -94,9 +91,7 @@ const v = variants.testimonials;
       <div class="tst-c-grid">
         {testimonials.items.map((t) => (
           <article class="tst-c-card">
-            <div class="stars" aria-label="5 étoiles">
-              {'★★★★★'.split('').map(s => <span class="star">{s}</span>)}
-            </div>
+            <Etoiles note={t.note} classeConteneur="stars" classeEtoile="star" />
             <blockquote class="tst-c-quote">"{t.quote}"</blockquote>
             <div class="tst-c-author">
               <span class="tst-avatar tst-avatar-sm" aria-hidden="true">{t.initial}</span>
